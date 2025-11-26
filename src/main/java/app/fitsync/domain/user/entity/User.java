@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,4 +36,16 @@ public class User extends BaseEntity {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "hidden")
+    private Boolean hidden = false;
+
+    public void show() {
+        hidden = false;
+    }
+
+    public void hide() {
+        setDeletedAt(LocalDateTime.now());
+        hidden = true;
+    }
 }
