@@ -20,6 +20,8 @@ public class UserMapper {
     }
 
     static BirthDate toBirthDate(BirthReqeust reqeust) {
+        if (reqeust == null) { return BirthDate.EMPTY; }
+
         LocalDateTime birth = LocalDateTime.of(
                 reqeust.year(),
                 reqeust.month(),

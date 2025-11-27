@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 public class BirthDate {
+    public static BirthDate EMPTY = new BirthDate(null);
     private LocalDateTime birth;
 
     public BirthDate(LocalDateTime localDateTime) {
