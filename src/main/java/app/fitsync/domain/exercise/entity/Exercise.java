@@ -19,13 +19,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "exercises")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Exercise extends BaseEntity {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,4 +66,15 @@ public class Exercise extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "effect_type")
     private Set<EffectType> effects = new HashSet<>();
+
+    public void addTarget(ExerciseTarget target) {
+        targets.add(target);
+        target.setExercise(this);
+    }
+
+    public void addAllTargets(List<ExerciseTarget> targets) {
+        for (ExerciseTarget target : targets) {
+            addTarget(target);
+        }
+    }
 }

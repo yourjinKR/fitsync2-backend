@@ -11,7 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "exericse_targets")
@@ -24,6 +26,7 @@ public class ExerciseTarget {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id", nullable = false)
+    @Setter(AccessLevel.PROTECTED)
     private Exercise exercise;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,8 +37,7 @@ public class ExerciseTarget {
     @Column(name = "target_role", nullable = false)
     private TargetRole targetRole;
 
-    public ExerciseTarget(Exercise exercise, BodyDetailPart bodyDetailPart, TargetRole targetRole) {
-        this.exercise = exercise;
+    public ExerciseTarget(BodyDetailPart bodyDetailPart, TargetRole targetRole) {
         this.bodyDetailPart = bodyDetailPart;
         this.targetRole = targetRole;
     }
