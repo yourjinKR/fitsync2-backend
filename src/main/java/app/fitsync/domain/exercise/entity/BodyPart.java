@@ -25,4 +25,13 @@ public class BodyPart {
 
     @OneToMany(mappedBy = "bodyPart")
     private List<BodyDetailPart> detailParts = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "BodyPart{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", detailParts=" + detailParts +
+                '}';
+    }
 }

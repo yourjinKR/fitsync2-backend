@@ -28,4 +28,13 @@ public class BodyDetailPart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "body_part_id", nullable = false)
     private BodyPart bodyPart;
+
+    @Override
+    public String toString() {
+        return "BodyDetailPart{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", bodyPart=" + bodyPart +
+                '}';
+    }
 }

@@ -41,4 +41,14 @@ public class ExerciseTarget {
         this.bodyDetailPart = bodyDetailPart;
         this.targetRole = targetRole;
     }
+
+    @Override
+    public String toString() {
+        return "ExerciseTarget{" +
+                "id=" + id +
+                ", exercise=" + exercise +
+                ", bodyDetailPart=" + bodyDetailPart +
+                ", targetRole=" + targetRole +
+                '}';
+    }
 }

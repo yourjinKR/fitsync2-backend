@@ -68,7 +68,7 @@ public class Exercise extends BaseEntity {
     private Set<EffectType> effects = new HashSet<>();
 
     public void addTarget(ExerciseTarget target) {
-        targets.add(target);
+        this.targets.add(target);
         target.setExercise(this);
     }
 
@@ -76,5 +76,19 @@ public class Exercise extends BaseEntity {
         for (ExerciseTarget target : targets) {
             addTarget(target);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Exercise{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category=" + category +
+                ", description='" + description + '\'' +
+                ", details=" + details +
+                ", hidden=" + hidden +
+                ", targets=" + targets +
+                ", effects=" + effects +
+                '}';
     }
 }
