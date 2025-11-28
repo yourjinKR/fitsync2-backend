@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ExerciseController {
-    private ExerciseServiceInterface exerciseService;
+    private final ExerciseServiceInterface exerciseService;
 
     @PostMapping("/api/exercise")
     public ResponseEntity<ExerciseResponse> createExercise(@RequestBody ExerciseRequest request) {
