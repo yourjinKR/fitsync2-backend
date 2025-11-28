@@ -1,9 +1,13 @@
 package app.fitsync.domain.exercise.mapper;
 
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,5 +30,22 @@ public class ExerciseMapper {
         exercise.addAllTargets(targets);
 
         return exercise;
+    }
+
+    public List<ExerciseTarget> toEntities(List<BodyDetailPart> detailParts, List<ExerciseTargetRequest> targetRequests) {
+        Map<Long, BodyDetailPart> partMap = detailParts.stream()
+                .collect(Collectors.toMap(BodyDetailPart::getId, part -> part));
+
+        return targetRequests.stream()
+                .map(request -> {
+                    BodyDetailPart part = partMap.get(request.bodyDetailPartId());
+
+                    if (part == null) {
+                        throw new IllegalArgumentException("존재하지 않는 운동 부위 ID입니다: " + request.bodyDetailPartId());
+                    }
+
+                    return new ExerciseTarget(part, request.targetRole());
+                })
+                .toList();
     }
 }

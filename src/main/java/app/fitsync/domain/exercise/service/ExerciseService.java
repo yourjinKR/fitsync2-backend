@@ -6,7 +6,6 @@ import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
-import app.fitsync.domain.exercise.entity.TargetRole;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
@@ -27,23 +26,17 @@ public class ExerciseService implements ExerciseServiceInterface {
     public ExerciseResponse createExercise(ExerciseRequest request) {
         List<ExerciseTargetRequest> targetRequests = request.targets();
 
-        List<ExerciseTarget> targets = targetRequests.stream()
-                .map(this::toEntity)
+        List<BodyDetailPart> bodyDetailParts = targetRequests.stream()
+                .map(ExerciseTargetRequest::bodyDetailPartId)
+                .map(bodyDetailPartRepository::getReferenceById)
                 .toList();
+
+        List<ExerciseTarget> targets = exerciseMapper.toEntities(bodyDetailParts, targetRequests);
 
         Exercise exercise = exerciseMapper.toEntity(request, targets);
         Exercise savedExercise = exerciseRepository.save(exercise);
         Long exerciseId = savedExercise.getId();
 
         return new ExerciseResponse(exerciseId);
-    }
-
-
-    public ExerciseTarget toEntity(ExerciseTargetRequest targetRequest) {
-        Long detailPartId = targetRequest.bodyDetailPartId();
-        BodyDetailPart detailPart = bodyDetailPartRepository.getReferenceById(detailPartId);
-        TargetRole targetRole = targetRequest.targetRole();
-
-        return  new ExerciseTarget(detailPart, targetRole);
     }
 }
