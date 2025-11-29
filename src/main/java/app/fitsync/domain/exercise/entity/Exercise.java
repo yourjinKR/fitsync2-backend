@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +51,15 @@ public class Exercise extends BaseEntity {
 
     @Convert(converter = JsonMapConverter.class)
     @Column(name = "details", columnDefinition = "json")
-    private Map<String, Object> details;
+    @Builder.Default
+    private Map<String, Object> details = new HashMap<>();
 
     @Column(name = "hidden")
+    @Builder.Default
     private boolean hidden = false;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ExerciseTarget> targets = new ArrayList<>();
 
     @ElementCollection(targetClass = EffectType.class)
@@ -65,6 +69,7 @@ public class Exercise extends BaseEntity {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "effect_type")
+    @Builder.Default
     private Set<EffectType> effects = new HashSet<>();
 
     public void addTarget(ExerciseTarget target) {
