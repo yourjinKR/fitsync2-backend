@@ -1,9 +1,11 @@
 package app.fitsync.domain.exercise.entity;
 
 import app.fitsync.global.BaseEntity;
+import app.fitsync.global.config.JsonMapConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,8 +25,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "exercises")
@@ -48,7 +48,7 @@ public class Exercise extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = JsonMapConverter.class)
     @Column(name = "details", columnDefinition = "json")
     private Map<String, Object> details;
 
