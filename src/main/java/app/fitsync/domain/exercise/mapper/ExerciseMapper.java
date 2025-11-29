@@ -5,7 +5,6 @@ import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,8 +24,6 @@ public class ExerciseMapper {
                 .category(request.category())
                 .description(request.description())
                 .details(request.details())
-                .hidden(false)
-                .targets(new ArrayList<>())
                 .effects(request.effects())
                 .build();
 

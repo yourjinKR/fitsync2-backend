@@ -31,7 +31,6 @@ public class BodyPart {
         return "BodyPart{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", detailParts=" + detailParts +
                 '}';
     }
 }

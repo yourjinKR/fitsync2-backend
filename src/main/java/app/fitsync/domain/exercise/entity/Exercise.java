@@ -1,9 +1,11 @@
 package app.fitsync.domain.exercise.entity;
 
 import app.fitsync.global.BaseEntity;
+import app.fitsync.global.config.JsonMapConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +26,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "exercises")
@@ -48,14 +49,17 @@ public class Exercise extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = JsonMapConverter.class)
     @Column(name = "details", columnDefinition = "json")
-    private Map<String, Object> details;
+    @Builder.Default
+    private Map<String, Object> details = new HashMap<>();
 
     @Column(name = "hidden")
+    @Builder.Default
     private boolean hidden = false;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ExerciseTarget> targets = new ArrayList<>();
 
     @ElementCollection(targetClass = EffectType.class)
@@ -65,6 +69,7 @@ public class Exercise extends BaseEntity {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "effect_type")
+    @Builder.Default
     private Set<EffectType> effects = new HashSet<>();
 
     public void addTarget(ExerciseTarget target) {
