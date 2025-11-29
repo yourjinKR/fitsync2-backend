@@ -46,7 +46,6 @@ public class ExerciseTarget {
     public String toString() {
         return "ExerciseTarget{" +
                 "id=" + id +
-                ", exercise=" + exercise +
                 ", bodyDetailPart=" + bodyDetailPart +
                 ", targetRole=" + targetRole +
                 '}';
