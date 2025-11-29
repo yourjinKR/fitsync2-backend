@@ -1,5 +1,6 @@
 package app.fitsync.domain.exercise.mapper;
 
+import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
@@ -47,5 +48,18 @@ public class ExerciseMapper {
                     return new ExerciseTarget(part, request.targetRole());
                 })
                 .toList();
+    }
+
+    public ExerciseDetailResponse toDto(Exercise exercise) {
+        return new ExerciseDetailResponse(
+                exercise.getId(),
+                exercise.getName(),
+                exercise.getCategory(),
+                exercise.getDescription(),
+                exercise.getDetails(),
+                exercise.isHidden(),
+                exercise.getTargets(),
+                exercise.getEffects()
+        );
     }
 }

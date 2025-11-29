@@ -1,14 +1,17 @@
 package app.fitsync.domain.exercise.service;
 
+import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
+import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
+import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,5 +41,13 @@ public class ExerciseService implements ExerciseServiceInterface {
         Long exerciseId = savedExercise.getId();
 
         return new ExerciseResponse(exerciseId);
+    }
+
+    @Override
+    public ExerciseDetailResponse findExercise(Long id) {
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND));
+
+        return exerciseMapper.toDto(exercise);
     }
 }

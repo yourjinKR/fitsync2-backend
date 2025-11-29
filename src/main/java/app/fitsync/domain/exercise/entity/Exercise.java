@@ -27,6 +27,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "exercises")
 @Builder
@@ -34,7 +35,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Exercise extends BaseEntity {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
