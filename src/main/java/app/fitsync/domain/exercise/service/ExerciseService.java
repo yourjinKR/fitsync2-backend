@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ExerciseService implements ExerciseServiceInterface {
     private final ExerciseMapper exerciseMapper;
     private final ExerciseRepository exerciseRepository;
     private final BodyDetailPartRepository bodyDetailPartRepository;
 
     @Override
+    @Transactional
     public ExerciseResponse createExercise(ExerciseRequest request) {
         List<ExerciseTargetRequest> targetRequests = request.targets();
 
@@ -44,8 +44,9 @@ public class ExerciseService implements ExerciseServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ExerciseDetailResponse findExercise(Long id) {
-        Exercise exercise = exerciseRepository.findById(id)
+        Exercise exercise = exerciseRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND));
 
         return exerciseMapper.toDto(exercise);
