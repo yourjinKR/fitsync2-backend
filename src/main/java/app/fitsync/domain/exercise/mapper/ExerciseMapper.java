@@ -1,9 +1,12 @@
 package app.fitsync.domain.exercise.mapper;
 
+import app.fitsync.domain.exercise.dto.BodyDetailPartResponse;
 import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.ExerciseTargetDetailResponse;
 import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
+import app.fitsync.domain.exercise.entity.BodyPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
 import java.util.List;
@@ -51,6 +54,12 @@ public class ExerciseMapper {
     }
 
     public ExerciseDetailResponse toDto(Exercise exercise) {
+
+        List<ExerciseTarget> targets = exercise.getTargets();
+        List<ExerciseTargetDetailResponse> exerciseTargetDetailResponses = targets.stream()
+                .map(this::toDto)
+                .toList();
+
         return new ExerciseDetailResponse(
                 exercise.getId(),
                 exercise.getName(),
@@ -58,8 +67,31 @@ public class ExerciseMapper {
                 exercise.getDescription(),
                 exercise.getDetails(),
                 exercise.isHidden(),
-                exercise.getTargets(),
+                exerciseTargetDetailResponses,
                 exercise.getEffects()
+        );
+    }
+
+    public ExerciseTargetDetailResponse toDto(ExerciseTarget target) {
+
+        BodyDetailPart detailPart = target.getBodyDetailPart();
+        BodyDetailPartResponse bodyDetailPartResponse = this.toDto(detailPart);
+
+        return new ExerciseTargetDetailResponse(
+                target.getId(),
+                bodyDetailPartResponse,
+                target.getTargetRole()
+        );
+    }
+
+    public BodyDetailPartResponse toDto(BodyDetailPart detailPart) {
+
+        BodyPart part = detailPart.getBodyPart();
+
+        return new BodyDetailPartResponse(
+                detailPart.getId(),
+                detailPart.getName(),
+                part.getName()
         );
     }
 }
