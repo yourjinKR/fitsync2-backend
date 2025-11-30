@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExerciseMapper {
+
     /**
      * 운동정보 생성 요청 DTO를 Entity로 매핑하는 함수
      * @param request 운동정보 생성 요청 DTO
@@ -36,6 +37,13 @@ public class ExerciseMapper {
         return exercise;
     }
 
+    /**
+     * ExerciseTarget DTO를 등록하기 위해 서비스에서 엔티티를 검색 후 <br>
+     * 외부에서 함께 주입하여 매핑
+     * @param detailParts 세부 부위 엔티티
+     * @param targetRequests 운동 타겟 정보 생성 요청 DTO
+     * @return 운동 타겟 정보 엔티티
+     */
     public List<ExerciseTarget> toEntities(List<BodyDetailPart> detailParts, List<ExerciseTargetRequest> targetRequests) {
         Map<Long, BodyDetailPart> partMap = detailParts.stream()
                 .collect(Collectors.toMap(BodyDetailPart::getId, part -> part));
@@ -53,6 +61,12 @@ public class ExerciseMapper {
                 .toList();
     }
 
+    /**
+     * 운동 정보 엔티티를 상세 조회 DTO로 매핑 <br>
+     * 내부 데이터 또한 toDto 메서드를 통해 매핑
+     * @param exercise 운동 정보 엔티티
+     * @return 운동 정보 상세 조회 DTO
+     */
     public ExerciseDetailResponse toDto(Exercise exercise) {
 
         List<ExerciseTarget> targets = exercise.getTargets();
@@ -72,6 +86,11 @@ public class ExerciseMapper {
         );
     }
 
+    /**
+     * 운동 타겟 엔티티를 DTO로 변환
+     * @param target 운동 타겟 엔티티
+     * @return 운동 타겟 DTO
+     */
     public ExerciseTargetDetailResponse toDto(ExerciseTarget target) {
 
         BodyDetailPart detailPart = target.getBodyDetailPart();
@@ -84,6 +103,11 @@ public class ExerciseMapper {
         );
     }
 
+    /**
+     * 운동 세부 부위 엔티티를 DTO로 변환
+     * @param detailPart 운동 세부 부위 엔티티
+     * @return 운동 세부 부위 DTO
+     */
     public BodyDetailPartResponse toDto(BodyDetailPart detailPart) {
 
         BodyPart part = detailPart.getBodyPart();

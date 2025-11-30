@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
+    /**
+     * 운동 정보 상세 조회를 위한 쿼리
+     */
     @Query("SELECT DISTINCT e " +
             "FROM Exercise e " +
             "LEFT JOIN FETCH e.targets t " +
