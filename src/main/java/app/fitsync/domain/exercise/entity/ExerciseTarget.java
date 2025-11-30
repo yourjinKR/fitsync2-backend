@@ -12,11 +12,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter
 @Entity
-@Table(name = "exericse_targets")
+@Table(name = "exercise_targets")
 @NoArgsConstructor
 public class ExerciseTarget {
 
