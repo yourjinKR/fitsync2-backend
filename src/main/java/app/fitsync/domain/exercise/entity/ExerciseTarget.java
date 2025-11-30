@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Getter
 @Entity
-@Table(name = "exericse_targets")
+@Table(name = "exercise_targets")
 @NoArgsConstructor
 public class ExerciseTarget {
 
