@@ -51,10 +51,9 @@ public class ExerciseService implements ExerciseServiceInterface {
     public Page<ExerciseListResponse> getExerciseList(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ExerciseListResponse> exercises = exerciseRepository.findAll(pageable)
-                .map(exerciseMapper::toListDto);
+        Page<Exercise> exercises = exerciseRepository.findAll(pageable);
 
-        return exercises;
+        return exercises.map(exerciseMapper::toListDto);
     }
 
     @Override
