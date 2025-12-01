@@ -11,6 +11,8 @@ import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.BodyPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
+import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
+import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,10 +54,12 @@ public class ExerciseMapper {
 
         return targetRequests.stream()
                 .map(request -> {
-                    BodyDetailPart part = partMap.get(request.bodyDetailPartId());
+                    Long detailPartId = request.bodyDetailPartId();
+
+                    BodyDetailPart part = partMap.get(detailPartId);
 
                     if (part == null) {
-                        throw new IllegalArgumentException("존재하지 않는 운동 부위 ID입니다: " + request.bodyDetailPartId());
+                        throw new RestApiException(ExerciseErrorCode.BODY_DETAIL_NOT_FOUND, detailPartId);
                     }
 
                     return new ExerciseTarget(part, request.targetRole());
