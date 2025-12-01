@@ -1,6 +1,7 @@
 package app.fitsync.global.exception;
 
 import app.fitsync.global.exception.ErrorResponse.ValidationError;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RestApiException.class)
     public ResponseEntity<Object> handleCustomException(RestApiException e) {
         ErrorCode errorCode = e.getErrorCode();
-        return handleExceptionInternal(errorCode);
+        Object[] args = e.getArgs();
+
+        if (args == null)
+            return handleExceptionInternal(errorCode);
+
+        else
+            return handleExceptionInternal(errorCode, args);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -53,10 +60,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(makeErrorResponse(errorCode));
     }
 
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, Object ...args) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, args));
+    }
+
     private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
         return ErrorResponse.builder()
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
+                .build();
+    }
+
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode, Object ...args) {
+        System.out.println("args!!!!!!!!!!!!!!!! : " + Arrays.toString(args));
+
+        return ErrorResponse.builder()
+                .code(errorCode.name())
+                .message(errorCode.format(args))
                 .build();
     }
 

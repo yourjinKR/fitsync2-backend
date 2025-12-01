@@ -60,7 +60,7 @@ public class ExerciseService implements ExerciseServiceInterface {
     @Transactional(readOnly = true)
     public ExerciseDetailResponse findExercise(Long id) {
         Exercise exercise = exerciseRepository.findByIdWithDetails(id)
-                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
 
         return exerciseMapper.toDto(exercise);
     }
