@@ -1,6 +1,7 @@
 package app.fitsync.domain.exercise.service;
 
 import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
@@ -14,6 +15,9 @@ import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +45,15 @@ public class ExerciseService implements ExerciseServiceInterface {
         Long exerciseId = savedExercise.getId();
 
         return new ExerciseResponse(exerciseId);
+    }
+
+    @Override
+    public Page<ExerciseListResponse> getExerciseList(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Exercise> exercises = exerciseRepository.findAll(pageable);
+
+        return exercises.map(exerciseMapper::toListDto);
     }
 
     @Override

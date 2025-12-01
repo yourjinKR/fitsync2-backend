@@ -1,7 +1,9 @@
 package app.fitsync.domain.exercise.mapper;
 
+import app.fitsync.domain.exercise.dto.BodyDetailPartListResponse;
 import app.fitsync.domain.exercise.dto.BodyDetailPartResponse;
 import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.ExerciseTargetDetailResponse;
 import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
@@ -113,6 +115,44 @@ public class ExerciseMapper {
         BodyPart part = detailPart.getBodyPart();
 
         return new BodyDetailPartResponse(
+                detailPart.getId(),
+                detailPart.getName(),
+                part.getName()
+        );
+    }
+
+    /**
+     * 운동 정보 엔티티를 운동 정보 리스트 조회 DTO로 변환
+     * @param exercise 운동 정보 엔티티
+     * @return 운동 정보 리스트 DTO
+     */
+    public ExerciseListResponse toListDto(Exercise exercise) {
+
+        List<ExerciseTarget> targets = exercise.getTargets();
+        List<BodyDetailPartListResponse> bodyDetailPartListResponses = targets.stream()
+                .map(this::toListDto)
+                .toList();
+
+        return new ExerciseListResponse(
+                exercise.getId(),
+                exercise.getName(),
+                exercise.getCategory(),
+                exercise.isHidden(),
+                bodyDetailPartListResponses
+        );
+    }
+
+    /**
+     * 운동 타겟 정보 엔티티에서 신체부위명만 매핑
+     * @param target 운동 타겟 정보 엔티티
+     * @return 부위명, 세부부위명만 매핑하여 전달
+     */
+    public BodyDetailPartListResponse toListDto(ExerciseTarget target) {
+
+        BodyDetailPart detailPart = target.getBodyDetailPart();
+        BodyPart part = detailPart.getBodyPart();
+
+        return new BodyDetailPartListResponse(
                 detailPart.getId(),
                 detailPart.getName(),
                 part.getName()
