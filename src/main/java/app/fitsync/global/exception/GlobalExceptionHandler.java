@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RestApiException.class)
     public ResponseEntity<Object> handleCustomException(RestApiException e) {
         ErrorCode errorCode = e.getErrorCode();
-        Object[] args = (Object[]) e.getArgs();
+        Object[] args = e.getArgs();
 
         if (args == null)
             return handleExceptionInternal(errorCode);
