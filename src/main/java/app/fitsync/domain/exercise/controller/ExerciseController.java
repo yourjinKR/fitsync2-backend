@@ -4,11 +4,13 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.domain.exercise.service.ExerciseServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,15 @@ public class ExerciseController {
     public ResponseEntity<ExerciseDetailResponse> findExercise(@PathVariable Long exerciseId) {
 
         ExerciseDetailResponse response = exerciseService.findExercise(exerciseId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/api/exercise/{exerciseId}")
+    public ResponseEntity<ExerciseResponse> updateExercise(
+            @PathVariable Long exerciseId,
+            @RequestBody ExerciseUpdateRequest request) {
+
+        ExerciseResponse response = exerciseService.updateExercise(exerciseId, request);
         return ResponseEntity.ok(response);
     }
 }

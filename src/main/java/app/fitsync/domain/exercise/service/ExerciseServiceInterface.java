@@ -4,6 +4,7 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import org.springframework.data.domain.Page;
 
 public interface ExerciseServiceInterface {
@@ -13,4 +14,6 @@ public interface ExerciseServiceInterface {
     Page<ExerciseListResponse> getExerciseList(int page, int size);
 
     ExerciseDetailResponse findExercise(Long id);
+
+    ExerciseResponse updateExercise(Long id, ExerciseUpdateRequest request);
 }

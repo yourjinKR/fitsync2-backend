@@ -1,10 +1,13 @@
 package app.fitsync.domain.exercise.service;
 
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartUpdateRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
@@ -14,6 +17,7 @@ import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,5 +67,31 @@ public class ExerciseService implements ExerciseServiceInterface {
                 .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
 
         return exerciseMapper.toDto(exercise);
+    }
+
+    @Override
+    @Transactional
+    public ExerciseResponse updateExercise(Long id, ExerciseUpdateRequest request) {
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
+
+        List<ExerciseTargetUpdateRequest> targetRequests = request.targets();
+
+        List<ExerciseTarget> targets = targetRequests.stream()
+                .map(this::loadTargetWithBodyDetail)
+                .toList();
+
+        exercise.updateFrom(request, targets);
+
+        return new ExerciseResponse(exercise.getId());
+    }
+
+    private ExerciseTarget loadTargetWithBodyDetail(ExerciseTargetUpdateRequest request) {
+        BodyDetailPartUpdateRequest bodyDetailPartUpdateRequest = request.bodyDetailPart();
+        Long detailPartId = bodyDetailPartUpdateRequest.detailPartId();
+
+        BodyDetailPart bodyDetail = bodyDetailPartRepository.getReferenceById(detailPartId);
+
+        return exerciseMapper.toEntity(request, bodyDetail);
     }
 }
