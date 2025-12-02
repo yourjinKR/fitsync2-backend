@@ -94,9 +94,10 @@ public class ExerciseService implements ExerciseServiceInterface {
     }
 
     private void updateExerciseTarget(ExerciseTargetUpdateRequest targetRequest) {
+        Long targetId = targetRequest.id();
 
-        ExerciseTarget target = exerciseTargetRepository.findById(targetRequest.id())
-                .orElseThrow(IllegalArgumentException::new);
+        ExerciseTarget target = exerciseTargetRepository.findById(targetId)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.TARGET_NOT_FOUNT, targetId));
 
         target.updateFrom(targetRequest);
     }
