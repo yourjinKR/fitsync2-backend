@@ -1,7 +1,6 @@
 package app.fitsync.domain.exercise.entity;
 
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
-import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import app.fitsync.global.BaseEntity;
 import app.fitsync.global.config.JsonMapConverter;
 import jakarta.persistence.CascadeType;
@@ -85,15 +84,13 @@ public class Exercise extends BaseEntity {
         }
     }
 
-    public void updateFrom(ExerciseUpdateRequest request, List<ExerciseTarget> targets) {
+    public void updateFrom(ExerciseUpdateRequest request) {
         this.name = request.name();
         this.category = request.category();
         this.description = request.description();
         this.details = request.details();
         this.hidden = request.hidden();
         this.effects = request.effects();
-
-        addAllTargets(targets);
     }
 
 

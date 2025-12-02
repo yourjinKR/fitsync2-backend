@@ -1,5 +1,6 @@
 package app.fitsync.domain.exercise.entity;
 
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,6 +47,14 @@ public class ExerciseTarget {
     public ExerciseTarget(BodyDetailPart bodyDetailPart, TargetRole targetRole) {
         this.bodyDetailPart = bodyDetailPart;
         this.targetRole = targetRole;
+    }
+
+    public void updateFrom(ExerciseTargetUpdateRequest request) {
+        this.targetRole = request.targetRole();
+    }
+
+    public void clearExercise() {
+        this.exercise = null;
     }
 
     @Override
