@@ -1,5 +1,6 @@
-package app.fitsync.domain.exercise.dto;
+package app.fitsync.domain.exercise.dto.exercise;
 
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartListResponse;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import java.util.List;
 

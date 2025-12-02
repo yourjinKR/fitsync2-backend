@@ -1,9 +1,9 @@
 package app.fitsync.domain.exercise.service;
 
-import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
-import app.fitsync.domain.exercise.dto.ExerciseListResponse;
-import app.fitsync.domain.exercise.dto.ExerciseRequest;
-import app.fitsync.domain.exercise.dto.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import org.springframework.data.domain.Page;
 
 public interface ExerciseServiceInterface {

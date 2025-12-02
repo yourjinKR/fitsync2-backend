@@ -1,15 +1,13 @@
 package app.fitsync.domain.exercise.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 
-import app.fitsync.domain.exercise.dto.ExerciseRequest;
-import app.fitsync.domain.exercise.dto.ExerciseResponse;
-import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.EffectType;
 import app.fitsync.domain.exercise.entity.Exercise;

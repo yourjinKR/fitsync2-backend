@@ -1,10 +1,10 @@
 package app.fitsync.domain.exercise.service;
 
-import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
-import app.fitsync.domain.exercise.dto.ExerciseListResponse;
-import app.fitsync.domain.exercise.dto.ExerciseRequest;
-import app.fitsync.domain.exercise.dto.ExerciseResponse;
-import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
