@@ -1,12 +1,12 @@
 package app.fitsync.domain.exercise.mapper;
 
-import app.fitsync.domain.exercise.dto.BodyDetailPartListResponse;
-import app.fitsync.domain.exercise.dto.BodyDetailPartResponse;
-import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
-import app.fitsync.domain.exercise.dto.ExerciseListResponse;
-import app.fitsync.domain.exercise.dto.ExerciseRequest;
-import app.fitsync.domain.exercise.dto.ExerciseTargetDetailResponse;
-import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartListResponse;
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetDetailResponse;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.BodyPart;
 import app.fitsync.domain.exercise.entity.Exercise;

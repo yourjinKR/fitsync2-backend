@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ExerciseErrorCode implements ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 운동 정보를 찾지 못했습니다 ID : {0}"),
-    BODY_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 세부 부위를 찾지 못했습니다 ID : {0}"),
+    TARGET_NOT_FOUNT(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 운동 부위를 찾지 못했습니다 ID : {0}"),
+    BODY_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 신체 세부 부위를 찾지 못했습니다 ID : {0}"),
     ;
 
     private final HttpStatus httpStatus;

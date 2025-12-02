@@ -1,10 +1,13 @@
 package app.fitsync.domain.exercise.service;
 
-import app.fitsync.domain.exercise.dto.ExerciseDetailResponse;
-import app.fitsync.domain.exercise.dto.ExerciseListResponse;
-import app.fitsync.domain.exercise.dto.ExerciseRequest;
-import app.fitsync.domain.exercise.dto.ExerciseResponse;
-import app.fitsync.domain.exercise.dto.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetDeleteRequest;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseTarget;
@@ -12,6 +15,7 @@ import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
+import app.fitsync.domain.exercise.repository.ExerciseTargetRepository;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,7 @@ public class ExerciseService implements ExerciseServiceInterface {
     private final ExerciseMapper exerciseMapper;
     private final ExerciseRepository exerciseRepository;
     private final BodyDetailPartRepository bodyDetailPartRepository;
+    private final ExerciseTargetRepository exerciseTargetRepository;
 
     @Override
     @Transactional
@@ -63,5 +68,49 @@ public class ExerciseService implements ExerciseServiceInterface {
                 .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
 
         return exerciseMapper.toDto(exercise);
+    }
+
+    @Override
+    @Transactional
+    public ExerciseResponse updateExercise(Long id, ExerciseUpdateRequest request) {
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
+
+        List<ExerciseTargetRequest> targetRequests = request.newTargets();
+        List<ExerciseTarget> newTargets = targetRequests.stream()
+                .map(this::addNewTarget)
+                .toList();
+        exercise.addAllTargets(newTargets);
+
+        List<ExerciseTargetUpdateRequest> updateTargets = request.updateTargets();
+        updateTargets.forEach(this::updateExerciseTarget);
+
+        List<ExerciseTargetDeleteRequest> deleteRequests = request.deleteTargets();
+        deleteRequests.forEach(this::deleteTarget);
+
+        exercise.updateFrom(request);
+
+        return new ExerciseResponse(exercise.getId());
+    }
+
+    private void updateExerciseTarget(ExerciseTargetUpdateRequest targetRequest) {
+        Long targetId = targetRequest.id();
+
+        ExerciseTarget target = exerciseTargetRepository.findById(targetId)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.TARGET_NOT_FOUNT, targetId));
+
+        target.updateFrom(targetRequest);
+    }
+
+    private ExerciseTarget addNewTarget(ExerciseTargetRequest targetRequest) {
+        Long detailPartId = targetRequest.bodyDetailPartId();
+        BodyDetailPart bodyDetail = bodyDetailPartRepository.getReferenceById(detailPartId);
+
+        return new ExerciseTarget(bodyDetail, targetRequest.targetRole());
+    }
+
+    private void deleteTarget(ExerciseTargetDeleteRequest request) {
+        ExerciseTarget target = exerciseTargetRepository.getReferenceById(request.id());
+        exerciseTargetRepository.delete(target);
     }
 }

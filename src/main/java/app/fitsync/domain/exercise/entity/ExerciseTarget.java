@@ -1,5 +1,6 @@
 package app.fitsync.domain.exercise.entity;
 
+import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,14 +13,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Entity
-@Table(name = "exercise_targets")
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "exercise_targets")
 public class ExerciseTarget {
 
     @Id
@@ -42,6 +47,14 @@ public class ExerciseTarget {
     public ExerciseTarget(BodyDetailPart bodyDetailPart, TargetRole targetRole) {
         this.bodyDetailPart = bodyDetailPart;
         this.targetRole = targetRole;
+    }
+
+    public void updateFrom(ExerciseTargetUpdateRequest request) {
+        this.targetRole = request.targetRole();
+    }
+
+    public void clearExercise() {
+        this.exercise = null;
     }
 
     @Override
