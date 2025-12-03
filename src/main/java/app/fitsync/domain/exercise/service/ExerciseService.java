@@ -16,6 +16,7 @@ import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.exercise.repository.ExerciseTargetRepository;
+import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -115,10 +116,19 @@ public class ExerciseService implements ExerciseServiceInterface {
     }
 
     @Override
-    public ExerciseResponse deleteExercise(Long id) {
-
+    public ExerciseResponse deleteExercise(Long id, DeleteType deleteType) {
         Exercise exercise = findById(id);
-        exerciseRepository.delete(exercise);
+
+        if (deleteType == DeleteType.SOFT) {
+            exercise.hide();
+            exerciseRepository.save(exercise);
+        }
+        else if (deleteType == DeleteType.HARD) {
+            exerciseRepository.delete(exercise);
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
 
         return new ExerciseResponse(exercise.getId());
     }

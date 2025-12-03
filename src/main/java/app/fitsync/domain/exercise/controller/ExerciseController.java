@@ -6,6 +6,7 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.domain.exercise.service.ExerciseServiceInterface;
+import app.fitsync.global.DeleteType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -57,9 +58,11 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/api/exercise/{exerciseId}")
-    public ResponseEntity<ExerciseResponse> deleteExercise(@PathVariable Long exerciseId) {
+    public ResponseEntity<ExerciseResponse> deleteExercise(
+            @PathVariable Long exerciseId,
+            @RequestParam(defaultValue = "SOFT") DeleteType deleteType) {
 
-        ExerciseResponse response = exerciseService.deleteExercise(exerciseId);
+        ExerciseResponse response = exerciseService.deleteExercise(exerciseId, deleteType);
         return ResponseEntity.ok(response);
     }
 }
