@@ -16,4 +16,6 @@ public interface ExerciseServiceInterface {
     ExerciseDetailResponse findExercise(Long id);
 
     ExerciseResponse updateExercise(Long id, ExerciseUpdateRequest request);
+
+    ExerciseResponse deleteExercise(Long id);
 }

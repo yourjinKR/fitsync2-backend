@@ -113,4 +113,18 @@ public class ExerciseService implements ExerciseServiceInterface {
         ExerciseTarget target = exerciseTargetRepository.getReferenceById(request.id());
         exerciseTargetRepository.delete(target);
     }
+
+    @Override
+    public ExerciseResponse deleteExercise(Long id) {
+
+        Exercise exercise = findById(id);
+        exerciseRepository.delete(exercise);
+
+        return new ExerciseResponse(exercise.getId());
+    }
+
+    public Exercise findById(Long id) {
+        return exerciseRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ExerciseErrorCode.NOT_FOUND, id));
+    }
 }
