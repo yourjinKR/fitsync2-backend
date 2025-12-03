@@ -7,12 +7,13 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.global.DeleteType;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ExerciseServiceInterface {
 
     ExerciseResponse createExercise(ExerciseRequest request);
 
-    Page<ExerciseListResponse> getExerciseList(int page, int size);
+    Page<ExerciseListResponse> getExerciseList(Pageable pageable);
 
     ExerciseDetailResponse findExercise(Long id);
 
