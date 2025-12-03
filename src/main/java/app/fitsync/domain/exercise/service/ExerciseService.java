@@ -61,10 +61,8 @@ public class ExerciseService implements ExerciseServiceInterface {
             ExerciseCategory category,
             boolean hidden
     ) {
-        Specification<Exercise> spec = Specification
-                .where(ExerciseSpec.category(category))
-                .and(ExerciseSpec.hidden(hidden));
 
+        Specification<Exercise> spec = ExerciseSpec.searchWith(category, hidden);
         Page<Exercise> exercises = exerciseRepository.findAll(spec, pageable);
 
         return exercises.map(exerciseMapper::toListDto);
