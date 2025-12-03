@@ -18,7 +18,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
             "LEFT JOIN FETCH e.targets t " +
             "LEFT JOIN FETCH t.bodyDetailPart bd " +
             "LEFT JOIN FETCH bd.bodyPart bp " +
-            "LEFT JOIN FETCH e.effects " +
             "WHERE e.id = :id")
     Optional<Exercise> findByIdWithDetails(@Param("id") Long id);
 }

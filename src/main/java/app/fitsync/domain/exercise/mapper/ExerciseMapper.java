@@ -78,7 +78,6 @@ public class ExerciseMapper {
         List<ExerciseTarget> targets = exercise.getTargets();
         List<ExerciseTargetDetailResponse> exerciseTargetDetailResponses = targets.stream()
                 .map(this::toDto)
-                .distinct() // 한줄 추가
                 .toList();
 
         return new ExerciseDetailResponse(
