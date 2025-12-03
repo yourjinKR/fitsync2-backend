@@ -116,6 +116,7 @@ public class ExerciseService implements ExerciseServiceInterface {
     }
 
     @Override
+    @Transactional
     public ExerciseResponse deleteExercise(Long id, DeleteType deleteType) {
         Exercise exercise = findById(id);
 
