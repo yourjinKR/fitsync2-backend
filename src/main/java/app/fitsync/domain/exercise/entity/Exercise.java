@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,6 +92,15 @@ public class Exercise extends BaseEntity {
         this.details = request.details();
         this.hidden = request.hidden();
         this.effects = request.effects();
+    }
+
+    public void hide() {
+        this.hidden = true;
+        setDeletedAt(LocalDateTime.now());
+    }
+
+    public void show() {
+        this.hidden = false;
     }
 
 

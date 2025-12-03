@@ -5,6 +5,7 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
+import app.fitsync.global.DeleteType;
 import org.springframework.data.domain.Page;
 
 public interface ExerciseServiceInterface {
@@ -16,4 +17,6 @@ public interface ExerciseServiceInterface {
     ExerciseDetailResponse findExercise(Long id);
 
     ExerciseResponse updateExercise(Long id, ExerciseUpdateRequest request);
+
+    ExerciseResponse deleteExercise(Long id, DeleteType deleteType);
 }
