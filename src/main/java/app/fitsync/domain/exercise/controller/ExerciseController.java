@@ -5,10 +5,14 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
+import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.domain.exercise.service.ExerciseServiceInterface;
 import app.fitsync.global.DeleteType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +37,12 @@ public class ExerciseController {
 
     @GetMapping("/api/exercises")
     public ResponseEntity<Page<ExerciseListResponse>> getExerciseList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(required = false) ExerciseCategory category,
+            @RequestParam(required = false, defaultValue = "false") boolean hidden,
+            @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {
 
-        Page<ExerciseListResponse> responsePage = exerciseService.getExerciseList(page, size);
+        Page<ExerciseListResponse> responsePage = exerciseService.getExerciseList(pageable, category, hidden);
         return ResponseEntity.ok(responsePage);
     }
 
