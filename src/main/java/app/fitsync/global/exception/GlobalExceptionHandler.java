@@ -73,8 +73,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ErrorResponse makeErrorResponse(ErrorCode errorCode, Object ...args) {
-        System.out.println("args!!!!!!!!!!!!!!!! : " + Arrays.toString(args));
-
         return ErrorResponse.builder()
                 .code(errorCode.name())
                 .message(errorCode.format(args))
