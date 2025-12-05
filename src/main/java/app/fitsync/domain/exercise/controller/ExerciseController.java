@@ -8,6 +8,7 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.domain.exercise.service.ExerciseServiceInterface;
 import app.fitsync.global.DeleteType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class ExerciseController {
     private final ExerciseServiceInterface exerciseService;
 
     @PostMapping("/api/exercise")
-    public ResponseEntity<ExerciseResponse> createExercise(@RequestBody ExerciseRequest request) {
+    public ResponseEntity<ExerciseResponse> createExercise(@Valid @RequestBody ExerciseRequest request) {
 
         ExerciseResponse response = exerciseService.createExercise(request);
         return ResponseEntity.ok(response);

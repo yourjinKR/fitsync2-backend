@@ -2,12 +2,15 @@ package app.fitsync.domain.exercise.dto.exercise;
 
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.EffectType;
+import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public record ExerciseRequest(
+        @Size(max = Exercise.MAX_NAME_LENGTH, message = Exercise.MAX_NAME_LENGTH_MESSAGE)
         String name,
         ExerciseCategory category,
         String description,
