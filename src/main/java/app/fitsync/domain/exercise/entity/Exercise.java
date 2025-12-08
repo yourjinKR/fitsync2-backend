@@ -76,6 +76,16 @@ public class Exercise extends BaseEntity {
     @Builder.Default
     private Set<EffectType> effects = new HashSet<>();
 
+    @ElementCollection(targetClass = MetricType.class)
+    @CollectionTable(
+            name = "exercise_metrics",
+            joinColumns = @JoinColumn(name = "exercise_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "metric_type")
+    @Builder.Default
+    private Set<MetricType> requiredMetrics = new HashSet<>();
+
     public void addTarget(ExerciseTarget target) {
         this.targets.add(target);
         target.setExercise(this);
