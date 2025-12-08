@@ -36,8 +36,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exercise extends BaseEntity {
-    public static final int MAX_NAME_LENGTH = 30;
-    public static final String MAX_NAME_LENGTH_MESSAGE = "운동명은 최대 " + MAX_NAME_LENGTH + "자 까지 입력 가능합니다.";
+    public static final int NAME_MAX_LENGTH = 100;
+    public static final int DESCRIPTION_MAX_LENGTH = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
