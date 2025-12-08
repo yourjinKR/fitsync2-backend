@@ -6,6 +6,7 @@ import app.fitsync.domain.exercise.dto.target.ExerciseTargetUpdateRequest;
 import app.fitsync.domain.exercise.entity.EffectType;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import app.fitsync.domain.exercise.entity.MetricType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,6 +46,11 @@ public record ExerciseUpdateRequest(
         List<ExerciseTargetDeleteRequest> deleteTargets,
 
         @NotNull
-        Set<EffectType> effects
+        @Valid
+        Set<EffectType> effects,
+
+        @NotNull
+        @Valid
+        Set<MetricType> requiredMetrics
 ) {
 }

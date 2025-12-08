@@ -34,6 +34,7 @@ public class ExerciseMapper {
                 .description(request.description())
                 .details(request.details())
                 .effects(request.effects())
+                .requiredMetrics(request.requiredMetrics())
                 .build();
 
         exercise.addAllTargets(targets);
@@ -88,7 +89,8 @@ public class ExerciseMapper {
                 exercise.getDetails(),
                 exercise.isHidden(),
                 exerciseTargetDetailResponses,
-                exercise.getEffects()
+                exercise.getEffects(),
+                exercise.getRequiredMetrics()
         );
     }
 

@@ -104,6 +104,7 @@ public class Exercise extends BaseEntity {
         this.details = request.details();
         this.hidden = request.hidden();
         this.effects = request.effects();
+        this.requiredMetrics = request.requiredMetrics();
     }
 
     public void hide() {

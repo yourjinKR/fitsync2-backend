@@ -4,6 +4,7 @@ import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.EffectType;
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import app.fitsync.domain.exercise.entity.MetricType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,6 +34,10 @@ public record ExerciseRequest(
 
         @NotNull
         @Valid
-        Set<EffectType> effects
+        Set<EffectType> effects,
+
+        @NotNull
+        @Valid
+        Set<MetricType> requiredMetrics
 ) {
 }
