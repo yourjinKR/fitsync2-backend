@@ -1,12 +1,13 @@
 package app.fitsync.global.exception;
 
 import app.fitsync.global.exception.ErrorResponse.ValidationError;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,14 +39,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
-    public ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException e,
+    @Override
+    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode status,
             WebRequest request) {
-        log.warn("handleMethodArgumentNotValid ", e);
+        log.warn("handleMethodArgumentNotValid ", ex);
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(e, errorCode);
+        return handleExceptionInternal(ex, errorCode);
     }
 
     @ExceptionHandler({Exception.class})
@@ -73,8 +75,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ErrorResponse makeErrorResponse(ErrorCode errorCode, Object ...args) {
-        System.out.println("args!!!!!!!!!!!!!!!! : " + Arrays.toString(args));
-
         return ErrorResponse.builder()
                 .code(errorCode.name())
                 .message(errorCode.format(args))
