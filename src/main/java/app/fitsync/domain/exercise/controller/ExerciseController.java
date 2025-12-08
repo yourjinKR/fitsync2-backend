@@ -57,7 +57,7 @@ public class ExerciseController {
     @PatchMapping("/api/exercise/{exerciseId}")
     public ResponseEntity<ExerciseResponse> updateExercise(
             @PathVariable Long exerciseId,
-            @RequestBody ExerciseUpdateRequest request) {
+            @Valid @RequestBody ExerciseUpdateRequest request) {
 
         ExerciseResponse response = exerciseService.updateExercise(exerciseId, request);
         return ResponseEntity.ok(response);
