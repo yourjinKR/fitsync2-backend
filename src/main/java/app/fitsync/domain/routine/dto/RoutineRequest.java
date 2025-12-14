@@ -25,6 +25,7 @@ public record RoutineRequest(
         @Size(max = Routine.DESCRIPTION_MAX_LENGTH)
         String description,
 
+        @NotNull
         @Valid
         List<RoutineExerciseRequest> routineExercises
 ) {

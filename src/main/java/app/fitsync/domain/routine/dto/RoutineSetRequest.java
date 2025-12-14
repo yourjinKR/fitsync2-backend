@@ -1,14 +1,19 @@
 package app.fitsync.domain.routine.dto;
 
 
+import jakarta.validation.constraints.NotNull;
+
 public record RoutineSetRequest(
+
+        @NotNull
         int displayOrder,
-        int weightKg,
-        int reps,
-        int distanceM,
-        int durationSec,
-        int speedKmh,
-        int rpe,
-        int restTimeSec
+
+        Integer weightKg,
+        Integer reps,
+        Integer distanceM,
+        Integer durationSec,
+        Integer speedKmh,
+        Integer rpe,
+        Integer restTimeSec
 ) {
 }
