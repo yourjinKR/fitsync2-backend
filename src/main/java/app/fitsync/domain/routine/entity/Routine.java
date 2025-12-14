@@ -1,6 +1,5 @@
 package app.fitsync.domain.routine.entity;
 
-import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -41,11 +40,11 @@ public class Routine extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
-    private User Writer;
+    private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
-    private User Owner;
+    private User owner;
 
     @Column(name = "displayName")
     private int displayOrder;
