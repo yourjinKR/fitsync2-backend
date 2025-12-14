@@ -31,26 +31,26 @@ public class RoutineSet {
     private RoutineExercise routineExercise;
 
     @Column(name = "display_order")
-    private int displayOrder;
+    private Integer displayOrder;
 
     @Column(name = "weight_kg")
-    private int weightKg;
+    private Integer weightKg;
 
     @Column(name = "reps")
-    private int reps;
+    private Integer reps;
 
     @Column(name = "distance_m")
-    private int distanceM;
+    private Integer distanceM;
 
     @Column(name = "duration_sec")
-    private int durationSec;
+    private Integer durationSec;
 
     @Column(name = "speed_kmh")
-    private int speedKmh;
+    private Integer speedKmh;
 
     @Column(name = "rpe")
-    private int rpe;
+    private Integer rpe;
 
     @Column(name = "rest_time_sec")
-    private int restTimeSec;
+    private Integer restTimeSec;
 }
