@@ -14,10 +14,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -33,6 +35,7 @@ public class RoutineExercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter(AccessLevel.PROTECTED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_id",nullable = false)
     private Routine routine;
@@ -50,4 +53,12 @@ public class RoutineExercise {
     @OneToMany(mappedBy = "routineExercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RoutineSet> routineSets = new ArrayList<>();
+
+    public void addSet(RoutineSet routineSet) {
+        this.routineSets.add(routineSet);
+    }
+
+    public void addAllSets(List<RoutineSet> routineSets) {
+        routineSets.forEach(this::addSet);
+    }
 }

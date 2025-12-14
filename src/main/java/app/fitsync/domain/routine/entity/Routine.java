@@ -55,4 +55,13 @@ public class Routine extends BaseEntity {
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RoutineExercise> routineExercises = new ArrayList<>();
+
+    public void addExercise(RoutineExercise routineExercise) {
+        this.routineExercises.add(routineExercise);
+        routineExercise.setRoutine(this);
+    }
+
+    public void addAllExercises(List<RoutineExercise> routineExercises) {
+        routineExercises.forEach(this::addExercise);
+    }
 }
