@@ -8,7 +8,9 @@ import app.fitsync.domain.routine.dto.RoutineResponse;
 import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import app.fitsync.domain.routine.mapper.RoutineMapper;
+import app.fitsync.domain.routine.repository.RoutineExerciseRepository;
 import app.fitsync.domain.routine.repository.RoutineRepository;
+import app.fitsync.domain.routine.repository.RoutineSetRepository;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.repository.UserRepository;
 import java.util.List;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RoutineService implements RoutineServiceInterface{
     public final RoutineRepository routineRepository;
+    public final RoutineExerciseRepository routineExerciseRepository;
+    public final RoutineSetRepository routineSetRepository;
     public final ExerciseRepository exerciseRepository;
     public final UserRepository userRepository;
     public final RoutineMapper routineMapper;
@@ -44,7 +48,11 @@ public class RoutineService implements RoutineServiceInterface{
     public RoutineExercise createRoutineExercise(RoutineExerciseRequest request) {
         long exerciseId = request.exerciseId();
         Exercise exercise = exerciseRepository.getReferenceById(exerciseId);
-        return routineMapper.toEntity(request, exercise);
+
+        RoutineExercise routineExercise = routineMapper.toEntity(request, exercise);
+        routineSetRepository.saveAll(routineExercise.getRoutineSets());
+
+        return routineExerciseRepository.save(routineExercise);
     }
 
 }
