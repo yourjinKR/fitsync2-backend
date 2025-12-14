@@ -56,6 +56,7 @@ public class RoutineExercise {
 
     public void addSet(RoutineSet routineSet) {
         this.routineSets.add(routineSet);
+        routineSet.setRoutineExercise(this);
     }
 
     public void addAllSets(List<RoutineSet> routineSets) {
