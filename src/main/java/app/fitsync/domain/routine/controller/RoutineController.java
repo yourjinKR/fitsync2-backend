@@ -1,7 +1,7 @@
 package app.fitsync.domain.routine.controller;
 
-import app.fitsync.domain.routine.dto.RoutineRequest;
-import app.fitsync.domain.routine.dto.RoutineResponse;
+import app.fitsync.domain.routine.dto.routine.RoutineRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

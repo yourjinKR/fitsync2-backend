@@ -1,4 +1,4 @@
-package app.fitsync.domain.routine.dto;
+package app.fitsync.domain.routine.dto.set;
 
 
 import jakarta.validation.constraints.NotNull;

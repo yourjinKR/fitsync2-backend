@@ -2,9 +2,9 @@ package app.fitsync.domain.routine.service;
 
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
-import app.fitsync.domain.routine.dto.RoutineExerciseRequest;
-import app.fitsync.domain.routine.dto.RoutineRequest;
-import app.fitsync.domain.routine.dto.RoutineResponse;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import app.fitsync.domain.routine.mapper.RoutineMapper;

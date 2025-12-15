@@ -1,9 +1,9 @@
 package app.fitsync.domain.routine.mapper;
 
 import app.fitsync.domain.exercise.entity.Exercise;
-import app.fitsync.domain.routine.dto.RoutineExerciseRequest;
-import app.fitsync.domain.routine.dto.RoutineRequest;
-import app.fitsync.domain.routine.dto.RoutineSetRequest;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineRequest;
+import app.fitsync.domain.routine.dto.set.RoutineSetRequest;
 import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import app.fitsync.domain.routine.entity.RoutineSet;
