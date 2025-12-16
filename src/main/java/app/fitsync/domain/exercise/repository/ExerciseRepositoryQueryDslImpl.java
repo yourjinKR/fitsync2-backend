@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 import static app.fitsync.domain.exercise.entity.QExercise.exercise;
 
 @Repository
-public class ExerciseRepositoryQueryDSLImpl extends QueryDslRepositorySupport implements ExerciseRepositoryQueryDSL {
+public class ExerciseRepositoryQueryDslImpl extends QueryDslRepositorySupport implements ExerciseRepositoryQueryDsl {
 
-    public ExerciseRepositoryQueryDSLImpl(JPAQueryFactory queryFactory) {
+    public ExerciseRepositoryQueryDslImpl(JPAQueryFactory queryFactory) {
         super(queryFactory);
     }
 

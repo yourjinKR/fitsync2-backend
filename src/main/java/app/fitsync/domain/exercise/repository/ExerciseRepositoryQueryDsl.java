@@ -5,6 +5,6 @@ import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ExerciseRepositoryQueryDSL {
+public interface ExerciseRepositoryQueryDsl {
     Page<Exercise> search(Pageable pageable, ExerciseCategory category, boolean hidden);
 }
