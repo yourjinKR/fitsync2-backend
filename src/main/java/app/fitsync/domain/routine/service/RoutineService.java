@@ -10,14 +10,12 @@ import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import app.fitsync.domain.routine.mapper.RoutineMapper;
 import app.fitsync.domain.routine.repository.RoutineRepository;
-import app.fitsync.domain.routine.repository.RoutineSpec;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,8 +56,6 @@ public class RoutineService implements RoutineServiceInterface{
     @Override
     @Transactional
     public Page<RoutineListResponse> getRoutineList(Pageable pageable, Long ownerId, Long writerId) {
-
-        Specification<Routine> spec = RoutineSpec.searchWith(ownerId, writerId);
-        return routineRepository.findAll(spec, pageable).map(routineMapper::toDto);
+        return routineRepository.search(pageable, ownerId, writerId).map(routineMapper::toDto);
     }
 }

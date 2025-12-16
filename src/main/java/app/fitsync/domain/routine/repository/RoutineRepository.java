@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoutineRepository extends JpaRepository<Routine, Long>, JpaSpecificationExecutor<Routine> {
+public interface RoutineRepository extends JpaRepository<Routine, Long>, JpaSpecificationExecutor<Routine>, RoutineRepositoryQueryDsl {
 
 }
