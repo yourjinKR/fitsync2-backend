@@ -63,7 +63,7 @@ public class ExerciseService implements ExerciseServiceInterface {
     ) {
 
         Specification<Exercise> spec = ExerciseSpec.searchWith(category, hidden);
-        Page<Exercise> exercises = exerciseRepository.findAll(spec, pageable);
+        Page<Exercise> exercises = exerciseRepository.search(pageable, category, hidden);
 
         return exercises.map(exerciseMapper::toListDto);
     }

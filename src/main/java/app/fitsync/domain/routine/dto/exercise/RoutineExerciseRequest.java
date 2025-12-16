@@ -1,5 +1,6 @@
-package app.fitsync.domain.routine.dto;
+package app.fitsync.domain.routine.dto.exercise;
 
+import app.fitsync.domain.routine.dto.set.RoutineSetRequest;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

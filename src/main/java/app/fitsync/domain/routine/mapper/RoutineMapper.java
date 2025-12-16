@@ -1,9 +1,11 @@
 package app.fitsync.domain.routine.mapper;
 
 import app.fitsync.domain.exercise.entity.Exercise;
-import app.fitsync.domain.routine.dto.RoutineExerciseRequest;
-import app.fitsync.domain.routine.dto.RoutineRequest;
-import app.fitsync.domain.routine.dto.RoutineSetRequest;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseListResponse;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineListResponse;
+import app.fitsync.domain.routine.dto.routine.RoutineRequest;
+import app.fitsync.domain.routine.dto.set.RoutineSetRequest;
 import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
 import app.fitsync.domain.routine.entity.RoutineSet;
@@ -59,5 +61,29 @@ public class RoutineMapper {
                 .rpe(request.rpe())
                 .restTimeSec(request.restTimeSec())
                 .build();
+    }
+
+    public RoutineListResponse toDto(Routine routine) {
+
+        List<RoutineExerciseListResponse> routineExercises = routine.getRoutineExercises().stream()
+                .map(this::toDto)
+                .toList();
+
+        return new RoutineListResponse(
+                routine.getId(),
+                routine.getName(),
+                routine.getWriter().getId(),
+                routine.getOwner().getId(),
+                routine.getDisplayOrder(),
+                routineExercises
+        );
+    }
+
+    public RoutineExerciseListResponse toDto(RoutineExercise routineExercise) {
+
+        return new RoutineExerciseListResponse(
+                routineExercise.getExercise().getName(),
+                routineExercise.getDisplayOrder()
+        );
     }
 }
