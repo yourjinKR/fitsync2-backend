@@ -2,45 +2,36 @@ package app.fitsync.domain.exercise.repository;
 
 import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import app.fitsync.global.util.QueryDslRepositorySupport;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import static app.fitsync.domain.exercise.entity.QExercise.exercise;
 
-@RequiredArgsConstructor
-public class ExerciseRepositoryQueryDSLImpl implements ExerciseRepositoryQueryDSL {
+@Repository
+public class ExerciseRepositoryQueryDSLImpl extends QueryDslRepositorySupport implements ExerciseRepositoryQueryDSL {
 
-    private final JPAQueryFactory queryFactory;
-
+    public ExerciseRepositoryQueryDSLImpl(JPAQueryFactory queryFactory) {
+        super(queryFactory);
+    }
 
     @Override
     public Page<Exercise> search(Pageable pageable, ExerciseCategory category, boolean hidden) {
 
-        List<Exercise> content = queryFactory
+        JPAQuery<Exercise> contentQuery = queryFactory
                 .selectFrom(exercise)
-                .where(
-                        eqCategory(category),
-                        eqHidden(hidden)
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .where(eqCategory(category), eqHidden(hidden));
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(exercise.count())
                 .from(exercise)
-                .where(
-                        eqCategory(category),
-                        eqHidden(hidden)
-                );
+                .where(eqCategory(category), eqHidden(hidden));
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return applyPagination(pageable, contentQuery, countQuery);
     }
 
     private BooleanExpression eqCategory(ExerciseCategory category) {
