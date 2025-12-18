@@ -16,7 +16,6 @@ import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.BodyDetailPartRepository;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
-import app.fitsync.domain.exercise.repository.ExerciseSpec;
 import app.fitsync.domain.exercise.repository.ExerciseTargetRepository;
 import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
@@ -24,7 +23,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,8 +59,6 @@ public class ExerciseService implements ExerciseServiceInterface {
             ExerciseCategory category,
             boolean hidden
     ) {
-
-        Specification<Exercise> spec = ExerciseSpec.searchWith(category, hidden);
         Page<Exercise> exercises = exerciseRepository.search(pageable, category, hidden);
 
         return exercises.map(exerciseMapper::toListDto);
