@@ -1,10 +1,13 @@
 package app.fitsync.domain.routine.mapper;
 
 import app.fitsync.domain.exercise.entity.Exercise;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseDetailResponse;
 import app.fitsync.domain.routine.dto.exercise.RoutineExerciseListResponse;
 import app.fitsync.domain.routine.dto.exercise.RoutineExerciseRequest;
+import app.fitsync.domain.routine.dto.routine.RoutineDetailResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineListResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineRequest;
+import app.fitsync.domain.routine.dto.set.RoutineSetDetailResponse;
 import app.fitsync.domain.routine.dto.set.RoutineSetRequest;
 import app.fitsync.domain.routine.entity.Routine;
 import app.fitsync.domain.routine.entity.RoutineExercise;
@@ -84,6 +87,53 @@ public class RoutineMapper {
         return new RoutineExerciseListResponse(
                 routineExercise.getExercise().getName(),
                 routineExercise.getDisplayOrder()
+        );
+    }
+
+    public RoutineDetailResponse toDetailDto(Routine routine) {
+
+        List<RoutineExerciseDetailResponse> exercises = routine.getRoutineExercises().stream()
+                .map(this::toDetailDto)
+                .toList();
+
+        return new RoutineDetailResponse(
+                routine.getId(),
+                routine.getName(),
+                routine.getDisplayOrder(),
+                routine.getDescription(),
+                exercises
+        );
+    }
+
+    public RoutineExerciseDetailResponse toDetailDto(RoutineExercise routineExercise) {
+
+        Exercise exercise = routineExercise.getExercise();
+
+        List<RoutineSetDetailResponse> sets = routineExercise.getRoutineSets().stream()
+                .map(this::toDetailDto)
+                .toList();
+
+        return new RoutineExerciseDetailResponse(
+                routineExercise.getId(),
+                exercise.getId(),
+                exercise.getName(),
+                routineExercise.getDisplayOrder(),
+                routineExercise.getDescription(),
+                sets
+        );
+    }
+
+    public RoutineSetDetailResponse toDetailDto(RoutineSet routineSet) {
+        return new RoutineSetDetailResponse(
+                routineSet.getId(),
+                routineSet.getDisplayOrder(),
+                routineSet.getWeightKg(),
+                routineSet.getReps(),
+                routineSet.getDistanceM(),
+                routineSet.getDurationSec(),
+                routineSet.getSpeedKmh(),
+                routineSet.getRpe(),
+                routineSet.getRestTimeSec()
         );
     }
 }
