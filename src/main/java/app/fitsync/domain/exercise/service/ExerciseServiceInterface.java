@@ -7,9 +7,11 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.global.DeleteType;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+@NullMarked
 public interface ExerciseServiceInterface {
 
     ExerciseResponse createExercise(ExerciseRequest request);

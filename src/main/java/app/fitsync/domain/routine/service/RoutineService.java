@@ -17,11 +17,13 @@ import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@NullMarked
 @Service
 @RequiredArgsConstructor
 public class RoutineService implements RoutineServiceInterface{
