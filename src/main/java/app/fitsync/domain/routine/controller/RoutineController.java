@@ -7,6 +7,7 @@ import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@NullMarked
 public class RoutineController {
 
     private final RoutineServiceInterface routineService;
