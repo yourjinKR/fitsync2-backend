@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum RoutineErrorCode implements ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 운동 루틴을 찾지 못했습니다 ID : {0}"),
+    EXERCISE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 운동 세트를 찾지 못했습니다 ID : {0}"),
+    SET_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 기록 세트를 찾지 못했습니다 ID : {0}"),
     ;
 
     private final HttpStatus httpStatus;

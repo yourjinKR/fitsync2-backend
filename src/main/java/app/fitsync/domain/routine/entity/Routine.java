@@ -1,8 +1,10 @@
 package app.fitsync.domain.routine.entity;
 
 import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
+import app.fitsync.domain.routine.exception.RoutineErrorCode;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
+import app.fitsync.global.exception.RestApiException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -76,9 +78,8 @@ public class Routine extends BaseEntity {
         return routineExercises.stream()
                 .filter(routineExercise -> routineExercise.getId() == routineExerciseId)
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new RestApiException(RoutineErrorCode.EXERCISE_NOT_FOUND, routineExerciseId));
     }
-
 
     public void deleteRoutineExercise(long routineExerciseId) {
         routineExercises.removeIf(re -> re.getId().equals(routineExerciseId));
