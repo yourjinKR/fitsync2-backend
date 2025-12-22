@@ -6,6 +6,7 @@ import app.fitsync.domain.routine.dto.routine.RoutineRequest;
 import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
+import app.fitsync.global.DeleteType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +62,12 @@ public class RoutineController {
             @RequestBody RoutineUpdateRequest request) {
 
         RoutineResponse response = routineService.updateRoutine(routineId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/api/routine/{routineId}")
+    public ResponseEntity<RoutineResponse> deleteRoutine(@PathVariable long routineId) {
+        RoutineResponse response = routineService.deleteRoutine(routineId);
         return ResponseEntity.ok(response);
     }
 }

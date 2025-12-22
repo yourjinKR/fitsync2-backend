@@ -21,6 +21,7 @@ import app.fitsync.domain.routine.mapper.RoutineMapper;
 import app.fitsync.domain.routine.repository.RoutineRepository;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.repository.UserRepository;
+import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -163,5 +164,15 @@ public class RoutineService implements RoutineServiceInterface{
 
             routineExercise.addAllSets(routineSets);
         }
+    }
+
+    @Override
+    @Transactional
+    public RoutineResponse deleteRoutine(long routineId) {
+
+        Routine routine = findRoutineById(routineId);
+        routineRepository.delete(routine);
+
+        return new RoutineResponse(routineId);
     }
 }
