@@ -1,5 +1,6 @@
 package app.fitsync.domain.routine.entity;
 
+import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -63,5 +64,23 @@ public class Routine extends BaseEntity {
 
     public void addAllExercises(List<RoutineExercise> routineExercises) {
         routineExercises.forEach(this::addExercise);
+    }
+
+    public void updateFrom(RoutineUpdateRequest request) {
+        this.name = request.name();
+        this.displayOrder = request.displayOrder();
+        this.description = request.description();
+    }
+
+    public RoutineExercise findRoutineExercise(long routineExerciseId) {
+        return routineExercises.stream()
+                .filter(routineExercise -> routineExercise.getId() == routineExerciseId)
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+
+    public void deleteRoutineExercise(long routineExerciseId) {
+        routineExercises.removeIf(re -> re.getId().equals(routineExerciseId));
     }
 }

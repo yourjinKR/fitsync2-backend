@@ -1,5 +1,7 @@
 package app.fitsync.domain.routine.entity;
 
+import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
+import app.fitsync.domain.routine.dto.set.RoutineSetUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -56,4 +58,15 @@ public class RoutineSet {
 
     @Column(name = "rest_time_sec")
     private Integer restTimeSec;
+
+    public void updateFrom(RoutineSetUpdateRequest request) {
+        this.displayOrder = request.displayOrder();
+        this.weightKg = request.weightKg();
+        this.reps = request.reps();
+        this.distanceM = request.distanceM();
+        this.durationSec = request.durationSec();
+        this.speedKmh = request.speedKmh();
+        this.rpe = request.rpe();
+        this.restTimeSec = request.restTimeSec();
+    }
 }

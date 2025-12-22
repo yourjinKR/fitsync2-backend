@@ -4,6 +4,7 @@ import app.fitsync.domain.routine.dto.routine.RoutineDetailResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineListResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineRequest;
 import app.fitsync.domain.routine.dto.routine.RoutineResponse;
+import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +51,15 @@ public class RoutineController {
     public ResponseEntity<RoutineDetailResponse> getRoutineList(@PathVariable long routineId) {
 
         RoutineDetailResponse response = routineService.findRoutine(routineId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/api/routine/{routineId}")
+    public ResponseEntity<RoutineResponse> updateRoutine(
+            @PathVariable long routineId,
+            @RequestBody RoutineUpdateRequest request) {
+
+        RoutineResponse response = routineService.updateRoutine(routineId, request);
         return ResponseEntity.ok(response);
     }
 }
