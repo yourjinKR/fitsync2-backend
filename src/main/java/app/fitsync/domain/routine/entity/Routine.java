@@ -1,7 +1,10 @@
 package app.fitsync.domain.routine.entity;
 
+import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
+import app.fitsync.domain.routine.exception.RoutineErrorCode;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
+import app.fitsync.global.exception.RestApiException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,5 +66,25 @@ public class Routine extends BaseEntity {
 
     public void addAllExercises(List<RoutineExercise> routineExercises) {
         routineExercises.forEach(this::addExercise);
+    }
+
+    public void updateFrom(RoutineUpdateRequest request) {
+        this.name = request.name();
+        this.displayOrder = request.displayOrder();
+        this.description = request.description();
+    }
+
+    public RoutineExercise findRoutineExercise(long routineExerciseId) {
+        return routineExercises.stream()
+                .filter(routineExercise -> routineExercise.getId() == routineExerciseId)
+                .findFirst()
+                .orElseThrow(() -> new RestApiException(RoutineErrorCode.EXERCISE_NOT_FOUND, routineExerciseId));
+    }
+
+    public void deleteRoutineExercise(long routineExerciseId) {
+        boolean removeIf = routineExercises.removeIf(re -> re.getId().equals(routineExerciseId));
+        if (!removeIf) {
+            throw new RestApiException(RoutineErrorCode.EXERCISE_NOT_FOUND, routineExerciseId);
+        }
     }
 }

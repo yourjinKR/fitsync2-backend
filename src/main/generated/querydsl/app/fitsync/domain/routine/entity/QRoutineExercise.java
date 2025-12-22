@@ -32,7 +32,7 @@ public class QRoutineExercise extends EntityPathBase<RoutineExercise> {
 
     public final QRoutine routine;
 
-    public final ListPath<RoutineSet, QRoutineSet> routineSets = this.<RoutineSet, QRoutineSet>createList("routineSets", RoutineSet.class, QRoutineSet.class, PathInits.DIRECT2);
+    public final ListPath<RoutineSet, QRoutineSet> routineSets = this.<RoutineSet, QRoutineSet>createList("updateRoutineSets", RoutineSet.class, QRoutineSet.class, PathInits.DIRECT2);
 
     public QRoutineExercise(String variable) {
         this(RoutineExercise.class, forVariable(variable), INITS);

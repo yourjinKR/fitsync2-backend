@@ -1,6 +1,9 @@
 package app.fitsync.domain.routine.entity;
 
 import app.fitsync.domain.exercise.entity.Exercise;
+import app.fitsync.domain.routine.dto.exercise.RoutineExerciseUpdateRequest;
+import app.fitsync.domain.routine.exception.RoutineErrorCode;
+import app.fitsync.global.exception.RestApiException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,5 +64,24 @@ public class RoutineExercise {
 
     public void addAllSets(List<RoutineSet> routineSets) {
         routineSets.forEach(this::addSet);
+    }
+
+    public void updateFrom(RoutineExerciseUpdateRequest request) {
+        this.displayOrder = request.displayOrder();
+        this.description = request.description();
+    }
+
+    public RoutineSet findRoutineSet(long routineSetId) {
+        return routineSets.stream()
+                .filter(routineSet -> routineSet.getId() == routineSetId)
+                .findFirst()
+                .orElseThrow(() -> new RestApiException(RoutineErrorCode.SET_NOT_FOUND, routineSetId));
+    }
+
+    public void deleteRoutineSet(long routineSetId) {
+        boolean removeIf = routineSets.removeIf(routineSet -> routineSet.getId().equals(routineSetId));
+        if (!removeIf) {
+            throw new RestApiException(RoutineErrorCode.SET_NOT_FOUND, routineSetId);
+        }
     }
 }
