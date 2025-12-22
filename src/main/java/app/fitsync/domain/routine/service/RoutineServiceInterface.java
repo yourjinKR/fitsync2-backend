@@ -15,4 +15,5 @@ public interface RoutineServiceInterface {
     Page<RoutineListResponse> getRoutineList(Pageable pageable, Long ownerId, Long writerId);
     RoutineDetailResponse findRoutine(long routineId);
     RoutineResponse updateRoutine(long routineId, RoutineUpdateRequest request);
+    RoutineResponse deleteRoutine(long routineId);
 }
