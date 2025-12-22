@@ -99,13 +99,12 @@ public class RoutineService implements RoutineServiceInterface{
         List<RoutineExerciseUpdateRequest> routineExerciseUpdateRequests = request.updateExercises();
         List<RoutineExerciseDeleteRequest> routineExerciseDeleteRequests = request.deleteExercises();
 
-        if (routineExerciseRequests != null) {
+        if (routineExerciseDeleteRequests != null) {
 
-            List<RoutineExercise> newRoutineExercises = routineExerciseRequests.stream()
-                    .map(this::createRoutineExercise)
-                    .toList();
-
-            routine.addAllExercises(newRoutineExercises);
+            routineExerciseDeleteRequests.forEach(deleteRequest -> {
+                long id = deleteRequest.id();
+                routine.deleteRoutineExercise(id);
+            });
         }
 
         if (routineExerciseUpdateRequests != null) {
@@ -117,12 +116,13 @@ public class RoutineService implements RoutineServiceInterface{
             }
         }
 
-        if (routineExerciseDeleteRequests != null) {
+        if (routineExerciseRequests != null) {
 
-            routineExerciseDeleteRequests.forEach(deleteRequest -> {
-                long id = deleteRequest.id();
-                routine.deleteRoutineExercise(id);
-            });
+            List<RoutineExercise> newRoutineExercises = routineExerciseRequests.stream()
+                    .map(this::createRoutineExercise)
+                    .toList();
+
+            routine.addAllExercises(newRoutineExercises);
         }
 
         return new RoutineResponse(routineId);
@@ -136,13 +136,13 @@ public class RoutineService implements RoutineServiceInterface{
         List<RoutineSetUpdateRequest> updateRoutineSets = request.updateRoutineSets();
         List<RoutineSetDeleteRequest> deleteRoutineSets = request.deleteRoutineSets();
 
-        if (newRoutineSets != null) {
+        if (deleteRoutineSets != null) {
 
-            List<RoutineSet> routineSets = request.newRoutineSets().stream()
-                    .map(routineMapper::toEntity)
-                    .toList();
+            for (RoutineSetDeleteRequest deleteRoutineSet : deleteRoutineSets) {
 
-            routineExercise.addAllSets(routineSets);
+                long id = deleteRoutineSet.id();
+                routineExercise.deleteRoutineSet(id);
+            }
         }
 
         if (updateRoutineSets != null) {
@@ -155,13 +155,13 @@ public class RoutineService implements RoutineServiceInterface{
             }
         }
 
-        if (deleteRoutineSets != null) {
+        if (newRoutineSets != null) {
 
-            for (RoutineSetDeleteRequest deleteRoutineSet : deleteRoutineSets) {
+            List<RoutineSet> routineSets = request.newRoutineSets().stream()
+                    .map(routineMapper::toEntity)
+                    .toList();
 
-                long id = deleteRoutineSet.id();
-                routineExercise.deleteRoutineSet(id);
-            }
+            routineExercise.addAllSets(routineSets);
         }
     }
 }
