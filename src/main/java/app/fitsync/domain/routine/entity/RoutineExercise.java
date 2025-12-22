@@ -79,6 +79,9 @@ public class RoutineExercise {
     }
 
     public void deleteRoutineSet(long routineSetId) {
-        routineSets.removeIf(routineSet -> routineSet.getId().equals(routineSetId));
+        boolean removeIf = routineSets.removeIf(routineSet -> routineSet.getId().equals(routineSetId));
+        if (!removeIf) {
+            throw new RestApiException(RoutineErrorCode.SET_NOT_FOUND, routineSetId);
+        }
     }
 }

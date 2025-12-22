@@ -82,6 +82,9 @@ public class Routine extends BaseEntity {
     }
 
     public void deleteRoutineExercise(long routineExerciseId) {
-        routineExercises.removeIf(re -> re.getId().equals(routineExerciseId));
+        boolean removeIf = routineExercises.removeIf(re -> re.getId().equals(routineExerciseId));
+        if (!removeIf) {
+            throw new RestApiException(RoutineErrorCode.EXERCISE_NOT_FOUND, routineExerciseId);
+        }
     }
 }
