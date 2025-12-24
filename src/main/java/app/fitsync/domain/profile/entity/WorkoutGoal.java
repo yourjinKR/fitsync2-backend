@@ -1,4 +1,4 @@
-package app.fitsync.domain.user.entity;
+package app.fitsync.domain.profile.entity;
 
 public enum WorkoutGoal {
 

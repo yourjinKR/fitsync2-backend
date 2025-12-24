@@ -1,6 +1,7 @@
-package app.fitsync.domain.user.entity;
+package app.fitsync.domain.profile.entity;
 
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
 import jakarta.persistence.*;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class UserProfile extends BaseEntity {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "workout_goal")
-    private Set<WorkoutGoal> goals;
+    private Set<WorkoutGoal> workoutGoals;
 
 
     @ElementCollection

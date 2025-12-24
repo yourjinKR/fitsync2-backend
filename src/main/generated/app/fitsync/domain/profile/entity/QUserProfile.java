@@ -1,4 +1,4 @@
-package app.fitsync.domain.user.entity;
+package app.fitsync.domain.profile.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QUserProfile extends EntityPathBase<UserProfile> {
 
-    private static final long serialVersionUID = 1415506427L;
+    private static final long serialVersionUID = 1988683443L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -40,8 +40,6 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public final SetPath<app.fitsync.domain.exercise.entity.ExerciseCategory, EnumPath<app.fitsync.domain.exercise.entity.ExerciseCategory>> exerciseCategories = this.<app.fitsync.domain.exercise.entity.ExerciseCategory, EnumPath<app.fitsync.domain.exercise.entity.ExerciseCategory>>createSet("exerciseCategories", app.fitsync.domain.exercise.entity.ExerciseCategory.class, EnumPath.class, PathInits.DIRECT2);
 
-    public final SetPath<WorkoutGoal, EnumPath<WorkoutGoal>> goals = this.<WorkoutGoal, EnumPath<WorkoutGoal>>createSet("goals", WorkoutGoal.class, EnumPath.class, PathInits.DIRECT2);
-
     public final NumberPath<Double> height = createNumber("height", Double.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -51,9 +49,11 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final QUser user;
+    public final app.fitsync.domain.user.entity.QUser user;
 
     public final NumberPath<Double> weight = createNumber("weight", Double.class);
+
+    public final SetPath<WorkoutGoal, EnumPath<WorkoutGoal>> workoutGoals = this.<WorkoutGoal, EnumPath<WorkoutGoal>>createSet("workoutGoals", WorkoutGoal.class, EnumPath.class, PathInits.DIRECT2);
 
     public QUserProfile(String variable) {
         this(UserProfile.class, forVariable(variable), INITS);
@@ -73,7 +73,7 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public QUserProfile(Class<? extends UserProfile> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new app.fitsync.domain.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }
