@@ -7,8 +7,10 @@ import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.entity.User;
+import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,15 +32,16 @@ public class UserProfileService implements UserProfileServiceInterface {
 
         long userId = request.userId();
         User user = userRepository.findById(userId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND));
+
+        boolean profilePresent = userProfileRepository.findByUserId(userId).isPresent();
+
+        if (profilePresent)
+            throw new RestApiException(UserProfileException.DUPLICATE, userId);
 
         UserProfile profile = userProfileMapper.toEntity(request, user);
 
-        try {
-            UserProfile save = userProfileRepository.save(profile);
-            return new UserProfileResponse(save.getId());
-        } catch (DataIntegrityViolationException e) {
-            throw new RestApiException(UserProfileException.DUPLICATE, userId);
-        }
+        UserProfile save = userProfileRepository.save(profile);
+        return new UserProfileResponse(save.getId());
     }
 }
