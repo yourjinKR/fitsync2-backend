@@ -24,7 +24,9 @@ public class UserProfileMapper {
                 .build();
     }
 
-    public UserProfileDetailResponse toDto(UserProfile profile, User user) {
+    public UserProfileDetailResponse toDto(UserProfile profile) {
+
+        User user = profile.getUser();
 
         UserProfileDetailResponse.User userResponse = new UserProfileDetailResponse.User(
                 user.getName(),

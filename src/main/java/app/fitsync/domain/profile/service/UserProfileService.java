@@ -50,8 +50,6 @@ public class UserProfileService implements UserProfileServiceInterface {
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
-        User user = profile.getUser();
-
-        return userProfileMapper.toDto(profile, user);
+        return userProfileMapper.toDto(profile);
     }
 }
