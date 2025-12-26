@@ -1,6 +1,6 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.UserProfileException;
+import app.fitsync.domain.profile.exception.UserProfileException;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
@@ -10,10 +10,8 @@ import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package app.fitsync.domain.profile;
+package app.fitsync.domain.profile.exception;
 
 import app.fitsync.global.exception.ErrorCode;
 import java.text.MessageFormat;
