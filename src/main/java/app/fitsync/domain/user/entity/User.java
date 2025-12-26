@@ -48,8 +48,9 @@ public class User extends BaseEntity {
     @Embedded
     private BirthDate birth;
 
-    @Column(name = "hidden")
-    private Boolean hidden = false;
+    @Column(name = "hidden", nullable = false)
+    @Builder.Default
+    private boolean hidden = false;
 
     public void show() {
         hidden = false;
