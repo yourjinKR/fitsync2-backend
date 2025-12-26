@@ -1,5 +1,6 @@
 package app.fitsync.domain.profile.service;
 
+import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.exception.UserProfileException;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
@@ -41,5 +42,16 @@ public class UserProfileService implements UserProfileServiceInterface {
 
         UserProfile save = userProfileRepository.save(profile);
         return new UserProfileResponse(save.getId());
+    }
+
+    @Override
+    public UserProfileDetailResponse view(long userId) {
+
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+
+        User user = profile.getUser();
+
+        return userProfileMapper.toDto(profile, user);
     }
 }
