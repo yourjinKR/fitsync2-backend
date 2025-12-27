@@ -1,12 +1,12 @@
 package app.fitsync.global.config;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 
 @Converter
 @RequiredArgsConstructor
