@@ -2,6 +2,7 @@ package app.fitsync.domain.exercise.dto.exercise;
 
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetDetailResponse;
 import app.fitsync.domain.exercise.entity.EffectType;
+import app.fitsync.domain.exercise.entity.Equipment;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.domain.exercise.entity.MetricType;
 import java.util.List;
@@ -17,6 +18,7 @@ public record ExerciseDetailResponse(
         boolean hidden,
         List<ExerciseTargetDetailResponse> targets,
         Set<EffectType> effects,
+        Set<Equipment> equipments,
         Set<MetricType> requiredMetric
 ) {
 }
