@@ -36,35 +36,44 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exercise extends BaseEntity {
+
     public static final int NAME_MAX_LENGTH = 100;
     public static final int DESCRIPTION_MAX_LENGTH = 1000;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(name = "name")
     private String name;
+
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private ExerciseCategory category;
 
+
     @Column(name = "description")
     private String description;
+
 
     @Convert(converter = JsonMapConverter.class)
     @Column(name = "details", columnDefinition = "json")
     @Builder.Default
     private Map<String, Object> details = new HashMap<>();
 
+
     @Column(name = "hidden")
     @Builder.Default
     private boolean hidden = false;
 
+
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ExerciseTarget> targets = new ArrayList<>();
+
 
     @ElementCollection(targetClass = EffectType.class)
     @CollectionTable(
@@ -76,6 +85,18 @@ public class Exercise extends BaseEntity {
     @Builder.Default
     private Set<EffectType> effects = new HashSet<>();
 
+
+    @ElementCollection(targetClass = Equipment.class)
+    @CollectionTable(
+            name = "exercise_equipments",
+            joinColumns = @JoinColumn(name = "exercise_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "equipment_name")
+    @Builder.Default
+    private Set<Equipment> equipments = new HashSet<>();
+
+
     @ElementCollection(targetClass = MetricType.class)
     @CollectionTable(
             name = "exercise_metrics",
@@ -86,16 +107,19 @@ public class Exercise extends BaseEntity {
     @Builder.Default
     private Set<MetricType> requiredMetrics = new HashSet<>();
 
+
     public void addTarget(ExerciseTarget target) {
         this.targets.add(target);
         target.setExercise(this);
     }
+
 
     public void addAllTargets(List<ExerciseTarget> targets) {
         for (ExerciseTarget target : targets) {
             addTarget(target);
         }
     }
+
 
     public void updateFrom(ExerciseUpdateRequest request) {
         this.name = request.name();
@@ -107,10 +131,12 @@ public class Exercise extends BaseEntity {
         this.requiredMetrics = request.requiredMetrics();
     }
 
+
     public void hide() {
         this.hidden = true;
         setDeletedAt(LocalDateTime.now());
     }
+
 
     public void show() {
         this.hidden = false;
