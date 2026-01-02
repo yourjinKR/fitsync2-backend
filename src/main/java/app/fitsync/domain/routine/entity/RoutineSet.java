@@ -1,6 +1,5 @@
 package app.fitsync.domain.routine.entity;
 
-import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.dto.set.RoutineSetUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
