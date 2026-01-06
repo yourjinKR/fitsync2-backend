@@ -5,8 +5,6 @@ import app.fitsync.domain.profile.entity.WorkoutGoal;
 import java.util.Set;
 
 public record UserProfileDetailResponse(
-        long id,
-        User user,
         Set<WorkoutGoal> workoutGoals,
         Set<ExerciseCategory> exerciseCategories,
         String disease,
@@ -17,12 +15,4 @@ public record UserProfileDetailResponse(
         Double bodyFatPercentage,
         Double bmi
 ) {
-
-    public record User(
-            String name,
-            Long age,
-            boolean hidden
-    ) {
-
-    }
 }

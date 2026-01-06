@@ -1,6 +1,7 @@
 package app.fitsync.domain.profile.service;
 
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
+import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.exception.UserProfileException;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
@@ -45,7 +46,7 @@ public class UserProfileService implements UserProfileServiceInterface {
     }
 
     @Override
-    public UserProfileDetailResponse view(long userId) {
+    public UserWithProfileResponse view(long userId) {
 
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));

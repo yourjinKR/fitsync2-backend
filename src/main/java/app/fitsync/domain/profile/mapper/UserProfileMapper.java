@@ -2,7 +2,9 @@ package app.fitsync.domain.profile.mapper;
 
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
+import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
+import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.domain.user.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -24,28 +26,37 @@ public class UserProfileMapper {
                 .build();
     }
 
-    public UserProfileDetailResponse toDto(UserProfile profile) {
+    public UserWithProfileResponse toDto(UserProfile userProfile) {
 
-        User user = profile.getUser();
+        User user = userProfile.getUser();
+        UserHeaderInfoResponse userHeaderInfoResponse = toDto(user);
 
-        UserProfileDetailResponse.User userResponse = new UserProfileDetailResponse.User(
+        UserProfileDetailResponse userProfileDetailResponse = new UserProfileDetailResponse(
+                userProfile.getWorkoutGoals(),
+                userProfile.getExerciseCategories(),
+                userProfile.getDisease(),
+                userProfile.getHeight(),
+                userProfile.getWeight(),
+                userProfile.getSkeletalMuscleMass(),
+                userProfile.getBodyFatMass(),
+                userProfile.getBodyFatPercentage(),
+                userProfile.getBmi()
+        );
+
+        return new UserWithProfileResponse(
+                user.getId(),
+                userHeaderInfoResponse,
+                userProfile.getId(),
+                userProfileDetailResponse
+        );
+    }
+
+    public UserHeaderInfoResponse toDto(User user) {
+
+        return new UserHeaderInfoResponse(
                 user.getName(),
                 user.getAge(),
                 user.isHidden()
-        );
-
-        return new UserProfileDetailResponse(
-                profile.getId(),
-                userResponse,
-                profile.getWorkoutGoals(),
-                profile.getExerciseCategories(),
-                profile.getDisease(),
-                profile.getHeight(),
-                profile.getWeight(),
-                profile.getSkeletalMuscleMass(),
-                profile.getBodyFatMass(),
-                profile.getBodyFatPercentage(),
-                profile.getBmi()
         );
     }
 }
