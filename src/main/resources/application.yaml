@@ -24,3 +24,8 @@ spring:
   ai:
     openai:
       api-key: ${OPEN_AI_SECRET_KEY}
+
+logging:
+  level:
+    org.springframework.http.converter.json: DEBUG
+    com.fasterxml.jackson.databind: DEBUG
