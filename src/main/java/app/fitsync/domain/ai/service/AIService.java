@@ -1,5 +1,9 @@
 package app.fitsync.domain.ai.service;
 
+import app.fitsync.domain.ai.dto.AIRoutineRequest;
+import app.fitsync.domain.ai.dto.AIRoutineResponse;
+import app.fitsync.domain.ai.dto.SystemPromptConstant;
+import java.text.MessageFormat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -20,12 +24,33 @@ public class AIService implements AIServiceInterface {
     private static final String MODEL = "gpt-4.1-mini";
 
     @Override
-    public String generate(String text) {
+    public String generateTest(String text) {
 
         ChatClient chatClient = ChatClient.create(openAiChatModel);
 
         SystemMessage systemMessage = new SystemMessage("");
         UserMessage userMessage = new UserMessage(text);
+        AssistantMessage assistantMessage = new AssistantMessage("");
+
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .model(MODEL)
+                .temperature(0.7)
+                .build();
+
+        Prompt prompt = new Prompt(List.of(systemMessage, userMessage, assistantMessage), options);
+
+        return chatClient.prompt(prompt)
+                .call()
+                .content();
+    }
+
+    @Override
+    public String generateRoutine(AIRoutineRequest request) {
+
+        ChatClient chatClient = ChatClient.create(openAiChatModel);
+
+        SystemMessage systemMessage = new SystemMessage(SystemPromptConstant.ROUTINE_REQUEST);
+        UserMessage userMessage = new UserMessage(MessageFormat.format("내 정보 : {0}", request.toString()));
         AssistantMessage assistantMessage = new AssistantMessage("");
 
         OpenAiChatOptions options = OpenAiChatOptions.builder()
