@@ -5,6 +5,7 @@ import app.fitsync.domain.exercise.dto.body.BodyDetailPartResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
+import app.fitsync.domain.exercise.dto.exercise.ExerciseSummaryRequest;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetDetailResponse;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
 import app.fitsync.domain.exercise.entity.BodyDetailPart;
@@ -164,6 +165,17 @@ public class ExerciseMapper {
                 detailPart.getId(),
                 detailPart.getName(),
                 part.getName()
+        );
+    }
+
+    public ExerciseSummaryRequest toSummaryDto(Exercise exercise) {
+
+        ExerciseTarget mainTarget = exercise.getMainTarget();
+
+        return new ExerciseSummaryRequest(
+                exercise.getId(),
+                exercise.getName(),
+                mainTarget.getBodyDetailPart().getName()
         );
     }
 }

@@ -169,6 +169,11 @@ public class Exercise extends BaseEntity {
         this.hidden = false;
     }
 
+    public ExerciseTarget getMainTarget() {
+        return this.targets.stream()
+                .filter(target -> target.getTargetRole() == TargetRole.MAIN)
+                .findFirst().orElse(null);
+    }
 
     @Override
     public String toString() {

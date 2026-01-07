@@ -3,6 +3,8 @@ package app.fitsync.domain.ai.service;
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.SystemPromptConstant;
+import app.fitsync.domain.exercise.mapper.ExerciseMapper;
+import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import java.text.MessageFormat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 public class AIService implements AIServiceInterface {
 
     private final OpenAiChatModel openAiChatModel;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseMapper exerciseMapper;
 
     private static final String MODEL = "gpt-4.1-mini";
 
@@ -67,6 +71,7 @@ public class AIService implements AIServiceInterface {
         Prompt prompt = new Prompt(List.of(systemMessage, userMessage, assistantMessage), options);
 
         return chatClient.prompt(prompt)
+                .tools(new AITools(exerciseRepository, exerciseMapper))
                 .call()
                 .entity(new ParameterizedTypeReference<>() {});
     }
