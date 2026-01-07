@@ -6,6 +6,7 @@ import app.fitsync.global.util.QueryDslRepositorySupport;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -32,6 +33,17 @@ public class ExerciseRepositoryQueryDslImpl extends QueryDslRepositorySupport im
                 .where(eqCategory(category), eqHidden(hidden));
 
         return applyPagination(pageable, contentQuery, countQuery);
+    }
+
+    @Override
+    public List<Exercise> searchAllIsNotHidden(ExerciseCategory category) {
+
+        return queryFactory
+                .selectFrom(exercise)
+                .where(
+                        eqCategory(category),
+                        eqHidden(false)
+                ).fetch();
     }
 
     private BooleanExpression eqCategory(ExerciseCategory category) {
