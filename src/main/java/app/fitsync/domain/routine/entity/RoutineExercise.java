@@ -24,6 +24,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * <h2>RoutineExercise 엔티티</h2>
+ *
+ * <p>
+ * 루틴에 포함된 “운동 1개 단위”를 나타내는 엔티티
+ * </p>
+ *
+ * <h3>주요 역할</h3>
+ * <ul>
+ *   <li>루틴({@link Routine})과 운동 마스터({@link Exercise}) 연결</li>
+ *   <li>루틴 내 표시 순서/메모 관리</li>
+ *   <li>세트 목록({@link RoutineSet}) 관리</li>
+ * </ul>
+ *
+ * <h3>설계 의도</h3>
+ * <ul>
+ *   <li>RoutineExercise → RoutineSet으로 세부 수행 계획을 분리</li>
+ *   <li>cascade + orphanRemoval로 세트 생명주기 종속</li>
+ * </ul>
+ */
 @Getter
 @Entity
 @Builder
