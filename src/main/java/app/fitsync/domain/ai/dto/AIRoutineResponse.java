@@ -12,6 +12,7 @@ public record AIRoutineResponse(
 ) {
     public record RoutineExercise(
             long exerciseId,
+            String exerciseName,
             List<RoutineSet> routineSets
     ) { }
 

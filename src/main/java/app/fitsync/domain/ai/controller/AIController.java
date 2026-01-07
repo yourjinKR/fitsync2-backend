@@ -1,6 +1,7 @@
 package app.fitsync.domain.ai.controller;
 
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
+import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.service.AIServiceInterface;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,8 @@ public class AIController {
     }
 
     @PostMapping("/api/ai/routine")
-    public ResponseEntity<String> generateRoutine(@RequestBody AIRoutineRequest request) {
-        String result = aiService.generateRoutine(request);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<AIRoutineResponse> generateRoutine(@RequestBody AIRoutineRequest request) {
+        AIRoutineResponse response = aiService.generateRoutine(request);
+        return ResponseEntity.ok(response);
     }
 }

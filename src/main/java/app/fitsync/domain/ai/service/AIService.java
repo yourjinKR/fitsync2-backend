@@ -44,8 +44,13 @@ public class AIService implements AIServiceInterface {
                 .content();
     }
 
+    /*
+    TODO:
+     - 외부로부터 request를 직접 받는 것이 아닌, 실제 서비스는 내부적으로 사용자 정보를 찾은 후 조회해야 함.
+     - 요청/응답 로깅 도메인 설계 및 적용
+     */
     @Override
-    public String generateRoutine(AIRoutineRequest request) {
+    public AIRoutineResponse generateRoutine(AIRoutineRequest request) {
 
         ChatClient chatClient = ChatClient.create(openAiChatModel);
 
@@ -62,6 +67,6 @@ public class AIService implements AIServiceInterface {
 
         return chatClient.prompt(prompt)
                 .call()
-                .content();
+                .entity(AIRoutineResponse.class);
     }
 }
