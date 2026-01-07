@@ -29,6 +29,33 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * <h2>Exercise 엔티티</h2>
+ *
+ * <p>
+ * 서비스 내 “운동(Exercise)”의 마스터 데이터를 표현하는 핵심 엔티티
+ * </p>
+ *
+ * <h3>주요 역할</h3>
+ * <ul>
+ *   <li>운동명/설명/카테고리 등 기본 정보 제공</li>
+ *   <li>타겟 부위({@link ExerciseTarget}) 및 효과({@link EffectType}) 등 메타 정보 관리</li>
+ *   <li>추천/검색/루틴 생성 등 여러 도메인의 기준 데이터</li>
+ * </ul>
+ *
+ * <h3>설계 의도</h3>
+ * <ul>
+ *   <li>운동에 대한 확장 속성(난이도, 팁, 주의사항, 영상 링크 등)은
+ *       <code>details</code> JSON 컬럼(Map)으로 유연하게 관리</li>
+ *   <li>운영 중 스키마 변경 부담을 줄이고, 프론트/AI 컨텍스트 확장에 대응</li>
+ * </ul>
+ *
+ * <h3>비고</h3>
+ * <ul>
+ *   <li><code>hidden</code>은 “삭제 대신 숨김(soft hide)”을 위한 플래그로 활용 가능</li>
+ *   <li>toString에서 연관 컬렉션 출력은 Lazy 로딩/성능에 영향을 줄 수 있어 운영 시 주의</li>
+ * </ul>
+ */
 @Getter
 @Entity
 @Table(name = "exercises")

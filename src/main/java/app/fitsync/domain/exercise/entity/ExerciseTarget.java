@@ -19,6 +19,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * <h2>ExerciseTarget 엔티티</h2>
+ *
+ * <p>
+ * 특정 운동({@link Exercise})이 자극하는 <b>신체 세부 부위({@link BodyDetailPart})</b>를 연결하는 매핑 엔티티
+ * </p>
+ *
+ * <h3>왜 매핑 엔티티인가?</h3>
+ * <ul>
+ *   <li>Exercise - BodyDetailPart 는 다대다 형태가 자연스러움</li>
+ *   <li>“주/보조 타겟 역할({@link TargetRole})” 같은 추가 속성이 존재함</li>
+ *   <li>단순 @ManyToMany 대신 <b>중간 엔티티(ExerciseTarget)</b>로 모델링</li>
+ * </ul>
+ *
+ * <h3>주요 역할</h3>
+ * <ul>
+ *   <li>운동 타겟 부위(세부) 지정</li>
+ *   <li>타겟 역할(MAIN/SUB)로 가중치/우선순위 표현</li>
+ *   <li>운동 수정 시 타겟 정보 업데이트 단위 제공</li>
+ * </ul>
+ */
 @Getter
 @Entity
 @Builder
