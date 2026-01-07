@@ -8,7 +8,7 @@ import java.util.Set;
 import lombok.*;
 
 /**
- * UserProfile 엔티티
+ * <h2>UserProfile 엔티티</h2>
  *
  * <p>
  * 회원(UserType = MEMBER)에 한하여 관리되는 사용자 확장 정보 엔티티로,

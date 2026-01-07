@@ -1,11 +1,25 @@
 package app.fitsync.domain.exercise.entity;
 
 /**
- * 운동 기록 시 측정할 데이터의 유형(Metric)을 정의하는 열거형입니다.
+ * <h2>MetricType 열거형</h2>
+ *
  * <p>
- * 운동(Exercise) 엔티티는 이 타입들의 집합(Set)을 가짐으로써,
- * 해당 운동 수행 시 사용자가 입력해야 할 항목들이 무엇인지 정의합니다.
+ * 운동 기록(Record/Set 기록 등)에서 사용자가 입력하거나 시스템이 계산하는
+ * <b>측정 지표(Metric)</b>를 정의
  * </p>
+ *
+ * <h3>주요 역할</h3>
+ * <ul>
+ *   <li>운동(Exercise)마다 어떤 입력값이 필요한지 정의</li>
+ *   <li>세트 기록 UI에서 입력 필드를 동적으로 구성하는 기준</li>
+ *   <li>통계/분석(볼륨, 수행량, 페이스 등)의 원천 데이터 타입</li>
+ * </ul>
+ *
+ * <h3>설계 포인트</h3>
+ * <ul>
+ *   <li>Exercise가 MetricType Set을 가지면 "운동별 입력 스키마"를 코드로 강제할 수 있다.</li>
+ *   <li>운영 중 enum 변경은 기록 데이터와 결합되므로, 추가는 비교적 안전하지만 변경/삭제는 주의가 필요</li>
+ * </ul>
  */
 public enum MetricType {
 
