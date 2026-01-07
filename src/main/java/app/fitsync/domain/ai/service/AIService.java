@@ -13,6 +13,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,7 +51,7 @@ public class AIService implements AIServiceInterface {
      - 요청/응답 로깅 도메인 설계 및 적용
      */
     @Override
-    public AIRoutineResponse generateRoutine(AIRoutineRequest request) {
+    public List<AIRoutineResponse> generateRoutine(AIRoutineRequest request) {
 
         ChatClient chatClient = ChatClient.create(openAiChatModel);
 
@@ -67,6 +68,6 @@ public class AIService implements AIServiceInterface {
 
         return chatClient.prompt(prompt)
                 .call()
-                .entity(AIRoutineResponse.class);
+                .entity(new ParameterizedTypeReference<>() {});
     }
 }

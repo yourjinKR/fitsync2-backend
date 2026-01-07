@@ -3,6 +3,7 @@ package app.fitsync.domain.ai.controller;
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.service.AIServiceInterface;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class AIController {
     }
 
     @PostMapping("/api/ai/routine")
-    public ResponseEntity<AIRoutineResponse> generateRoutine(@RequestBody AIRoutineRequest request) {
-        AIRoutineResponse response = aiService.generateRoutine(request);
+    public ResponseEntity<List<AIRoutineResponse>> generateRoutine(@RequestBody AIRoutineRequest request) {
+        List<AIRoutineResponse> response = aiService.generateRoutine(request);
         return ResponseEntity.ok(response);
     }
 }
