@@ -4,7 +4,7 @@
 
 - Java 21
 
-- Spring Boot 4.0.0
+- Spring Boot 3.5.9
 
 - Gradle 기반 프로젝트
 
@@ -28,6 +28,8 @@
 - QueryDSL 5.0.0 (Jakarta 버전 사용)
 
 - JSpecify 1.0.0
+
+- Spring AI 1.1.2
 
 
 ### 테스트 의존성

@@ -1,8 +1,8 @@
 package app.fitsync.domain.profile.controller;
 
-import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
+import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.service.UserProfileServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -28,9 +28,9 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/{userId}")
-    public ResponseEntity<UserProfileDetailResponse> view(@PathVariable long userId) {
+    public ResponseEntity<UserWithProfileResponse> view(@PathVariable long userId) {
 
-        UserProfileDetailResponse response = userProfileService.view(userId);
+        UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
 }

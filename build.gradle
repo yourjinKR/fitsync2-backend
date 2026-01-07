@@ -26,6 +26,7 @@ repositories {
 
 ext {
     set('queryDslVersion', "5.0.0")
+    set('springAiVersion', "1.1.2")
 }
 
 dependencies {
@@ -49,6 +50,15 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     implementation 'org.jspecify:jspecify:1.0.0'
+
+    // Spring AI
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
 }
 
 // 1. Q-Class를 생성할 디렉토리 경로를 설정합니다.

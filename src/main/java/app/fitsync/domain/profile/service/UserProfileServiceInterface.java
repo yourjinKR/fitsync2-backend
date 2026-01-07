@@ -3,6 +3,7 @@ package app.fitsync.domain.profile.service;
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
+import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import org.jspecify.annotations.NullMarked;
 
 /*
@@ -19,5 +20,5 @@ search
 public interface UserProfileServiceInterface {
 
     UserProfileResponse create(UserProfileRequest request);
-    UserProfileDetailResponse view(long id);
+    UserWithProfileResponse view(long id);
 }
