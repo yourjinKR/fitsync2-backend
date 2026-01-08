@@ -1,4 +1,4 @@
-package app.fitsync.global.config;
+package app.fitsync.global.config.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

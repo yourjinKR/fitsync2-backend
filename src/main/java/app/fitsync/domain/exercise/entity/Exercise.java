@@ -2,7 +2,7 @@ package app.fitsync.domain.exercise.entity;
 
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.global.BaseEntity;
-import app.fitsync.global.config.JsonMapConverter;
+import app.fitsync.global.config.jpa.JsonMapConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
