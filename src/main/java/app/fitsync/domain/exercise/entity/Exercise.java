@@ -2,7 +2,7 @@ package app.fitsync.domain.exercise.entity;
 
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
 import app.fitsync.global.BaseEntity;
-import app.fitsync.global.config.JsonMapConverter;
+import app.fitsync.global.config.jpa.JsonMapConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -169,6 +169,11 @@ public class Exercise extends BaseEntity {
         this.hidden = false;
     }
 
+    public ExerciseTarget getMainTarget() {
+        return this.targets.stream()
+                .filter(target -> target.getTargetRole() == TargetRole.MAIN)
+                .findFirst().orElse(null);
+    }
 
     @Override
     public String toString() {

@@ -31,7 +31,19 @@ public class UserProfileMapper {
         User user = userProfile.getUser();
         UserHeaderInfoResponse userHeaderInfoResponse = toDto(user);
 
-        UserProfileDetailResponse userProfileDetailResponse = new UserProfileDetailResponse(
+        UserProfileDetailResponse userProfileDetailResponse = toDetailDto(userProfile);
+
+        return new UserWithProfileResponse(
+                user.getId(),
+                userHeaderInfoResponse,
+                userProfile.getId(),
+                userProfileDetailResponse
+        );
+    }
+
+    public UserProfileDetailResponse toDetailDto(UserProfile userProfile) {
+
+        return new UserProfileDetailResponse(
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
@@ -41,13 +53,6 @@ public class UserProfileMapper {
                 userProfile.getBodyFatMass(),
                 userProfile.getBodyFatPercentage(),
                 userProfile.getBmi()
-        );
-
-        return new UserWithProfileResponse(
-                user.getId(),
-                userHeaderInfoResponse,
-                userProfile.getId(),
-                userProfileDetailResponse
         );
     }
 
