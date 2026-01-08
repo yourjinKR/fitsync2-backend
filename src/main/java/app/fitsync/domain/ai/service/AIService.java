@@ -45,13 +45,6 @@ public class AIService implements AIServiceInterface {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ChatClient chatClient;
 
-    private static final String MODEL = "gpt-4.1-mini";
-
-    /*
-    TODO:
-     - 외부로부터 request를 직접 받는 것이 아닌, 실제 서비스는 내부적으로 사용자 정보를 찾은 후 조회해야 함.
-     - 요청/응답 로깅 도메인 설계 및 적용
-     */
     @Override
     public AIRoutineResponse generateRoutine(AIRoutineRequest request) throws JsonProcessingException {
 
@@ -109,7 +102,6 @@ public class AIService implements AIServiceInterface {
                     .tools(new AITools(exerciseRepository, exerciseMapper))
                     .call()
                     .chatResponse();
-//                    .entity(new ParameterizedTypeReference<>() {});
 
             assert response != null;
                 Usage usage = response.getMetadata().getUsage();
@@ -117,7 +109,7 @@ public class AIService implements AIServiceInterface {
             inputTokens  = Long.valueOf(usage.getPromptTokens());
             outputTokens = Long.valueOf(usage.getCompletionTokens());
 
-            String content = response.getResult().getOutput().getText(); // = assistant의 텍스트
+            String content = response.getResult().getOutput().getText();
             AIRoutineResponse result =
                     objectMapper.readValue(content, new TypeReference<>() {});
 
@@ -134,7 +126,6 @@ public class AIService implements AIServiceInterface {
             return result;
 
         } catch (Exception e) {
-            // 5) 실패 로그
             aiLogWriter.failure(requestId, inputTokens, e.getMessage());
             throw e;
         }

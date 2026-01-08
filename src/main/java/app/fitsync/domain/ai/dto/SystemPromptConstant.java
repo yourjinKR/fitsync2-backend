@@ -17,7 +17,7 @@ public class SystemPromptConstant {
             - "result"는 반드시 배열(array)이어야 하며, 최소 1개 이상의 루틴 객체를 포함해야 한다.
             
             # 데이터 제약
-            - exerciseId, exerciseName은 "서버가 제공한 candidateExercises 목록"에 포함된 운동만 사용할 수 있다.
+            - exerciseId, exerciseName은 "서버가 제공한 목록"에 포함된 운동만 사용할 수 있다.
             - candidateExercises 목록에 없는 운동을 새로 만들어내거나 임의로 추정하지 않는다.
             - exerciseId와 exerciseName은 항상 서로 일치해야 한다. (예: id 10의 name이 '벤치프레스'면 다른 이름을 쓰면 안 됨)
             - 유저 메시지(나이/목표/질환/선호 부위/분할 수 등)를 참고하여 루틴을 구성한다.
