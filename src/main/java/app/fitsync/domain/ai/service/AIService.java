@@ -13,7 +13,6 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -22,32 +21,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AIService implements AIServiceInterface {
 
-    private final OpenAiChatModel openAiChatModel;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseMapper exerciseMapper;
+    private final ChatClient chatClient;
 
     private static final String MODEL = "gpt-4.1-mini";
-
-    @Override
-    public String generateTest(String text) {
-
-        ChatClient chatClient = ChatClient.create(openAiChatModel);
-
-        SystemMessage systemMessage = new SystemMessage("");
-        UserMessage userMessage = new UserMessage(text);
-        AssistantMessage assistantMessage = new AssistantMessage("");
-
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .model(MODEL)
-                .temperature(0.7)
-                .build();
-
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage, assistantMessage), options);
-
-        return chatClient.prompt(prompt)
-                .call()
-                .content();
-    }
 
     /*
     TODO:
@@ -56,8 +34,6 @@ public class AIService implements AIServiceInterface {
      */
     @Override
     public List<AIRoutineResponse> generateRoutine(AIRoutineRequest request) {
-
-        ChatClient chatClient = ChatClient.create(openAiChatModel);
 
         SystemMessage systemMessage = new SystemMessage(SystemPromptConstant.ROUTINE_REQUEST);
         UserMessage userMessage = new UserMessage(MessageFormat.format("내 정보 : {0}", request.toString()));

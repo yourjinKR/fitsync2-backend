@@ -5,6 +5,5 @@ import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import java.util.List;
 
 public interface AIServiceInterface {
-    String generateTest(String text);
     List<AIRoutineResponse> generateRoutine(AIRoutineRequest request);
 }
