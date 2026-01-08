@@ -21,6 +21,7 @@ public class SystemPromptConstant {
             - candidateExercises 목록에 없는 운동을 새로 만들어내거나 임의로 추정하지 않는다.
             - exerciseId와 exerciseName은 항상 서로 일치해야 한다. (예: id 10의 name이 '벤치프레스'면 다른 이름을 쓰면 안 됨)
             - 유저 메시지(나이/목표/질환/선호 부위/분할 수 등)를 참고하여 루틴을 구성한다.
+            - 사용자가 요청한 분할 수와 result 배열의 길이와 동일하다.
             
             # 값 규칙
             - RoutineSet의 수치 필드는 다음 규칙을 따른다.
