@@ -6,6 +6,13 @@ import app.fitsync.domain.ai.dto.SystemPromptConstant;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
+import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
+import app.fitsync.domain.profile.entity.UserProfile;
+import app.fitsync.domain.profile.exception.UserProfileException;
+import app.fitsync.domain.profile.mapper.UserProfileMapper;
+import app.fitsync.domain.profile.repository.UserProfileRepository;
+import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
+import app.fitsync.global.exception.RestApiException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -27,6 +34,8 @@ import org.springframework.stereotype.Service;
 public class AIService implements AIServiceInterface {
 
     private final ExerciseRepository exerciseRepository;
+    private final UserProfileRepository userProfileRepository;
+    private final UserProfileMapper userProfileMapper;
     private final ExerciseMapper exerciseMapper;
     private final AILogWriter aiLogWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -43,14 +52,33 @@ public class AIService implements AIServiceInterface {
     public List<AIRoutineResponse> generateRoutine(AIRoutineRequest request) {
 
         String requestId = UUID.randomUUID().toString();
+
+        long userId = request.userId();
+
+        Integer splitCount = request.splitCount();
+
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+
+        UserHeaderInfoResponse infoDto = userProfileMapper.toDto(profile.getUser());
+        UserProfileDetailResponse profileDto = userProfileMapper.toDetailDto(profile);
+
+        String inputUserMessage = MessageFormat.format("내 정보 : {0}, 내 프로필 : {1}, 루틴 분할 수 {2}", infoDto, profileDto, splitCount);
+        String inputSystemMessage = SystemPromptConstant.ROUTINE_REQUEST;
+        String inputAssistantMessage = "";
+
+        SystemMessage systemMessage = new SystemMessage(inputSystemMessage);
+        UserMessage userMessage = new UserMessage(inputUserMessage);
+        AssistantMessage assistantMessage = new AssistantMessage(inputAssistantMessage);
+
         Map<String, Object> inputJson = new HashMap<>();
-        inputJson.put("systemPrompt", "ROUTINE_REQUEST");
-        inputJson.put("userInfoPreview", request.toString()); // 필요 시 마스킹/요약 적용
-        inputJson.put("model", MODEL);
+        inputJson.put("systemPrompt", inputSystemMessage);
+        inputJson.put("userMessage", inputUserMessage);
+        inputJson.put("inputAssistantMessage", inputAssistantMessage);
 
         aiLogWriter.init(
                 requestId,
-                null, // 임시
+                userId,
                 AIModel.GPT_4_1_MINI,
                 "ROUTINE_RECOMMEND",
                 "0.0.1",
@@ -58,10 +86,6 @@ public class AIService implements AIServiceInterface {
         );
 
         try {
-            SystemMessage systemMessage = new SystemMessage(SystemPromptConstant.ROUTINE_REQUEST);
-            UserMessage userMessage = new UserMessage(MessageFormat.format("내 정보 : {0}", request.toString()));
-            AssistantMessage assistantMessage = new AssistantMessage("");
-
             OpenAiChatOptions options = OpenAiChatOptions.builder()
                     .model(AIModel.GPT_4_1_MINI.getName())
                     .temperature(0.7)
