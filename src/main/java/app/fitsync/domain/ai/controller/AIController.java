@@ -3,6 +3,7 @@ package app.fitsync.domain.ai.controller;
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.service.AIServiceInterface;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,9 @@ public class AIController {
     private final AIServiceInterface aiService;
 
     @PostMapping("/api/ai/routine")
-    public ResponseEntity<List<AIRoutineResponse>> generateRoutine(@RequestBody AIRoutineRequest request) {
-        List<AIRoutineResponse> response = aiService.generateRoutine(request);
+    public ResponseEntity<AIRoutineResponse> generateRoutine(@RequestBody AIRoutineRequest request)
+            throws JsonProcessingException {
+        AIRoutineResponse response = aiService.generateRoutine(request);
         return ResponseEntity.ok(response);
     }
 }

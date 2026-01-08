@@ -6,10 +6,14 @@ import java.util.List;
  * 루틴 추천 결과
  */
 public record AIRoutineResponse(
-        String name,
-        List<RoutineExercise> routineExercises
+        List<Routine> result
 
 ) {
+    public record Routine(
+            String name,
+            List<RoutineExercise> routineExercises
+    ) { }
+
     public record RoutineExercise(
             long exerciseId,
             String exerciseName,

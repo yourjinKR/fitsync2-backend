@@ -13,6 +13,8 @@ import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.global.exception.RestApiException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -24,9 +26,11 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.metadata.Usage;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.ai.openai.api.ResponseFormat;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -49,7 +53,7 @@ public class AIService implements AIServiceInterface {
      - 요청/응답 로깅 도메인 설계 및 적용
      */
     @Override
-    public List<AIRoutineResponse> generateRoutine(AIRoutineRequest request) {
+    public AIRoutineResponse generateRoutine(AIRoutineRequest request) throws JsonProcessingException {
 
         String requestId = UUID.randomUUID().toString();
 
@@ -64,7 +68,7 @@ public class AIService implements AIServiceInterface {
         UserProfileDetailResponse profileDto = userProfileMapper.toDetailDto(profile);
 
         String inputUserMessage = MessageFormat.format("내 정보 : {0}, 내 프로필 : {1}, 루틴 분할 수 {2}", infoDto, profileDto, splitCount);
-        String inputSystemMessage = SystemPromptConstant.ROUTINE_REQUEST;
+        String inputSystemMessage = SystemPromptConstant.ROUTINE_REQUEST_JSON_SCHEMA;
         String inputAssistantMessage = "";
 
         SystemMessage systemMessage = new SystemMessage(inputSystemMessage);
@@ -85,18 +89,37 @@ public class AIService implements AIServiceInterface {
                 inputJson
         );
 
+        Long inputTokens = null;
+        Long outputTokens = null;
+
         try {
             OpenAiChatOptions options = OpenAiChatOptions.builder()
                     .model(AIModel.GPT_4_1_MINI.getName())
                     .temperature(0.7)
+                    .responseFormat(
+                            ResponseFormat.builder()
+                                    .type(ResponseFormat.Type.JSON_OBJECT)
+                                    .build()
+                    )
                     .build();
 
             Prompt prompt = new Prompt(List.of(systemMessage, userMessage, assistantMessage), options);
 
-            List<AIRoutineResponse> result = chatClient.prompt(prompt)
+            ChatResponse response = chatClient.prompt(prompt)
                     .tools(new AITools(exerciseRepository, exerciseMapper))
                     .call()
-                    .entity(new ParameterizedTypeReference<>() {});
+                    .chatResponse();
+//                    .entity(new ParameterizedTypeReference<>() {});
+
+            assert response != null;
+                Usage usage = response.getMetadata().getUsage();
+
+            inputTokens  = Long.valueOf(usage.getPromptTokens());
+            outputTokens = Long.valueOf(usage.getCompletionTokens());
+
+            String content = response.getResult().getOutput().getText(); // = assistant의 텍스트
+            AIRoutineResponse result =
+                    objectMapper.readValue(content, new TypeReference<>() {});
 
             Map<String, Object> outputJson = new HashMap<>();
             outputJson.put("result", result);
@@ -104,15 +127,15 @@ public class AIService implements AIServiceInterface {
             aiLogWriter.success(
                     requestId,
                     outputJson,
-                    null, // inputTokens (필요시 나중에 메타데이터에서 추출)
-                    null  // outputTokens
+                    inputTokens,
+                    outputTokens
             );
 
             return result;
 
         } catch (Exception e) {
             // 5) 실패 로그
-            aiLogWriter.failure(requestId, null, e.getMessage());
+            aiLogWriter.failure(requestId, inputTokens, e.getMessage());
             throw e;
         }
     }
