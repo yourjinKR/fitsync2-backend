@@ -113,7 +113,7 @@ public class AIService implements AIServiceInterface {
 
             String content = response.getResult().getOutput().getText();
             AIRoutineResponse result =
-                    objectMapper.readValue(content, new TypeReference<>() {});
+                    objectMapper.readValue(content, AIRoutineResponse.class);
 
             Map<String, Object> outputJson = new HashMap<>();
             outputJson.put("result", result);
