@@ -17,7 +17,7 @@ public class AILogWriter {
     private final AILogRepository repository;
 
     @Transactional
-    public AILog init(
+    public void init(
             String requestId,
             Long userId,
             AIModel model,
@@ -37,7 +37,7 @@ public class AILogWriter {
                 .statusMessage("pending")
                 .build();
 
-        return repository.save(log);
+        repository.save(log);
     }
 
     @Transactional
