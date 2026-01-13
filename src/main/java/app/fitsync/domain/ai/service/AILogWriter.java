@@ -3,7 +3,9 @@ package app.fitsync.domain.ai.service;
 import app.fitsync.domain.ai.entity.AILog;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.CallStatus;
+import app.fitsync.domain.ai.exception.AILogErrorCode;
 import app.fitsync.domain.ai.repository.AILogRepository;
+import app.fitsync.global.exception.RestApiException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class AILogWriter {
                         Long outputTokens) {
 
         AILog log = repository.findByRequestId(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("AILog not found: " + requestId));
+                .orElseThrow(() -> new RestApiException(AILogErrorCode.UUID_NOT_FOUND, requestId));
 
         LocalDateTime now = LocalDateTime.now();
         log.success(now, inputTokens, outputTokens);
@@ -62,7 +64,7 @@ public class AILogWriter {
             String errorMessage) {
 
         AILog log = repository.findByRequestId(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("AILog not found: " + requestId));
+                .orElseThrow(() -> new RestApiException(AILogErrorCode.UUID_NOT_FOUND, requestId));
 
         LocalDateTime now = LocalDateTime.now();
         log.fail(now, errorMessage, inputTokens);

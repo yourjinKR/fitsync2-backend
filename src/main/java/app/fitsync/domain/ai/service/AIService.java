@@ -50,6 +50,8 @@ public class AIService implements AIServiceInterface {
 
         String requestId = UUID.randomUUID().toString();
 
+        // request로부터 요청값을 받고 user를 조회하여 프롬프트를 완성
+
         long userId = request.userId();
 
         Integer splitCount = request.splitCount();
