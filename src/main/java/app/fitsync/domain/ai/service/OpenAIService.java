@@ -44,12 +44,23 @@ public class OpenAIService implements AIServiceInterface {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ChatClient chatClient;
 
+    /*
+
+    TODO: 로직 관심사에 따른 분리 리팩토링 여부에 대해 고민 (프롬프트 생성, API 요청, 로깅)
+
+    1. request로부터 요청에 필요한 값들을 받아 프로필 조회
+    2. 유저 기록을 기반으로 프롬프트 생성 (유저 메세지)
+    3. 메세지 객체 생성
+    4. 로그 작성 (대기 상태)
+    // try catch 시작
+    5. 옵션 빌더를 통해 옵션 생성
+    6. 응답 받은 ChatResponse 내부의 메타 데이터를 기반으로 추가 로그 정보 작성 // 성공시, 토큰
+
+     */
     @Override
     public AIRoutineResponse generateRoutine(AIRoutineRequest request) throws JsonProcessingException {
 
         String requestId = UUID.randomUUID().toString();
-
-        // request로부터 요청값을 받고 user를 조회하여 프롬프트를 완성
 
         long userId = request.userId();
 
