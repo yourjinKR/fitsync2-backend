@@ -14,7 +14,6 @@ import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.global.exception.RestApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AIService implements AIServiceInterface {
+public class OpenAIService implements AIServiceInterface {
 
     private final ExerciseRepository exerciseRepository;
     private final UserProfileRepository userProfileRepository;
