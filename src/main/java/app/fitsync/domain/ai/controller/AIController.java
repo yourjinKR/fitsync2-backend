@@ -4,7 +4,6 @@ import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.service.AIServiceInterface;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
