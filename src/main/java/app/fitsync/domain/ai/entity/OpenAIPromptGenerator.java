@@ -48,9 +48,9 @@ public class OpenAIPromptGenerator {
 
     public Map<String, Object> getInputJsonOf() {
         Map<String, Object> inputJson = new HashMap<>();
-        inputJson.put("systemPrompt", this.systemMessage);
-        inputJson.put("userMessage", this.userMessage);
-        inputJson.put("inputAssistantMessage", this.assistantMessage);
+        inputJson.put("systemPrompt", this.systemMessage.getText());
+        inputJson.put("userMessage", this.userMessage.getText());
+        inputJson.put("inputAssistantMessage", this.assistantMessage.getText());
         return inputJson;
     }
 }
