@@ -22,7 +22,7 @@ public class QWorkoutExercise extends EntityPathBase<WorkoutExercise> {
 
     public static final QWorkoutExercise workoutExercise = new QWorkoutExercise("workoutExercise");
 
-    public final NumberPath<Long> exerciseId = createNumber("exerciseId", Long.class);
+    public final app.fitsync.domain.exercise.entity.QExercise exercise;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -50,7 +50,8 @@ public class QWorkoutExercise extends EntityPathBase<WorkoutExercise> {
 
     public QWorkoutExercise(Class<? extends WorkoutExercise> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.workout = inits.isInitialized("workout") ? new QWorkout(forProperty("workout")) : null;
+        this.exercise = inits.isInitialized("exercise") ? new app.fitsync.domain.exercise.entity.QExercise(forProperty("exercise")) : null;
+        this.workout = inits.isInitialized("workout") ? new QWorkout(forProperty("workout"), inits.get("workout")) : null;
     }
 
 }

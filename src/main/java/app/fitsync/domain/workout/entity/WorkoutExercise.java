@@ -1,5 +1,6 @@
 package app.fitsync.domain.workout.entity;
 
+import app.fitsync.domain.exercise.entity.Exercise;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,8 +35,9 @@ public class WorkoutExercise {
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
-    @Column(name = "exercise_id")
-    private Long exerciseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
 
     @Column(name = "memo")
     private String memo;
