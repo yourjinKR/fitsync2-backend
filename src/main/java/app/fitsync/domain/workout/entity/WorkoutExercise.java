@@ -14,10 +14,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "workout_exercises")
@@ -31,6 +33,7 @@ public class WorkoutExercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter(AccessLevel.PROTECTED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
@@ -45,4 +48,14 @@ public class WorkoutExercise {
     @OneToMany(mappedBy = "workoutExercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<WorkoutSet> workoutSets = new ArrayList<>();
+
+
+    public void assignExercise(Exercise exercise) {
+        this.exercise = exercise;
+    }
+
+    public void addWorkoutSet(WorkoutSet workoutSet) {
+        this.workoutSets.add(workoutSet);
+        workoutSet.setWorkoutExercise(this);
+    }
 }

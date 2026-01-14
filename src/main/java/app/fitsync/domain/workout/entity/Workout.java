@@ -46,4 +46,9 @@ public class Workout extends BaseEntity {
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<WorkoutExercise> workoutExercises = new ArrayList<>();
+
+    public void addWorkExercise(WorkoutExercise workoutExercise) {
+        this.workoutExercises.add(workoutExercise);
+        workoutExercise.setWorkout(this);
+    }
 }

@@ -22,8 +22,6 @@ public class QWorkoutSet extends EntityPathBase<WorkoutSet> {
 
     public static final QWorkoutSet workoutSet = new QWorkoutSet("workoutSet");
 
-    public final NumberPath<Integer> displayOrder = createNumber("displayOrder", Integer.class);
-
     public final NumberPath<Integer> distanceM = createNumber("distanceM", Integer.class);
 
     public final NumberPath<Integer> durationSec = createNumber("durationSec", Integer.class);
