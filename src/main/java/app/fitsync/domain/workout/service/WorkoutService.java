@@ -7,9 +7,10 @@ import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.domain.workout.dto.WorkoutExerciseRequest;
+import app.fitsync.domain.workout.dto.WorkoutListRequest;
+import app.fitsync.domain.workout.dto.WorkoutListResponse;
 import app.fitsync.domain.workout.dto.WorkoutRequest;
 import app.fitsync.domain.workout.dto.WorkoutResponse;
-import app.fitsync.domain.workout.dto.WorkoutSetRequest;
 import app.fitsync.domain.workout.entity.Workout;
 import app.fitsync.domain.workout.entity.WorkoutExercise;
 import app.fitsync.domain.workout.entity.WorkoutSet;
@@ -18,6 +19,8 @@ import app.fitsync.domain.workout.repository.WorkoutRepository;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,5 +80,12 @@ public class WorkoutService implements WorkoutServiceInterface {
         workoutExercise.assignExercise(exercise);
 
         return workoutExercise;
+    }
+
+
+    @Override
+    public Page<WorkoutListResponse> viewList(WorkoutListRequest request, Pageable pageable) {
+        long ownerId = request.ownerId();
+        return workoutRepository.findByOwnerId(ownerId, pageable).map(workoutMapper::toDto);
     }
 }

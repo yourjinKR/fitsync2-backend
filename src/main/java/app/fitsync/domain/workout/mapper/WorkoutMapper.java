@@ -1,6 +1,7 @@
 package app.fitsync.domain.workout.mapper;
 
 import app.fitsync.domain.workout.dto.WorkoutExerciseRequest;
+import app.fitsync.domain.workout.dto.WorkoutListResponse;
 import app.fitsync.domain.workout.dto.WorkoutRequest;
 import app.fitsync.domain.workout.dto.WorkoutSetRequest;
 import app.fitsync.domain.workout.entity.Workout;
@@ -45,5 +46,13 @@ public class WorkoutMapper {
                 .rpe(request.rpe())
                 .restTimeSec(request.restTimeSec())
                 .build();
+    }
+
+    public WorkoutListResponse toDto(Workout workout) {
+
+        return new WorkoutListResponse(
+                workout.getId(),
+                workout.getCreatedAt()
+        );
     }
 }
