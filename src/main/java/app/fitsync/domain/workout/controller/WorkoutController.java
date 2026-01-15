@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,8 +47,8 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutListResponses);
     }
 
-    @GetMapping("/api/workout")
-    public ResponseEntity<WorkoutDetailResponse> viewDetail(@RequestParam long id) {
+    @GetMapping("/api/workout/{id}")
+    public ResponseEntity<WorkoutDetailResponse> viewDetail(@PathVariable long id) {
 
         WorkoutDetailResponse response = workoutService.viewDetail(id);
 
