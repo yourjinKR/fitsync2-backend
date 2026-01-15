@@ -6,7 +6,6 @@ import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
-import app.fitsync.domain.workout.dto.WorkoutDetailRequest;
 import app.fitsync.domain.workout.dto.WorkoutDetailResponse;
 import app.fitsync.domain.workout.dto.WorkoutExerciseRequest;
 import app.fitsync.domain.workout.dto.WorkoutListRequest;
@@ -93,9 +92,8 @@ public class WorkoutService implements WorkoutServiceInterface {
 
 
     @Override
-    public WorkoutDetailResponse viewDetail(WorkoutDetailRequest request) {
+    public WorkoutDetailResponse viewDetail(long id) {
 
-        long id = request.id();
         Workout workout = workoutRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 

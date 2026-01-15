@@ -1,6 +1,5 @@
 package app.fitsync.domain.workout.service;
 
-import app.fitsync.domain.workout.dto.WorkoutDetailRequest;
 import app.fitsync.domain.workout.dto.WorkoutDetailResponse;
 import app.fitsync.domain.workout.dto.WorkoutListRequest;
 import app.fitsync.domain.workout.dto.WorkoutListResponse;
@@ -13,5 +12,5 @@ public interface WorkoutServiceInterface {
 
     WorkoutResponse create(WorkoutRequest request);
     Page<WorkoutListResponse> viewList(WorkoutListRequest request, Pageable pageable);
-    WorkoutDetailResponse viewDetail(WorkoutDetailRequest request);
+    WorkoutDetailResponse viewDetail(long id);
 }
