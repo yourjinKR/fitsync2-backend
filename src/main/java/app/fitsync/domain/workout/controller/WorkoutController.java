@@ -1,5 +1,7 @@
 package app.fitsync.domain.workout.controller;
 
+import app.fitsync.domain.workout.dto.WorkoutDetailRequest;
+import app.fitsync.domain.workout.dto.WorkoutDetailResponse;
 import app.fitsync.domain.workout.dto.WorkoutListRequest;
 import app.fitsync.domain.workout.dto.WorkoutListResponse;
 import app.fitsync.domain.workout.dto.WorkoutRequest;
@@ -43,5 +45,14 @@ public class WorkoutController {
         Page<WorkoutListResponse> workoutListResponses = workoutService.viewList(request, pageable);
 
         return ResponseEntity.ok(workoutListResponses);
+    }
+
+    @GetMapping("/api/workout")
+    public ResponseEntity<WorkoutDetailResponse> viewDetail(@RequestParam long id) {
+
+        WorkoutDetailRequest request = new WorkoutDetailRequest(id);
+        WorkoutDetailResponse response = workoutService.viewDetail(request);
+
+        return ResponseEntity.ok(response);
     }
 }
