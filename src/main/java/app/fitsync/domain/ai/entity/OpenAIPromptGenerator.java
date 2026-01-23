@@ -1,9 +1,10 @@
 package app.fitsync.domain.ai.entity;
 
+import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.dto.SystemPromptConstant;
-import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
-import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
-import java.text.MessageFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class OpenAIPromptGenerator {
     private final UserMessage userMessage;
     private final SystemMessage systemMessage;
     private final AssistantMessage assistantMessage;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public OpenAIPromptGenerator(UserMessage userMessage, SystemMessage systemMessage, AssistantMessage assistantMessage) {
         this.userMessage = userMessage;
@@ -26,14 +28,10 @@ public class OpenAIPromptGenerator {
         this.assistantMessage = assistantMessage;
     }
 
-    public static OpenAIPromptGenerator routineRecommendOf(UserHeaderInfoResponse infoDto, UserProfileDetailResponse profileDto, Integer splitCount) {
-        UserMessage userMessage = new UserMessage(
-                MessageFormat.format(
-                        "내 정보 : {0}, 내 프로필 : {1}, 루틴 분할 수 {2}",
-                        infoDto,
-                        profileDto,
-                        splitCount)
-        );
+    public static OpenAIPromptGenerator routineRecommendOf(RoutineRecommendUserMessage request)
+            throws JsonProcessingException {
+
+        UserMessage userMessage = new UserMessage(OBJECT_MAPPER.writeValueAsString(request));
 
         SystemMessage systemMessage = new SystemMessage(SystemPromptConstant.ROUTINE_REQUEST_JSON_SCHEMA);
 
@@ -46,10 +44,15 @@ public class OpenAIPromptGenerator {
         return List.of(this.userMessage, this.systemMessage, this.assistantMessage);
     }
 
-    public Map<String, Object> getInputJsonOf() {
+    public Map<String, Object> getInputJsonOf() throws JsonProcessingException {
         Map<String, Object> inputJson = new HashMap<>();
         inputJson.put("systemPrompt", this.systemMessage.getText());
-        inputJson.put("userMessage", this.userMessage.getText());
+
+        inputJson.put("userMessage", OBJECT_MAPPER.readValue(
+                this.userMessage.getText(),
+                new TypeReference<Map<String, Object>>() {}
+        ));
+
         inputJson.put("inputAssistantMessage", this.assistantMessage.getText());
         return inputJson;
     }
