@@ -2,16 +2,15 @@ package app.fitsync.domain.ai.service;
 
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
+import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAIPromptGenerator;
+import app.fitsync.domain.ai.mapper.AILogMapper;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
-import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.exception.UserProfileException;
-import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
-import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.global.exception.RestApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,11 +32,11 @@ public class OpenAIService implements AIServiceInterface {
 
     private final ExerciseRepository exerciseRepository;
     private final UserProfileRepository userProfileRepository;
-    private final UserProfileMapper userProfileMapper;
     private final ExerciseMapper exerciseMapper;
     private final AILogWriter aiLogWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ChatClient chatClient;
+    private final AILogMapper aiLogMapper;
 
     /*
 
@@ -59,15 +58,11 @@ public class OpenAIService implements AIServiceInterface {
 
         long userId = request.userId();
 
-        Integer splitCount = request.splitCount();
-
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
-        UserHeaderInfoResponse infoDto = userProfileMapper.toDto(profile.getUser());
-        UserProfileDetailResponse profileDto = userProfileMapper.toDetailDto(profile);
-
-        OpenAIPromptGenerator openAIPromptGenerator = OpenAIPromptGenerator.routineRecommendOf(infoDto, profileDto, splitCount);
+        RoutineRecommendUserMessage userMessageRequest = aiLogMapper.toDto(profile, request);
+        OpenAIPromptGenerator openAIPromptGenerator = OpenAIPromptGenerator.routineRecommendOf(userMessageRequest);
 
         aiLogWriter.init(
                 requestId,
