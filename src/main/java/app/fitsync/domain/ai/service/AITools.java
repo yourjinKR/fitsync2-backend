@@ -7,7 +7,9 @@ import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class AITools {
 

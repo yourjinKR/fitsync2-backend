@@ -4,11 +4,11 @@ import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
-import app.fitsync.domain.ai.entity.OpenAIPromptGenerator;
-import app.fitsync.domain.ai.mapper.AILogMapper;
+import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.profile.entity.UserProfile;
+import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.global.exception.RestApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,21 +42,21 @@ class OpenAIServiceTest {
     @Mock ExerciseRepository exerciseRepository;
     @Mock UserProfileRepository userProfileRepository;
     @Mock ExerciseMapper exerciseMapper;
+    @Mock UserProfileMapper userProfileMapper;
     @Mock AILogWriter aiLogWriter;
     @Mock ChatClient chatClient;
-    @Mock AILogMapper aiLogMapper;
+    @Mock AITools aiTools;
 
     OpenAIService openAIService;
 
     @BeforeEach
     void setUp() {
         openAIService = new OpenAIService(
-                exerciseRepository,
                 userProfileRepository,
-                exerciseMapper,
+                userProfileMapper,
                 aiLogWriter,
                 chatClient,
-                aiLogMapper
+                aiTools
         );
     }
 
@@ -76,16 +76,16 @@ class OpenAIServiceTest {
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
-        OpenAIPromptGenerator generator = mock(OpenAIPromptGenerator.class);
+        OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
         when(generator.getListOf()).thenReturn(List.of()); // Prompt 생성용
 
         // static factory mocking
-        try (MockedStatic<OpenAIPromptGenerator> mocked =
-                     Mockito.mockStatic(OpenAIPromptGenerator.class)) {
-            mocked.when(() -> OpenAIPromptGenerator.routineRecommendOf(userMessageDto))
+        try (MockedStatic<OpenAiMessageConverter> mocked =
+                     Mockito.mockStatic(OpenAiMessageConverter.class)) {
+            mocked.when(() -> OpenAiMessageConverter.routineRecommendOf(userMessageDto))
                     .thenReturn(generator);
 
             // ===== ChatResponse mocking (Spring AI 1.1.2 타입 흐름) =====
@@ -208,15 +208,15 @@ class OpenAIServiceTest {
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
-        OpenAIPromptGenerator generator = mock(OpenAIPromptGenerator.class);
+        OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
         when(generator.getListOf()).thenReturn(List.of());
 
-        try (MockedStatic<OpenAIPromptGenerator> mocked =
-                     Mockito.mockStatic(OpenAIPromptGenerator.class)) {
-            mocked.when(() -> OpenAIPromptGenerator.routineRecommendOf(userMessageDto))
+        try (MockedStatic<OpenAiMessageConverter> mocked =
+                     Mockito.mockStatic(OpenAiMessageConverter.class)) {
+            mocked.when(() -> OpenAiMessageConverter.routineRecommendOf(userMessageDto))
                     .thenReturn(generator);
 
             ChatClient.ChatClientRequestSpec requestSpec = mock(ChatClient.ChatClientRequestSpec.class);

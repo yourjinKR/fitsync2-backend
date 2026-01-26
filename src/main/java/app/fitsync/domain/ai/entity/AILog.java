@@ -28,6 +28,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AILog {
 
+    private static String SUCCESS_MESSAGE = "OK";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -120,7 +122,7 @@ public class AILog {
 
     public void success(LocalDateTime responseTime, Long inputTokens, Long outputTokens) {
         this.status = CallStatus.SUCCESS;
-        this.statusMessage = "OK";
+        this.statusMessage = SUCCESS_MESSAGE;
 
         recordTime(responseTime);
         setTokens(inputTokens, outputTokens);

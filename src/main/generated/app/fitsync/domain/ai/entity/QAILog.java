@@ -51,7 +51,7 @@ public class QAILog extends EntityPathBase<AILog> {
 
     public final StringPath userFeedBackReason = createString("userFeedBackReason");
 
-    public final NumberPath<Long> userId = createNumber("ownerId", Long.class);
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public final StringPath version = createString("version");
 

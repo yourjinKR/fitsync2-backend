@@ -35,8 +35,8 @@ public class AILogWriter {
                 .version(version)
                 .inputContent(inputContent)
                 .requestTime(LocalDateTime.now())
-                .status(CallStatus.SUCCESS)
-                .statusMessage("pending")
+//                .status(CallStatus.SUCCESS)
+//                .statusMessage("pending")
                 .build();
 
         repository.save(log);

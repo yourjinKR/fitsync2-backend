@@ -4,12 +4,10 @@ import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
-import app.fitsync.domain.ai.entity.OpenAIPromptGenerator;
-import app.fitsync.domain.ai.mapper.AILogMapper;
-import app.fitsync.domain.exercise.mapper.ExerciseMapper;
-import app.fitsync.domain.exercise.repository.ExerciseRepository;
+import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.exception.UserProfileException;
+import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.global.exception.RestApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,13 +28,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OpenAIService implements AIServiceInterface {
 
-    private final ExerciseRepository exerciseRepository;
     private final UserProfileRepository userProfileRepository;
-    private final ExerciseMapper exerciseMapper;
+    private final UserProfileMapper userProfileMapper;
     private final AILogWriter aiLogWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ChatClient chatClient;
-    private final AILogMapper aiLogMapper;
+    private final AITools aiTools;
 
     /*
 
@@ -61,8 +58,8 @@ public class OpenAIService implements AIServiceInterface {
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
-        RoutineRecommendUserMessage userMessageRequest = aiLogMapper.toDto(profile, request);
-        OpenAIPromptGenerator openAIPromptGenerator = OpenAIPromptGenerator.routineRecommendOf(userMessageRequest);
+        RoutineRecommendUserMessage userMessageRequest = userProfileMapper.toDto(profile, request);
+        OpenAiMessageConverter openAiMessageConverter = OpenAiMessageConverter.routineRecommendOf(userMessageRequest);
 
         aiLogWriter.init(
                 requestId,
@@ -70,27 +67,16 @@ public class OpenAIService implements AIServiceInterface {
                 AIModel.GPT_4_1_MINI,
                 "ROUTINE_RECOMMEND",
                 "0.0.1",
-                openAIPromptGenerator.getInputJsonOf()
+                openAiMessageConverter.getInputJsonOf()
         );
 
+        Prompt prompt = getRoutineRecommendPrompt(openAiMessageConverter);
+
         Long inputTokens = null;
-        Long outputTokens = null;
 
         try {
-            OpenAiChatOptions options = OpenAiChatOptions.builder()
-                    .model(AIModel.GPT_4_1_MINI.getName())
-                    .temperature(0.7)
-                    .responseFormat(
-                            ResponseFormat.builder()
-                                    .type(ResponseFormat.Type.JSON_OBJECT)
-                                    .build()
-                    )
-                    .build();
-
-            Prompt prompt = new Prompt(openAIPromptGenerator.getListOf(), options);
-
             ChatResponse response = chatClient.prompt(prompt)
-                    .tools(new AITools(exerciseRepository, exerciseMapper))
+                    .tools(aiTools)
                     .call()
                     .chatResponse();
 
@@ -98,7 +84,7 @@ public class OpenAIService implements AIServiceInterface {
                 Usage usage = response.getMetadata().getUsage();
 
             inputTokens  = Long.valueOf(usage.getPromptTokens());
-            outputTokens = Long.valueOf(usage.getCompletionTokens());
+            Long outputTokens = Long.valueOf(usage.getCompletionTokens());
 
             String content = response.getResult().getOutput().getText();
             AIRoutineResponse result =
@@ -120,5 +106,20 @@ public class OpenAIService implements AIServiceInterface {
             aiLogWriter.failure(requestId, inputTokens, e.getMessage());
             throw e;
         }
+    }
+
+    public Prompt getRoutineRecommendPrompt(OpenAiMessageConverter openAiMessageConverter) {
+
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .model(AIModel.GPT_4_1_MINI.getName())
+                .temperature(0.7)
+                .responseFormat(
+                        ResponseFormat.builder()
+                                .type(ResponseFormat.Type.JSON_OBJECT)
+                                .build()
+                )
+                .build();
+
+        return new Prompt(openAiMessageConverter.getListOf(), options);
     }
 }

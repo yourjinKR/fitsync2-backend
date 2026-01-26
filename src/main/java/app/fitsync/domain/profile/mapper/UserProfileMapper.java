@@ -1,5 +1,7 @@
 package app.fitsync.domain.profile.mapper;
 
+import app.fitsync.domain.ai.dto.AIRoutineRequest;
+import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -62,6 +64,25 @@ public class UserProfileMapper {
                 user.getName(),
                 user.getAge(),
                 user.isHidden()
+        );
+    }
+
+    public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
+
+        User user = userProfile.getUser();
+
+        return new RoutineRecommendUserMessage(
+                user.getAge(),
+                userProfile.getWorkoutGoals(),
+                userProfile.getExerciseCategories(),
+                userProfile.getDisease(),
+                userProfile.getHeight(),
+                userProfile.getWeight(),
+                userProfile.getSkeletalMuscleMass(),
+                userProfile.getBodyFatMass(),
+                userProfile.getBodyFatPercentage(),
+                userProfile.getBmi(),
+                request.splitCount()
         );
     }
 }
