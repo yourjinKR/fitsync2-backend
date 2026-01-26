@@ -4,7 +4,7 @@ import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
-import app.fitsync.domain.ai.entity.OpenAIPromptGenerator;
+import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
 import app.fitsync.domain.ai.mapper.AILogMapper;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
@@ -62,7 +62,7 @@ public class OpenAIService implements AIServiceInterface {
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
         RoutineRecommendUserMessage userMessageRequest = aiLogMapper.toDto(profile, request);
-        OpenAIPromptGenerator openAIPromptGenerator = OpenAIPromptGenerator.routineRecommendOf(userMessageRequest);
+        OpenAiMessageConverter openAiMessageConverter = OpenAiMessageConverter.routineRecommendOf(userMessageRequest);
 
         aiLogWriter.init(
                 requestId,
@@ -70,10 +70,10 @@ public class OpenAIService implements AIServiceInterface {
                 AIModel.GPT_4_1_MINI,
                 "ROUTINE_RECOMMEND",
                 "0.0.1",
-                openAIPromptGenerator.getInputJsonOf()
+                openAiMessageConverter.getInputJsonOf()
         );
 
-        Prompt prompt = getRoutineRecommendPrompt(openAIPromptGenerator);
+        Prompt prompt = getRoutineRecommendPrompt(openAiMessageConverter);
 
         Long inputTokens = null;
 
@@ -111,7 +111,7 @@ public class OpenAIService implements AIServiceInterface {
         }
     }
 
-    public Prompt getRoutineRecommendPrompt(OpenAIPromptGenerator openAIPromptGenerator) {
+    public Prompt getRoutineRecommendPrompt(OpenAiMessageConverter openAiMessageConverter) {
 
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .model(AIModel.GPT_4_1_MINI.getName())
@@ -123,6 +123,6 @@ public class OpenAIService implements AIServiceInterface {
                 )
                 .build();
 
-        return new Prompt(openAIPromptGenerator.getListOf(), options);
+        return new Prompt(openAiMessageConverter.getListOf(), options);
     }
 }

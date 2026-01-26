@@ -14,21 +14,24 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 
+/**
+ * 프롬프트에 담을 메세지들을 편리하게 관리하는 객체
+ */
 @Getter
-public class OpenAIPromptGenerator {
+public class OpenAiMessageConverter {
 
     private final UserMessage userMessage;
     private final SystemMessage systemMessage;
     private final AssistantMessage assistantMessage;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public OpenAIPromptGenerator(UserMessage userMessage, SystemMessage systemMessage, AssistantMessage assistantMessage) {
+    public OpenAiMessageConverter(UserMessage userMessage, SystemMessage systemMessage, AssistantMessage assistantMessage) {
         this.userMessage = userMessage;
         this.systemMessage = systemMessage;
         this.assistantMessage = assistantMessage;
     }
 
-    public static OpenAIPromptGenerator routineRecommendOf(RoutineRecommendUserMessage request)
+    public static OpenAiMessageConverter routineRecommendOf(RoutineRecommendUserMessage request)
             throws JsonProcessingException {
 
         UserMessage userMessage = new UserMessage(OBJECT_MAPPER.writeValueAsString(request));
@@ -37,7 +40,7 @@ public class OpenAIPromptGenerator {
 
         AssistantMessage assistantMessage = new AssistantMessage("");
 
-        return new OpenAIPromptGenerator(userMessage, systemMessage, assistantMessage);
+        return new OpenAiMessageConverter(userMessage, systemMessage, assistantMessage);
     }
 
     public List<Message> getListOf() {

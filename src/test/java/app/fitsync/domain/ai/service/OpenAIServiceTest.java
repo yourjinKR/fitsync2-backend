@@ -4,7 +4,7 @@ import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
-import app.fitsync.domain.ai.entity.OpenAIPromptGenerator;
+import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
 import app.fitsync.domain.ai.mapper.AILogMapper;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
@@ -78,14 +78,14 @@ class OpenAIServiceTest {
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
         when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
-        OpenAIPromptGenerator generator = mock(OpenAIPromptGenerator.class);
+        OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
         when(generator.getListOf()).thenReturn(List.of()); // Prompt 생성용
 
         // static factory mocking
-        try (MockedStatic<OpenAIPromptGenerator> mocked =
-                     Mockito.mockStatic(OpenAIPromptGenerator.class)) {
-            mocked.when(() -> OpenAIPromptGenerator.routineRecommendOf(userMessageDto))
+        try (MockedStatic<OpenAiMessageConverter> mocked =
+                     Mockito.mockStatic(OpenAiMessageConverter.class)) {
+            mocked.when(() -> OpenAiMessageConverter.routineRecommendOf(userMessageDto))
                     .thenReturn(generator);
 
             // ===== ChatResponse mocking (Spring AI 1.1.2 타입 흐름) =====
@@ -210,13 +210,13 @@ class OpenAIServiceTest {
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
         when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
-        OpenAIPromptGenerator generator = mock(OpenAIPromptGenerator.class);
+        OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
         when(generator.getListOf()).thenReturn(List.of());
 
-        try (MockedStatic<OpenAIPromptGenerator> mocked =
-                     Mockito.mockStatic(OpenAIPromptGenerator.class)) {
-            mocked.when(() -> OpenAIPromptGenerator.routineRecommendOf(userMessageDto))
+        try (MockedStatic<OpenAiMessageConverter> mocked =
+                     Mockito.mockStatic(OpenAiMessageConverter.class)) {
+            mocked.when(() -> OpenAiMessageConverter.routineRecommendOf(userMessageDto))
                     .thenReturn(generator);
 
             ChatClient.ChatClientRequestSpec requestSpec = mock(ChatClient.ChatClientRequestSpec.class);
