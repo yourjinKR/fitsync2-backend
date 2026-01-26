@@ -9,6 +9,7 @@ import app.fitsync.domain.ai.mapper.AILogMapper;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.profile.entity.UserProfile;
+import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.global.exception.RestApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +43,9 @@ class OpenAIServiceTest {
     @Mock ExerciseRepository exerciseRepository;
     @Mock UserProfileRepository userProfileRepository;
     @Mock ExerciseMapper exerciseMapper;
+    @Mock UserProfileMapper userProfileMapper;
     @Mock AILogWriter aiLogWriter;
     @Mock ChatClient chatClient;
-    @Mock AILogMapper aiLogMapper;
 
     OpenAIService openAIService;
 
@@ -54,9 +55,9 @@ class OpenAIServiceTest {
                 exerciseRepository,
                 userProfileRepository,
                 exerciseMapper,
+                userProfileMapper,
                 aiLogWriter,
-                chatClient,
-                aiLogMapper
+                chatClient
         );
     }
 
@@ -76,7 +77,7 @@ class OpenAIServiceTest {
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
         OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
@@ -208,7 +209,7 @@ class OpenAIServiceTest {
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(aiLogMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
 
         OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));

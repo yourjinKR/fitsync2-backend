@@ -34,23 +34,4 @@ public class AILogMapper {
                 log.getUserAction()
         );
     }
-
-    public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
-
-        User user = userProfile.getUser();
-
-        return new RoutineRecommendUserMessage(
-                user.getAge(),
-                userProfile.getWorkoutGoals(),
-                userProfile.getExerciseCategories(),
-                userProfile.getDisease(),
-                userProfile.getHeight(),
-                userProfile.getWeight(),
-                userProfile.getSkeletalMuscleMass(),
-                userProfile.getBodyFatMass(),
-                userProfile.getBodyFatPercentage(),
-                userProfile.getBmi(),
-                request.splitCount()
-        );
-    }
 }
