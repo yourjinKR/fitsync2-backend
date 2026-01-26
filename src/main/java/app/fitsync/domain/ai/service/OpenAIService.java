@@ -73,22 +73,11 @@ public class OpenAIService implements AIServiceInterface {
                 openAIPromptGenerator.getInputJsonOf()
         );
 
+        Prompt prompt = getRoutineRecommendPrompt(openAIPromptGenerator);
+
         Long inputTokens = null;
-        Long outputTokens = null;
 
         try {
-            OpenAiChatOptions options = OpenAiChatOptions.builder()
-                    .model(AIModel.GPT_4_1_MINI.getName())
-                    .temperature(0.7)
-                    .responseFormat(
-                            ResponseFormat.builder()
-                                    .type(ResponseFormat.Type.JSON_OBJECT)
-                                    .build()
-                    )
-                    .build();
-
-            Prompt prompt = new Prompt(openAIPromptGenerator.getListOf(), options);
-
             ChatResponse response = chatClient.prompt(prompt)
                     .tools(new AITools(exerciseRepository, exerciseMapper))
                     .call()
@@ -98,7 +87,7 @@ public class OpenAIService implements AIServiceInterface {
                 Usage usage = response.getMetadata().getUsage();
 
             inputTokens  = Long.valueOf(usage.getPromptTokens());
-            outputTokens = Long.valueOf(usage.getCompletionTokens());
+            Long outputTokens = Long.valueOf(usage.getCompletionTokens());
 
             String content = response.getResult().getOutput().getText();
             AIRoutineResponse result =
@@ -120,5 +109,20 @@ public class OpenAIService implements AIServiceInterface {
             aiLogWriter.failure(requestId, inputTokens, e.getMessage());
             throw e;
         }
+    }
+
+    public Prompt getRoutineRecommendPrompt(OpenAIPromptGenerator openAIPromptGenerator) {
+
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .model(AIModel.GPT_4_1_MINI.getName())
+                .temperature(0.7)
+                .responseFormat(
+                        ResponseFormat.builder()
+                                .type(ResponseFormat.Type.JSON_OBJECT)
+                                .build()
+                )
+                .build();
+
+        return new Prompt(openAIPromptGenerator.getListOf(), options);
     }
 }
