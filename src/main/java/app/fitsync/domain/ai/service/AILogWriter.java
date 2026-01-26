@@ -43,10 +43,11 @@ public class AILogWriter {
     }
 
     @Transactional
-    public void success(String requestId,
-                        Map<String, Object> outputContent,
-                        Long inputTokens,
-                        Long outputTokens) {
+    public void success(
+            String requestId,
+            Map<String, Object> outputContent,
+            Long inputTokens,
+            Long outputTokens) {
 
         AILog log = repository.findByRequestId(requestId)
                 .orElseThrow(() -> new RestApiException(AILogErrorCode.UUID_NOT_FOUND, requestId));
