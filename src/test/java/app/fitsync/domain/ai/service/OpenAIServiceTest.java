@@ -5,7 +5,6 @@ import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
-import app.fitsync.domain.ai.mapper.AILogMapper;
 import app.fitsync.domain.exercise.mapper.ExerciseMapper;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.profile.entity.UserProfile;
@@ -46,18 +45,18 @@ class OpenAIServiceTest {
     @Mock UserProfileMapper userProfileMapper;
     @Mock AILogWriter aiLogWriter;
     @Mock ChatClient chatClient;
+    @Mock AITools aiTools;
 
     OpenAIService openAIService;
 
     @BeforeEach
     void setUp() {
         openAIService = new OpenAIService(
-                exerciseRepository,
                 userProfileRepository,
-                exerciseMapper,
                 userProfileMapper,
                 aiLogWriter,
-                chatClient
+                chatClient,
+                aiTools
         );
     }
 

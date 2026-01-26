@@ -5,8 +5,6 @@ import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
-import app.fitsync.domain.exercise.mapper.ExerciseMapper;
-import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.exception.UserProfileException;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
@@ -30,13 +28,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OpenAIService implements AIServiceInterface {
 
-    private final ExerciseRepository exerciseRepository;
     private final UserProfileRepository userProfileRepository;
-    private final ExerciseMapper exerciseMapper;
     private final UserProfileMapper userProfileMapper;
     private final AILogWriter aiLogWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ChatClient chatClient;
+    private final AITools aiTools;
 
     /*
 
@@ -79,7 +76,7 @@ public class OpenAIService implements AIServiceInterface {
 
         try {
             ChatResponse response = chatClient.prompt(prompt)
-                    .tools(new AITools(exerciseRepository, exerciseMapper))
+                    .tools(aiTools)
                     .call()
                     .chatResponse();
 
