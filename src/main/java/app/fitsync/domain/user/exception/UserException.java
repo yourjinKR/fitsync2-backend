@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserException implements ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 유저 정보를 찾지 못했습니다 ID : {0}"),
+    DUPLICATE_LOGINID(HttpStatus.CONFLICT, "해당 ID와 일치하는 유저가 이미 존재합니다 login_id : {0}")
     ;
 
     private final HttpStatus httpStatus;
