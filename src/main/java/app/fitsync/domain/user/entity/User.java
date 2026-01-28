@@ -48,6 +48,20 @@ public class User extends BaseEntity {
     @Embedded
     private BirthDate birth;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_type", nullable = false)
+    private UserRoleType roleType;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "is_social", nullable = false)
+    private Boolean isSocial;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "social_provider_type")
+    private SocialProviderType socialProviderType;
+
     @Column(name = "hidden", nullable = false)
     @Builder.Default
     private boolean hidden = false;
