@@ -3,7 +3,9 @@ package app.fitsync.domain.user.mapper;
 import app.fitsync.domain.user.dto.BirthReqeust;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.entity.BirthDate;
+import app.fitsync.domain.user.entity.SocialProviderType;
 import app.fitsync.domain.user.entity.User;
+import app.fitsync.domain.user.entity.UserRoleType;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,7 @@ public class UserMapper {
                 .build();
     }
 
-    static BirthDate toBirthDate(BirthReqeust reqeust) {
+    public static BirthDate toBirthDate(BirthReqeust reqeust) {
         if (reqeust == null) { return BirthDate.EMPTY; }
 
         LocalDateTime birth = LocalDateTime.of(

@@ -1,10 +1,18 @@
 package app.fitsync.global.config;
 
+import app.fitsync.domain.jwt.service.JwtService;
+import app.fitsync.domain.user.entity.UserRoleType;
+import app.fitsync.global.security.JwtFilter;
 import app.fitsync.global.security.LoginFilter;
+import app.fitsync.global.security.RefreshTokenLogoutHandler;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,14 +24,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final AuthenticationSuccessHandler loginSuccessHandler;
+    private final AuthenticationSuccessHandler socialSuccessHandler;
+    private final JwtService jwtService;
+
+    public SecurityConfig(
+            AuthenticationConfiguration authenticationConfiguration,
+            @Qualifier("LoginSuccessHandler") AuthenticationSuccessHandler loginSuccessHandler,
+            @Qualifier("SocialSuccessHandler") AuthenticationSuccessHandler socialSuccessHandler,
+            JwtService jwtService) {
+
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.loginSuccessHandler = loginSuccessHandler;
+        this.socialSuccessHandler = socialSuccessHandler;
+        this.jwtService = jwtService;
+    }
 
     // 단방향 암호화 비밀번호
     @Bean
@@ -37,6 +62,31 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    // CORS Bean
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    // 권한 계층: ADMIN > (MEMBER, TRAINER)
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withRolePrefix("ROLE_")
+                .role(UserRoleType.ADMIN.name()).implies(UserRoleType.MEMBER.name())
+                .role(UserRoleType.ADMIN.name()).implies(UserRoleType.TRAINER.name())
+                .build();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -45,6 +95,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable);
 
         // CORS 설정
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
 
         // 기본 Form 기반 인증 필터를 disable
         http
@@ -55,9 +108,14 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         // 인가
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll());
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
+                .requestMatchers(HttpMethod.GET, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
+                .requestMatchers(HttpMethod.PUT, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
+                .requestMatchers(HttpMethod.DELETE, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
+                .anyRequest().authenticated()
+        );
 
         // 예외 처리
         http
@@ -75,11 +133,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        // 커스텀 필터
+        http
+                .addFilterBefore(new JwtFilter(), LogoutFilter.class);
+
         http
                 .addFilterBefore(
                         new LoginFilter(authenticationManager(authenticationConfiguration), loginSuccessHandler),
                         UsernamePasswordAuthenticationFilter.class
                 );
+
+        // OAuth2 인증용
+        http
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(socialSuccessHandler));
+
+        http
+                .logout(logout -> logout
+                        .addLogoutHandler(new RefreshTokenLogoutHandler(jwtService)));
+
 
         return http.build();
     }
