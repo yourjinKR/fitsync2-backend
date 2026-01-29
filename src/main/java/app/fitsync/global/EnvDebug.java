@@ -20,6 +20,8 @@ public class EnvDebug implements CommandLineRunner {
         System.out.println(env.getProperty("NAVER_SECRET_KEY"));
         System.out.println(env.getProperty("GOOGLE_CLIENT_ID"));
         System.out.println(env.getProperty("GOOGLE_SECRET_KEY"));
+        System.out.println(env.getProperty("KAKAO_CLIENT_ID"));
+        System.out.println(env.getProperty("KAKAO_SECRET_KEY"));
 
         System.out.println("spring.ai.openai.api-key = " +
                 env.getProperty("spring.ai.openai.api-key"));

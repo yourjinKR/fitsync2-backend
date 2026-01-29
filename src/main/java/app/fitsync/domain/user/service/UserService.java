@@ -150,6 +150,19 @@ public class UserService extends DefaultOAuth2UserService implements UserService
             email = attributes.get("email").toString();
             name = attributes.get("name").toString();
 
+        } else if (registrationId.equals(SocialProviderType.KAKAO.name())) {
+
+            attributes = (Map<String, Object>) oAuth2User.getAttributes();
+
+            System.out.println("attributes : " + attributes);
+
+            loginId = registrationId + "_" + attributes.get("id");
+
+            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+
+            email = kakaoAccount.get("email").toString();
+            name = kakaoAccount.get("name").toString();
+
         } else {
             throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");
         }
