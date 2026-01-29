@@ -5,8 +5,6 @@ import app.fitsync.domain.user.dto.CustomOAuth2User;
 import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
-import app.fitsync.domain.user.entity.BirthDate;
-import app.fitsync.domain.user.entity.Gender;
 import app.fitsync.domain.user.entity.SocialProviderType;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
@@ -15,12 +13,8 @@ import app.fitsync.domain.user.mapper.UserMapper;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -139,10 +133,6 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         String role = UserRoleType.MEMBER.name();
         String email;
         String name;
-        String gender;
-        String birthday;
-        String birthyear;
-        LocalDateTime birthDateTime = null;
 
         // provider 제공자별 데이터 획득
         String registrationId = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
@@ -152,23 +142,13 @@ public class UserService extends DefaultOAuth2UserService implements UserService
             loginId = registrationId + "_" + attributes.get("id");
             email = attributes.get("email").toString();
             name = attributes.get("name").toString();
-            gender = attributes.get("gender").toString();
-            birthday = attributes.get("birthday").toString();
-            birthyear = attributes.get("birthyear").toString();
-
-            if (birthyear != null && birthday != null) {
-                LocalDate birthDate =
-                        LocalDate.parse(birthyear + "-" + birthday); // yyyy-MM-dd
-                birthDateTime = birthDate.atTime(LocalTime.MIDNIGHT);
-            }
 
         } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes();
             loginId = registrationId + "_" + attributes.get("sub");
             email = attributes.get("email").toString();
-            name = attributes.get("nickname").toString();
-            gender = attributes.get("gender").toString();
+            name = attributes.get("name").toString();
 
         } else {
             throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");
@@ -190,15 +170,11 @@ public class UserService extends DefaultOAuth2UserService implements UserService
 //            userRepository.save(user.get());
         } else {
 
-            Gender parsedGender = Objects.equals(gender, "M") ? Gender.MALE : Gender.FEMALE;
-
             // 신규 가입
             User newUser = User.builder()
                     .loginId(loginId)
                     .password("")
                     .name(name)
-                    .gender(parsedGender)
-                    .birth(new BirthDate(birthDateTime))
                     .roleType(UserRoleType.MEMBER)
                     .email(email)
                     .isSocial(true)

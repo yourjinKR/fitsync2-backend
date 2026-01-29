@@ -46,6 +46,8 @@ public class UserProfileMapper {
     public UserProfileDetailResponse toDetailDto(UserProfile userProfile) {
 
         return new UserProfileDetailResponse(
+                userProfile.getGender(),
+                userProfile.getBirth(),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
@@ -62,17 +64,14 @@ public class UserProfileMapper {
 
         return new UserHeaderInfoResponse(
                 user.getName(),
-                user.getAge(),
                 user.isHidden()
         );
     }
 
     public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
 
-        User user = userProfile.getUser();
-
         return new RoutineRecommendUserMessage(
-                user.getAge(),
+                userProfile.getBirth().getAge(),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),

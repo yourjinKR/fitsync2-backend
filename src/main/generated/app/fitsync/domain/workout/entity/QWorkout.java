@@ -61,8 +61,8 @@ public class QWorkout extends EntityPathBase<Workout> {
 
     public QWorkout(Class<? extends Workout> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.owner = inits.isInitialized("owner") ? new app.fitsync.domain.user.entity.QUser(forProperty("owner"), inits.get("owner")) : null;
-        this.writer = inits.isInitialized("writer") ? new app.fitsync.domain.user.entity.QUser(forProperty("writer"), inits.get("writer")) : null;
+        this.owner = inits.isInitialized("owner") ? new app.fitsync.domain.user.entity.QUser(forProperty("owner")) : null;
+        this.writer = inits.isInitialized("writer") ? new app.fitsync.domain.user.entity.QUser(forProperty("writer")) : null;
     }
 
 }

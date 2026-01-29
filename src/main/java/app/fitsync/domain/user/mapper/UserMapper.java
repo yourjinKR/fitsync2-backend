@@ -1,10 +1,7 @@
 package app.fitsync.domain.user.mapper;
 
-import app.fitsync.domain.user.dto.BirthReqeust;
 import app.fitsync.domain.user.dto.UserRequest;
-import app.fitsync.domain.user.entity.BirthDate;
 import app.fitsync.domain.user.entity.User;
-import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,8 +11,6 @@ public class UserMapper {
                 .loginId(request.loginId())
                 .password(encodedPassword)
                 .name(request.name())
-                .gender(request.gender())
-                .birth(new BirthDate(request.birth()))
                 .roleType(request.roleType())
                 .email(request.email())
                 .isSocial(request.isSocial())
