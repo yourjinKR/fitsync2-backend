@@ -1,6 +1,6 @@
 package app.fitsync.domain.jwt.dto;
 
-public record JWTResponseDTO(
+public record JWTResponse(
         String accessToken,
         String refreshToken) {
 }

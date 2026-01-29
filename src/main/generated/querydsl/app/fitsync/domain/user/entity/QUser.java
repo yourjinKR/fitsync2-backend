@@ -32,17 +32,25 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
+    public final StringPath email = createString("email");
+
     public final EnumPath<Gender> gender = createEnum("gender", Gender.class);
 
     public final BooleanPath hidden = createBoolean("hidden");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isSocial = createBoolean("isSocial");
+
     public final StringPath loginId = createString("loginId");
 
     public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
+
+    public final EnumPath<UserRoleType> roleType = createEnum("roleType", UserRoleType.class);
+
+    public final EnumPath<SocialProviderType> socialProviderType = createEnum("socialProviderType", SocialProviderType.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

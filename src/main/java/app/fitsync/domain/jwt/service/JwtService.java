@@ -1,8 +1,8 @@
 package app.fitsync.domain.jwt.service;
 
 import app.fitsync.domain.jwt.domain.RefreshEntity;
-import app.fitsync.domain.jwt.dto.JWTResponseDTO;
-import app.fitsync.domain.jwt.dto.RefreshRequestDTO;
+import app.fitsync.domain.jwt.dto.JWTResponse;
+import app.fitsync.domain.jwt.dto.RefreshRequest;
 import app.fitsync.domain.jwt.repository.RefreshRepository;
 import app.fitsync.global.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
@@ -20,7 +20,7 @@ public class JwtService {
 
     // 소셜 로그인 성공 후 쿠키(Refresh) -> 헤더 방식으로 응답
     @Transactional
-    public JWTResponseDTO cookie2Header(
+    public JWTResponse cookie2Header(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -76,12 +76,12 @@ public class JwtService {
         refreshCookie.setMaxAge(0);
         response.addCookie(refreshCookie);
 
-        return new JWTResponseDTO(newAccessToken, newRefreshToken);
+        return new JWTResponse(newAccessToken, newRefreshToken);
     }
 
     // Refresh 토큰으로 Access 토큰 재발급 로직 (Rotate 포함)
     @Transactional
-    public JWTResponseDTO refreshRotate(RefreshRequestDTO dto) {
+    public JWTResponse refreshRotate(RefreshRequest dto) {
 
         String refreshToken = dto.getRefreshToken();
 
@@ -113,7 +113,7 @@ public class JwtService {
         removeRefresh(refreshToken);
         refreshRepository.save(newRefreshEntity);
 
-        return new JWTResponseDTO(newAccessToken, newRefreshToken);
+        return new JWTResponse(newAccessToken, newRefreshToken);
     }
 
     // JWT Refresh 토큰 발급 후 저장 메소드

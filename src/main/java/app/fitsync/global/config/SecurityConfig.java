@@ -66,11 +66,24 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173"
+                // https://fitsync2-frontend
+        ));
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+
+        configuration.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "Accept"
+        ));
+
+        configuration.setAllowCredentials(false);
+
         configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -110,10 +123,9 @@ public class SecurityConfig {
         // 인가
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
-                .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
-                .requestMatchers(HttpMethod.PUT, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
-                .requestMatchers(HttpMethod.DELETE, "/user").hasAnyRole(UserRoleType.MEMBER.name(), UserRoleType.TRAINER.name())
+                .requestMatchers(HttpMethod.POST, "/api/user/exist", "/api/user").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/check").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/user/me").hasAnyRole("MEMBER", "TRAINER", "ADMIN")
                 .anyRequest().authenticated()
         );
 
