@@ -22,18 +22,4 @@ public class UserMapper {
                 .socialProviderType(request.socialProviderType())
                 .build();
     }
-
-    public static BirthDate toBirthDate(BirthReqeust reqeust) {
-        if (reqeust == null) { return BirthDate.EMPTY; }
-
-        LocalDateTime birth = LocalDateTime.of(
-                reqeust.year(),
-                reqeust.month(),
-                reqeust.dayOfMonth(),
-                0,
-                0
-        );
-
-        return new BirthDate(birth);
-    }
 }
