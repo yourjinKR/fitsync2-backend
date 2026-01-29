@@ -36,6 +36,8 @@ public class QExercise extends EntityPathBase<Exercise> {
 
     public final SetPath<EffectType, EnumPath<EffectType>> effects = this.<EffectType, EnumPath<EffectType>>createSet("effects", EffectType.class, EnumPath.class, PathInits.DIRECT2);
 
+    public final SetPath<Equipment, EnumPath<Equipment>> equipments = this.<Equipment, EnumPath<Equipment>>createSet("equipments", Equipment.class, EnumPath.class, PathInits.DIRECT2);
+
     public final BooleanPath hidden = createBoolean("hidden");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

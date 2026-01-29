@@ -30,6 +30,12 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping(value = "/api/user/me")
+    public ResponseEntity<UserResponse> findMe() {
+        UserResponse me = userService.findMe();
+        return ResponseEntity.ok(me);
+    }
+
     @DeleteMapping("/api/user")
     public ResponseEntity<UserResponse> deleteUser(@RequestBody UserDeleteRequest request) {
         UserResponse response = userService.deleteUser(request);

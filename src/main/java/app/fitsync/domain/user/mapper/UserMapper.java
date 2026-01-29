@@ -15,25 +15,11 @@ public class UserMapper {
                 .password(encodedPassword)
                 .name(request.name())
                 .gender(request.gender())
-                .birth(toBirthDate(request.birth()))
+                .birth(new BirthDate(request.birth()))
                 .roleType(request.roleType())
                 .email(request.email())
                 .isSocial(request.isSocial())
                 .socialProviderType(request.socialProviderType())
                 .build();
-    }
-
-    static BirthDate toBirthDate(BirthReqeust reqeust) {
-        if (reqeust == null) { return BirthDate.EMPTY; }
-
-        LocalDateTime birth = LocalDateTime.of(
-                reqeust.year(),
-                reqeust.month(),
-                reqeust.dayOfMonth(),
-                0,
-                0
-        );
-
-        return new BirthDate(birth);
     }
 }
