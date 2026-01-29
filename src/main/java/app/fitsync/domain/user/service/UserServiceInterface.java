@@ -7,5 +7,6 @@ import app.fitsync.domain.user.dto.UserResponse;
 public interface UserServiceInterface {
     UserResponse createUser(UserRequest request);
     Boolean existUser(String logiId);
+    UserResponse findMe();
     UserResponse deleteUser(UserDeleteRequest request);
 }

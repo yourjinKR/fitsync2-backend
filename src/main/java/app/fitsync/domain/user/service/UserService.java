@@ -1,7 +1,6 @@
 package app.fitsync.domain.user.service;
 
 import app.fitsync.domain.jwt.service.JwtService;
-import app.fitsync.domain.user.dto.BirthReqeust;
 import app.fitsync.domain.user.dto.CustomOAuth2User;
 import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -116,11 +116,13 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         jwtService.removeRefreshUser(loginId);
     }
 
-    public User findMe() {
+    public UserResponse findMe() {
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return userRepository.findByLoginIdAndHiddenIsFalse(loginId)
+        User user = userRepository.findByLoginIdAndHiddenIsFalse(loginId)
                 .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND_LOGIN_ID, loginId));
+
+        return new UserResponse(user.getId());
     }
 
     @Override
@@ -188,12 +190,14 @@ public class UserService extends DefaultOAuth2UserService implements UserService
 //            userRepository.save(user.get());
         } else {
 
+            Gender parsedGender = Objects.equals(gender, "M") ? Gender.MALE : Gender.FEMALE;
+
             // 신규 가입
             User newUser = User.builder()
                     .loginId(loginId)
                     .password("")
                     .name(name)
-                    .gender(Gender.valueOf(gender))
+                    .gender(parsedGender)
                     .birth(new BirthDate(birthDateTime))
                     .roleType(UserRoleType.MEMBER)
                     .email(email)

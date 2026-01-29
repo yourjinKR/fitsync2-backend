@@ -5,6 +5,7 @@ import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
 import app.fitsync.domain.user.service.UserServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,12 @@ public class UserController {
     public ResponseEntity<Boolean> existUser(@PathVariable String loginId) {
         Boolean result = userService.existUser(loginId);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/api/user/me")
+    public ResponseEntity<UserResponse> findMe() {
+        UserResponse me = userService.findMe();
+        return ResponseEntity.ok(me);
     }
 
     @DeleteMapping("/api/user")
