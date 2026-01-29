@@ -1,6 +1,8 @@
 package app.fitsync.domain.profile.entity;
 
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
+import app.fitsync.domain.user.entity.BirthDate;
+import app.fitsync.domain.user.entity.Gender;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
 import jakarta.persistence.*;
@@ -59,6 +61,16 @@ public class UserProfile extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+
+    @Column(name = "birth")
+    @Embedded
+    private BirthDate birth;
 
 
     @ElementCollection

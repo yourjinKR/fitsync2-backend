@@ -2,7 +2,6 @@ package app.fitsync.domain.user.entity;
 
 import app.fitsync.global.BaseEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -40,14 +39,6 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "gender")
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(name = "birth")
-    @Embedded
-    private BirthDate birth;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role_type", nullable = false)
     private UserRoleType roleType;
@@ -75,7 +66,4 @@ public class User extends BaseEntity {
         hidden = true;
     }
 
-    public Long getAge() {
-        return birth.getAge();
-    }
 }

@@ -24,6 +24,8 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public final app.fitsync.global.QBaseEntity _super = new app.fitsync.global.QBaseEntity(this);
 
+    public final app.fitsync.domain.user.entity.QBirthDate birth;
+
     public final NumberPath<Double> bmi = createNumber("bmi", Double.class);
 
     public final NumberPath<Double> bodyFatMass = createNumber("bodyFatMass", Double.class);
@@ -39,6 +41,8 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
     public final StringPath disease = createString("disease");
 
     public final SetPath<app.fitsync.domain.exercise.entity.ExerciseCategory, EnumPath<app.fitsync.domain.exercise.entity.ExerciseCategory>> exerciseCategories = this.<app.fitsync.domain.exercise.entity.ExerciseCategory, EnumPath<app.fitsync.domain.exercise.entity.ExerciseCategory>>createSet("exerciseCategories", app.fitsync.domain.exercise.entity.ExerciseCategory.class, EnumPath.class, PathInits.DIRECT2);
+
+    public final EnumPath<app.fitsync.domain.user.entity.Gender> gender = createEnum("gender", app.fitsync.domain.user.entity.Gender.class);
 
     public final NumberPath<Double> height = createNumber("height", Double.class);
 
@@ -73,7 +77,8 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public QUserProfile(Class<? extends UserProfile> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new app.fitsync.domain.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
+        this.birth = inits.isInitialized("birth") ? new app.fitsync.domain.user.entity.QBirthDate(forProperty("birth")) : null;
+        this.user = inits.isInitialized("user") ? new app.fitsync.domain.user.entity.QUser(forProperty("user")) : null;
     }
 
 }
