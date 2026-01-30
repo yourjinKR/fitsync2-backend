@@ -119,6 +119,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         return new UserResponse(user.getId());
     }
 
+    // TODO : 소셜 전용 유저 생성 DTO, 소셜별 객체 관리
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -136,21 +137,23 @@ public class UserService extends DefaultOAuth2UserService implements UserService
 
         // provider 제공자별 데이터 획득
         String registrationId = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
-        if (registrationId.equals(SocialProviderType.NAVER.name())) {
+        SocialProviderType socialProviderType = SocialProviderType.valueOf(registrationId);
+
+        if (socialProviderType.equals(SocialProviderType.NAVER)) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
             loginId = registrationId + "_" + attributes.get("id");
             email = attributes.get("email").toString();
             name = attributes.get("name").toString();
 
-        } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
+        } else if (socialProviderType.equals(SocialProviderType.GOOGLE)) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes();
             loginId = registrationId + "_" + attributes.get("sub");
             email = attributes.get("email").toString();
             name = attributes.get("name").toString();
 
-        } else if (registrationId.equals(SocialProviderType.KAKAO.name())) {
+        } else if (socialProviderType.equals(SocialProviderType.KAKAO)) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes();
 
@@ -191,7 +194,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
                     .roleType(UserRoleType.MEMBER)
                     .email(email)
                     .isSocial(true)
-                    .socialProviderType(SocialProviderType.valueOf(registrationId))
+                    .socialProviderType(socialProviderType)
                     .build();
 
             userRepository.save(newUser);
