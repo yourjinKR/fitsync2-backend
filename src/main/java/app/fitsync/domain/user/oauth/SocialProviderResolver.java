@@ -1,4 +1,4 @@
-package app.fitsync.domain.user.oauth.extractor;
+package app.fitsync.domain.user.oauth;
 
 import app.fitsync.domain.user.entity.SocialProviderType;
 
