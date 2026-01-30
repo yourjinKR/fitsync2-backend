@@ -2,6 +2,7 @@ package app.fitsync.domain.user.service;
 
 import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.dto.CustomOAuth2User;
+import app.fitsync.domain.user.oauth.SocialUserInfo;
 import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
@@ -10,11 +11,12 @@ import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
 import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.mapper.UserMapper;
+import app.fitsync.domain.user.oauth.SocialUserInfoExtractor;
+import app.fitsync.domain.user.oauth.SocialUserInfoExtractorRegistry;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,6 +40,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtService jwtService;
+    private final SocialUserInfoExtractorRegistry extractorRegistry;
 
     @Override
     public UserResponse createUser(UserRequest request) {
@@ -119,89 +122,57 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         return new UserResponse(user.getId());
     }
 
-    // TODO : 소셜 전용 유저 생성 DTO, 소셜별 객체 관리
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        // 부모 메소드 호출
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // 데이터
-        Map<String, Object> attributes;
-        List<GrantedAuthority> authorities;
-
-        String loginId;
-        String role = UserRoleType.MEMBER.name();
-        String email;
-        String name;
-
-        // provider 제공자별 데이터 획득
         String registrationId = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
         SocialProviderType socialProviderType = SocialProviderType.valueOf(registrationId);
 
-        if (socialProviderType.equals(SocialProviderType.NAVER)) {
+        SocialUserInfoExtractor extractor = extractorRegistry.get(socialProviderType);
+        SocialUserInfo info = extractor.extract(oAuth2User);
 
-            attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
-            loginId = registrationId + "_" + attributes.get("id");
-            email = attributes.get("email").toString();
-            name = attributes.get("name").toString();
+        User user = upsertSocialUser(info);
 
-        } else if (socialProviderType.equals(SocialProviderType.GOOGLE)) {
+        String role = user.getRoleType() != null ? user.getRoleType().name() : UserRoleType.MEMBER.name();
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
-            attributes = (Map<String, Object>) oAuth2User.getAttributes();
-            loginId = registrationId + "_" + attributes.get("sub");
-            email = attributes.get("email").toString();
-            name = attributes.get("name").toString();
+        return new CustomOAuth2User(info.rawAttributes(), authorities, user.getLoginId());
+    }
 
-        } else if (socialProviderType.equals(SocialProviderType.KAKAO)) {
+    private User upsertSocialUser(SocialUserInfo info) {
+        String loginId = info.loginId();
 
-            attributes = (Map<String, Object>) oAuth2User.getAttributes();
+        Optional<User> found = userRepository.findByLoginIdAndIsSocial(loginId, true);
 
-            System.out.println("attributes : " + attributes);
+        if (found.isPresent()) {
+            User user = found.get();
+            boolean changed = false;
 
-            loginId = registrationId + "_" + attributes.get("id");
+            if (info.email() != null && !info.email().isBlank()) {
+                // user.setEmail(info.email());
+                changed = true;
+            }
 
-            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+            if (info.name() != null && !info.name().isBlank()) {
+                // user.setName(info.name());
+                changed = true;
+            }
 
-            email = kakaoAccount.get("email").toString();
-            name = kakaoAccount.get("name").toString();
-
-        } else {
-            throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");
+            return changed ? userRepository.save(user) : user;
         }
 
-        // 데이터베이스 조회 -> 존재하면 업데이트, 없으면 신규 가입
-        Optional<User> user = userRepository.findByLoginIdAndIsSocial(loginId, true);
+        User newUser = User.builder()
+                .loginId(loginId)
+                .password("")
+                .name(info.name() != null ? info.name() : "Unknown")
+                .roleType(UserRoleType.MEMBER)
+                .email(info.email())
+                .isSocial(true)
+                .socialProviderType(info.provider())
+                .build();
 
-        if (user.isPresent()) {
-            // 기존 유저 업데이트 추가 예정
-
-//            role = user.get().getRoleType().name();
-//
-//            UserRequestDTO dto = new UserRequestDTO();
-//            dto.setNickname(name);
-//            dto.setEmail(email);
-//            user.get().updateUser(dto);
-//
-//            userRepository.save(user.get());
-        } else {
-
-            // 신규 가입
-            User newUser = User.builder()
-                    .loginId(loginId)
-                    .password("")
-                    .name(name)
-                    .roleType(UserRoleType.MEMBER)
-                    .email(email)
-                    .isSocial(true)
-                    .socialProviderType(socialProviderType)
-                    .build();
-
-            userRepository.save(newUser);
-        }
-
-        authorities = List.of(new SimpleGrantedAuthority(role));
-
-        return new CustomOAuth2User(attributes, authorities, loginId);
+        return userRepository.save(newUser);
     }
 }
