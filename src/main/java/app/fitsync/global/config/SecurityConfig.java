@@ -80,7 +80,7 @@ public class SecurityConfig {
                 "Accept"
         ));
 
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
 
         configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
 
