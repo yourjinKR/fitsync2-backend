@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
@@ -17,6 +18,10 @@ public class BirthDate {
 
     public BirthDate(LocalDateTime localDateTime) {
         this.birth = (localDateTime != null) ? localDateTime.toLocalDate() : null;
+    }
+
+    public LocalDate getValue() {
+        return this.birth;
     }
 
     public Long getAge(LocalDate now ) {
