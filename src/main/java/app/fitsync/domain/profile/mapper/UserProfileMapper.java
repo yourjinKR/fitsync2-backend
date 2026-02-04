@@ -48,7 +48,7 @@ public class UserProfileMapper {
 
         return new UserProfileDetailResponse(
                 userProfile.getGender(),
-                userProfile.getBirth(),
+                userProfile.getBirth().getValue(),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
