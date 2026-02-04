@@ -1,6 +1,7 @@
 package app.fitsync.domain.user.service;
 
 import app.fitsync.domain.jwt.service.JwtService;
+import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.dto.CustomOAuth2User;
 import app.fitsync.domain.user.oauth.SocialUserInfo;
 import app.fitsync.domain.user.dto.UserDeleteRequest;
@@ -41,6 +42,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
     private final UserMapper userMapper;
     private final JwtService jwtService;
     private final SocialUserInfoExtractorRegistry extractorRegistry;
+    private final CurrentUserProvider currentUserProvider;
 
     @Override
     public UserResponse createUser(UserRequest request) {
@@ -113,13 +115,10 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         jwtService.removeRefreshUser(loginId);
     }
 
+    @Override
     public UserResponse findMe() {
-        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User user = userRepository.findByLoginIdAndHiddenIsFalse(loginId)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND_LOGIN_ID, loginId));
-
-        return new UserResponse(user.getId());
+        Long userId = currentUserProvider.getUserId();
+        return new UserResponse(userId);
     }
 
     @Override
