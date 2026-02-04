@@ -8,6 +8,7 @@ import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.domain.user.entity.User;
+import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -71,7 +72,7 @@ public class UserProfileMapper {
     public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
 
         return new RoutineRecommendUserMessage(
-                userProfile.getBirth().getAge(),
+                userProfile.getBirth().getAge(LocalDate.now()),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),

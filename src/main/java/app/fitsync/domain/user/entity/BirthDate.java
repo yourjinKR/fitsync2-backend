@@ -1,6 +1,7 @@
 package app.fitsync.domain.user.entity;
 
 import jakarta.persistence.Embeddable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import lombok.NoArgsConstructor;
@@ -8,16 +9,17 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 public class BirthDate {
-    public static BirthDate EMPTY = new BirthDate(null);
-    private LocalDateTime birth;
+    private LocalDate birth;
 
-    public BirthDate(LocalDateTime localDateTime) {
-        this.birth = localDateTime;
+    public BirthDate(LocalDate localDate) {
+        this.birth = localDate;
     }
 
-    public Long getAge() {
-        LocalDateTime now = LocalDateTime.now();
+    public BirthDate(LocalDateTime localDateTime) {
+        this.birth = (localDateTime != null) ? localDateTime.toLocalDate() : null;
+    }
 
+    public Long getAge(LocalDate now ) {
         if (this.birth == null) throw new IllegalArgumentException("생년월일 정보가 없습니다");
 
         return ChronoUnit.YEARS.between(birth, now);
