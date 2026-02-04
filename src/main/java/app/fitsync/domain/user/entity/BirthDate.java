@@ -17,6 +17,9 @@ public class BirthDate {
 
     public Long getAge() {
         LocalDateTime now = LocalDateTime.now();
+
+        if (this.birth == null) throw new IllegalArgumentException("생년월일 정보가 없습니다");
+
         return ChronoUnit.YEARS.between(birth, now);
     }
 }
