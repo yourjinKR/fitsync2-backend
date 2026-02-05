@@ -5,6 +5,7 @@ import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
+import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import app.fitsync.domain.user.entity.BirthDate;
@@ -16,20 +17,27 @@ import org.springframework.stereotype.Component;
 public class UserProfileMapper {
 
     public UserProfile toEntity(UserProfileRequest request, User user) {
-        return UserProfile.builder()
+        InBodyRecord inBodyRecord = InBodyRecord.builder()
+                .weight(request.weight())
+                .skeletalMuscleMass(request.skeletalMuscleMass())
+                .bodyFatMass(request.bodyFatMass())
+                .bodyFatPercentage(request.bodyFatPercentage())
+                .bmi(request.bmi())
+                .build();
+
+        UserProfile userProfile = UserProfile.builder()
                 .user(user)
                 .gender(request.gender())
                 .birth(new BirthDate(request.birth()))
                 .workoutGoals(request.workoutGoals())
                 .exerciseCategories(request.exerciseCategories())
                 .disease(request.disease())
-                .weight(request.weight())
                 .height(request.height())
-                .skeletalMuscleMass(request.skeletalMuscleMass())
-                .bodyFatMass(request.bodyFatPercentage())
-                .bodyFatPercentage(request.bodyFatPercentage())
-                .bmi(request.bmi())
                 .build();
+
+        userProfile.addInBodyRecord(inBodyRecord);
+
+        return userProfile;
     }
 
     public UserWithProfileResponse toDto(UserProfile userProfile) {
@@ -49,6 +57,8 @@ public class UserProfileMapper {
 
     public UserProfileDetailResponse toDetailDto(UserProfile userProfile) {
 
+        InBodyRecord inBodyRecord = userProfile.getRecentInBodyRecord();
+
         return new UserProfileDetailResponse(
                 userProfile.getGender(),
                 userProfile.getBirth().getValue(),
@@ -56,11 +66,11 @@ public class UserProfileMapper {
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
                 userProfile.getHeight(),
-                userProfile.getWeight(),
-                userProfile.getSkeletalMuscleMass(),
-                userProfile.getBodyFatMass(),
-                userProfile.getBodyFatPercentage(),
-                userProfile.getBmi()
+                inBodyRecord.getWeight(),
+                inBodyRecord.getSkeletalMuscleMass(),
+                inBodyRecord.getBodyFatMass(),
+                inBodyRecord.getBodyFatPercentage(),
+                inBodyRecord.getBmi()
         );
     }
 
@@ -74,17 +84,19 @@ public class UserProfileMapper {
 
     public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
 
+        InBodyRecord inBodyRecord = userProfile.getRecentInBodyRecord();
+
         return new RoutineRecommendUserMessage(
                 userProfile.getBirth().getAge(LocalDate.now()),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
                 userProfile.getHeight(),
-                userProfile.getWeight(),
-                userProfile.getSkeletalMuscleMass(),
-                userProfile.getBodyFatMass(),
-                userProfile.getBodyFatPercentage(),
-                userProfile.getBmi(),
+                inBodyRecord.getWeight(),
+                inBodyRecord.getSkeletalMuscleMass(),
+                inBodyRecord.getBodyFatMass(),
+                inBodyRecord.getBodyFatPercentage(),
+                inBodyRecord.getBmi(),
                 request.splitCount()
         );
     }
