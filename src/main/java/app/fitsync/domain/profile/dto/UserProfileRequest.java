@@ -3,7 +3,7 @@ package app.fitsync.domain.profile.dto;
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.domain.profile.entity.WorkoutGoal;
 import app.fitsync.domain.user.entity.Gender;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -13,7 +13,7 @@ public record UserProfileRequest(
 
         Gender gender,
 
-        LocalDateTime birth,
+        LocalDate birth,
 
         Set<WorkoutGoal> workoutGoals,
 
