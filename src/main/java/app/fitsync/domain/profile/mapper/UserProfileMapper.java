@@ -7,7 +7,9 @@ import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
+import app.fitsync.domain.user.entity.BirthDate;
 import app.fitsync.domain.user.entity.User;
+import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +18,8 @@ public class UserProfileMapper {
     public UserProfile toEntity(UserProfileRequest request, User user) {
         return UserProfile.builder()
                 .user(user)
+                .gender(request.gender())
+                .birth(new BirthDate(request.birth()))
                 .workoutGoals(request.workoutGoals())
                 .exerciseCategories(request.exerciseCategories())
                 .disease(request.disease())
@@ -47,7 +51,7 @@ public class UserProfileMapper {
 
         return new UserProfileDetailResponse(
                 userProfile.getGender(),
-                userProfile.getBirth(),
+                userProfile.getBirth().getValue(),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),
@@ -71,7 +75,7 @@ public class UserProfileMapper {
     public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
 
         return new RoutineRecommendUserMessage(
-                userProfile.getBirth().getAge(),
+                userProfile.getBirth().getAge(LocalDate.now()),
                 userProfile.getWorkoutGoals(),
                 userProfile.getExerciseCategories(),
                 userProfile.getDisease(),

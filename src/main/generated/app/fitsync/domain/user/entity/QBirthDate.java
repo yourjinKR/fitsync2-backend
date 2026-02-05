@@ -19,9 +19,9 @@ public class QBirthDate extends BeanPath<BirthDate> {
 
     public static final QBirthDate birthDate = new QBirthDate("birthDate");
 
-    public final NumberPath<Long> age = createNumber("age", Long.class);
+    public final DatePath<java.time.LocalDate> birth = createDate("birth", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> birth = createDateTime("birth", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> value = createDate("value", java.time.LocalDate.class);
 
     public QBirthDate(String variable) {
         super(BirthDate.class, forVariable(variable));
