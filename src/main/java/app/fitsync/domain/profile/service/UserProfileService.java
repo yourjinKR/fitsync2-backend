@@ -1,6 +1,5 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.exception.InBodyException;
@@ -15,7 +14,6 @@ import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.stereotype.Service;
