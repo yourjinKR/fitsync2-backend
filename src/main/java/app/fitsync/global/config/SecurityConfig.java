@@ -123,8 +123,9 @@ public class SecurityConfig {
         // 인가
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/jwt/exchange", "/jwt/refresh", "/error").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user/exist", "/api/user").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/check").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user", "api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/check", "/api/user/exist/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/user/me").hasAnyAuthority("MEMBER", "TRAINER", "ADMIN")
                 .anyRequest().authenticated()
         );

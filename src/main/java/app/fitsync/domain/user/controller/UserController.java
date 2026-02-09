@@ -24,7 +24,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/exist/{loginId}")
+    @GetMapping("/api/user/exist/{loginId}")
     public ResponseEntity<Boolean> existUser(@PathVariable String loginId) {
         Boolean result = userService.existUser(loginId);
         return ResponseEntity.ok(result);
