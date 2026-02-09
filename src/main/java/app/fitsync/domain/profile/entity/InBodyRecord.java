@@ -1,6 +1,5 @@
 package app.fitsync.domain.profile.entity;
 
-import app.fitsync.global.BaseEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
