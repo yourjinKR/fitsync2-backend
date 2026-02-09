@@ -22,7 +22,7 @@ import org.springframework.data.annotation.CreatedDate;
  * <h3>주요 역할</h3>
  * <ul>
  *   <li>인바디 측정 수치(체중, 골격근량, 체지방 등) 저장</li>
- *   <li>측정 시점(measuredAt) 기준 이력(History) 관리</li>
+ *   <li>측정 시점(createdAt) 기준 이력(History) 관리</li>
  *   <li>최신 측정값 및 변화 추이(증감/추세) 계산 기반 제공</li>
  * </ul>
  *
