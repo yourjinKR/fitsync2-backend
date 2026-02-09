@@ -103,7 +103,7 @@ public class UserProfile extends BaseEntity {
 
     /**
      * 인바디 측정 이력(N)
-     * - 최신 인바디는 "가장 최근 측정일(measuredAt)" 기준으로 조회하여 사용
+     * - 최신 인바디는 "가장 최근 측정일(createdAt)" 기준으로 조회하여 사용
      */
     @OneToMany(mappedBy = "userProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("createdAt DESC, id DESC")
