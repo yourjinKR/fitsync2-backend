@@ -26,12 +26,6 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public final app.fitsync.domain.user.entity.QBirthDate birth;
 
-    public final NumberPath<Double> bmi = createNumber("bmi", Double.class);
-
-    public final NumberPath<Double> bodyFatMass = createNumber("bodyFatMass", Double.class);
-
-    public final NumberPath<Double> bodyFatPercentage = createNumber("bodyFatPercentage", Double.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -48,14 +42,12 @@ public class QUserProfile extends EntityPathBase<UserProfile> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Double> skeletalMuscleMass = createNumber("skeletalMuscleMass", Double.class);
+    public final SetPath<InBodyRecord, QInBodyRecord> inBodyRecords = this.<InBodyRecord, QInBodyRecord>createSet("inBodyRecords", InBodyRecord.class, QInBodyRecord.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final app.fitsync.domain.user.entity.QUser user;
-
-    public final NumberPath<Double> weight = createNumber("weight", Double.class);
 
     public final SetPath<WorkoutGoal, EnumPath<WorkoutGoal>> workoutGoals = this.<WorkoutGoal, EnumPath<WorkoutGoal>>createSet("workoutGoals", WorkoutGoal.class, EnumPath.class, PathInits.DIRECT2);
 
