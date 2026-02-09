@@ -55,9 +55,41 @@ public class UserProfileMapper {
         );
     }
 
+    public UserWithProfileResponse toDto(UserProfile userProfile, InBodyRecord inBodyRecord) {
+
+        User user = userProfile.getUser();
+        UserHeaderInfoResponse userHeaderInfoResponse = toDto(user);
+
+        UserProfileDetailResponse userProfileDetailResponse = toDetailDto(userProfile, inBodyRecord);
+
+        return new UserWithProfileResponse(
+                user.getId(),
+                userHeaderInfoResponse,
+                userProfile.getId(),
+                userProfileDetailResponse
+        );
+    }
+
     public UserProfileDetailResponse toDetailDto(UserProfile userProfile) {
 
         InBodyRecord inBodyRecord = userProfile.getRecentInBodyRecord();
+
+        return new UserProfileDetailResponse(
+                userProfile.getGender(),
+                userProfile.getBirth().getValue(),
+                userProfile.getWorkoutGoals(),
+                userProfile.getExerciseCategories(),
+                userProfile.getDisease(),
+                userProfile.getHeight(),
+                inBodyRecord.getWeight(),
+                inBodyRecord.getSkeletalMuscleMass(),
+                inBodyRecord.getBodyFatMass(),
+                inBodyRecord.getBodyFatPercentage(),
+                inBodyRecord.getBmi()
+        );
+    }
+
+    public UserProfileDetailResponse toDetailDto(UserProfile userProfile, InBodyRecord inBodyRecord) {
 
         return new UserProfileDetailResponse(
                 userProfile.getGender(),
@@ -82,9 +114,7 @@ public class UserProfileMapper {
         );
     }
 
-    public RoutineRecommendUserMessage toDto(UserProfile userProfile, AIRoutineRequest request) {
-
-        InBodyRecord inBodyRecord = userProfile.getRecentInBodyRecord();
+    public RoutineRecommendUserMessage toDto(UserProfile userProfile, InBodyRecord inBodyRecord, AIRoutineRequest request) {
 
         return new RoutineRecommendUserMessage(
                 userProfile.getBirth().getAge(LocalDate.now()),

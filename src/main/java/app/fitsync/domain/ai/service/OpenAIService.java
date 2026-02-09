@@ -5,15 +5,19 @@ import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
+import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.entity.UserProfile;
+import app.fitsync.domain.profile.exception.InBodyException;
 import app.fitsync.domain.profile.exception.UserProfileException;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
+import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.global.exception.RestApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Service;
 public class OpenAIService implements AIServiceInterface {
 
     private final UserProfileRepository userProfileRepository;
+    private final InBodyRecordRepository inBodyRecordRepository;
     private final UserProfileMapper userProfileMapper;
     private final AILogWriter aiLogWriter;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -58,7 +63,12 @@ public class OpenAIService implements AIServiceInterface {
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
-        RoutineRecommendUserMessage userMessageRequest = userProfileMapper.toDto(profile, request);
+        Long userProfileId = profile.getId();
+
+        InBodyRecord inBodyRecord = inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(userProfileId)
+                .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
+
+        RoutineRecommendUserMessage userMessageRequest = userProfileMapper.toDto(profile, inBodyRecord, request);
         OpenAiMessageConverter openAiMessageConverter = OpenAiMessageConverter.routineRecommendOf(userMessageRequest);
 
         aiLogWriter.init(
