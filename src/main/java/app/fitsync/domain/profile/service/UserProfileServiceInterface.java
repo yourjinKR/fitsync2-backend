@@ -1,6 +1,7 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
+import app.fitsync.domain.profile.dto.InBodyRecordRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -21,4 +22,5 @@ public interface UserProfileServiceInterface {
 
     UserProfileResponse create(UserProfileRequest request);
     UserWithProfileResponse view(long id);
+    InBodyRecordResponse createInBody(InBodyRecordRequest request);
 }

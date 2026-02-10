@@ -2,6 +2,7 @@ package app.fitsync.domain.profile.mapper;
 
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
+import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -38,6 +39,21 @@ public class UserProfileMapper {
         userProfile.addInBodyRecord(inBodyRecord);
 
         return userProfile;
+    }
+
+    public InBodyRecord toEntity(InBodyRecordRequest request, UserProfile profile) {
+
+        InBodyRecord inBodyRecord = InBodyRecord.builder()
+                .weight(request.weight())
+                .skeletalMuscleMass(request.skeletalMuscleMass())
+                .bodyFatMass(request.bodyFatMass())
+                .bodyFatPercentage(request.bodyFatPercentage())
+                .bmi(request.bmi())
+                .build();
+
+        profile.addInBodyRecord(inBodyRecord);
+
+        return inBodyRecord;
     }
 
     public UserWithProfileResponse toDto(UserProfile userProfile) {

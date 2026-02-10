@@ -1,5 +1,7 @@
 package app.fitsync.domain.profile.service;
 
+import app.fitsync.domain.profile.dto.InBodyRecordRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.exception.InBodyException;
@@ -46,6 +48,19 @@ public class UserProfileService implements UserProfileServiceInterface {
 
         UserProfile save = userProfileRepository.save(profile);
         return new UserProfileResponse(save.getId());
+    }
+
+    @Override
+    @Transactional
+    public InBodyRecordResponse createInBody(InBodyRecordRequest request) {
+
+        long userId = request.userId();
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+
+        InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
+
+        return new InBodyRecordResponse(inBodyRecord.getId());
     }
 
     @Override

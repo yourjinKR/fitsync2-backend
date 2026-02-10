@@ -1,5 +1,7 @@
 package app.fitsync.domain.profile.controller;
 
+import app.fitsync.domain.profile.dto.InBodyRecordRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -24,6 +26,13 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponse> create(@RequestBody UserProfileRequest request) {
 
         UserProfileResponse response = userProfileService.create(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/api/user/inbody")
+    public ResponseEntity<InBodyRecordResponse> createInBody(@RequestBody InBodyRecordRequest request) {
+
+        InBodyRecordResponse response = userProfileService.createInBody(request);
         return ResponseEntity.ok(response);
     }
 
