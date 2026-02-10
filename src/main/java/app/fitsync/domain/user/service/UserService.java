@@ -67,6 +67,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         return userRepository.existsByLoginId(logiId);
     }
 
+    // User Soft Delete - 기본값
     @Override
     @Transactional
     public UserResponse deleteUser(UserDeleteRequest request) {
@@ -91,10 +92,9 @@ public class UserService extends DefaultOAuth2UserService implements UserService
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    // 자체/소셜 로그인 회원 탈퇴
+    // User Hard Delete
     public void removeUser(User user) throws AccessDeniedException {
 
-        // 본인 및 어드민만 삭제 가능 검증
         SecurityContext context = SecurityContextHolder.getContext();
         String sessionUsername = context.getAuthentication().getName();
         String sessionRole = context.getAuthentication().getAuthorities().iterator().next().getAuthority();
@@ -108,10 +108,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
             throw new AccessDeniedException("본인 혹은 관리자만 삭제할 수 있습니다.");
         }
 
-        // 유저 제거
         userRepository.delete(user);
-
-        // Refresh 토큰 제거
         jwtService.removeRefreshUser(loginId);
     }
 
