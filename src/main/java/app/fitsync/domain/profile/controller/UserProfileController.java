@@ -29,7 +29,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/user/inbody")
+    @PostMapping("/api/user/profile/inbody")
     public ResponseEntity<InBodyRecordResponse> createInBody(@RequestBody InBodyRecordRequest request) {
 
         InBodyRecordResponse response = userProfileService.createInBody(request);
