@@ -12,8 +12,8 @@ import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
+import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.exception.UserException;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserProfileService implements UserProfileServiceInterface {
 
+    private final CurrentUserProvider currentUserProvider;
     private final UserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
     private final InBodyRecordRepository inBodyRecordRepository;
@@ -65,6 +66,16 @@ public class UserProfileService implements UserProfileServiceInterface {
 
     @Override
     public UserWithProfileResponse view(long userId) {
+        return findByUserId(userId);
+    }
+
+    @Override
+    public UserWithProfileResponse viewMe() {
+        Long userId = currentUserProvider.getUserId();
+        return findByUserId(userId);
+    }
+
+    public UserWithProfileResponse findByUserId(long userId) {
 
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));

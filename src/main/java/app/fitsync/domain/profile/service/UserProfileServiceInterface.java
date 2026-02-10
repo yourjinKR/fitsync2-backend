@@ -22,5 +22,6 @@ public interface UserProfileServiceInterface {
 
     UserProfileResponse create(UserProfileRequest request);
     UserWithProfileResponse view(long id);
+    UserWithProfileResponse viewMe();
     InBodyRecordResponse createInBody(InBodyRecordRequest request);
 }

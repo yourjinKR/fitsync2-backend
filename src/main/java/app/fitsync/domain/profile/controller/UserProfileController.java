@@ -42,4 +42,11 @@ public class UserProfileController {
         UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/user/profile/me")
+    public ResponseEntity<UserWithProfileResponse> viewMe() {
+
+        UserWithProfileResponse response = userProfileService.viewMe();
+        return ResponseEntity.ok(response);
+    }
 }
