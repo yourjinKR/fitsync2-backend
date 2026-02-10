@@ -14,7 +14,6 @@ import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -58,8 +57,9 @@ public class UserProfileService implements UserProfileServiceInterface {
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
         InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
+        InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
 
-        return new InBodyRecordResponse(inBodyRecord.getId());
+        return new InBodyRecordResponse(save.getId());
     }
 
     @Override
