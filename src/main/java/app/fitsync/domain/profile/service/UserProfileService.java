@@ -28,7 +28,6 @@ public class UserProfileService implements UserProfileServiceInterface {
 
     private final CurrentUserProvider currentUserProvider;
     private final UserProfileRepository userProfileRepository;
-    private final UserRepository userRepository;
     private final InBodyRecordRepository inBodyRecordRepository;
     private final UserProfileMapper userProfileMapper;
 
@@ -36,9 +35,8 @@ public class UserProfileService implements UserProfileServiceInterface {
     @Transactional
     public UserProfileResponse create(UserProfileRequest request) {
 
-        long userId = request.userId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND));
+        User user = currentUserProvider.getUser();
+        long userId = user.getId();
 
         boolean profilePresent = userProfileRepository.findByUserId(userId).isPresent();
 
