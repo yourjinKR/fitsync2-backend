@@ -26,9 +26,7 @@ public record InBodyStatisticsResponse(
             Double muscleMassChangeRate,
 
             Double bodyFatMassChange,
-            Double bodyFatMassChangeRate,
-
-            String healthMessage
+            Double bodyFatMassChangeRate
     ) {
         public static int CALCULABLE_MIN = 2;
         public static InBodySummary EMPTY = new InBodySummary(
@@ -37,8 +35,7 @@ public record InBodyStatisticsResponse(
                 0D,
                 0D,
                 0D,
-                0D,
-                "인바디 정보를 입력하여 자신의 성장을 확인하세요!");
+                0D);
     }
 
     /**

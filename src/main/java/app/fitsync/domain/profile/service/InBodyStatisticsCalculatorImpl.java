@@ -23,8 +23,8 @@ public class InBodyStatisticsCalculatorImpl implements InBodyStatisticsCalculato
                 getDiff(current.getSkeletalMuscleMass(), previous.getSkeletalMuscleMass()),
                 getRate(current.getSkeletalMuscleMass(), previous.getSkeletalMuscleMass()),
                 getDiff(current.getBodyFatMass(), previous.getBodyFatMass()),
-                getRate(current.getBodyFatMass(), previous.getBodyFatMass()),
-                "");
+                getRate(current.getBodyFatMass(), previous.getBodyFatMass())
+        );
     }
 
     // 단순 차이 계산 (소수점 둘째자리 반올림)
