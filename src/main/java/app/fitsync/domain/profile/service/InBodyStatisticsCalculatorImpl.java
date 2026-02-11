@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InBodyStaticsCalculatorImpl implements InBodyStaticsCalculator {
+public class InBodyStatisticsCalculatorImpl implements InBodyStatisticsCalculator {
 
     @Override
     public InBodySummary calculateSummary(List<InBodyRecord> records) {

@@ -33,7 +33,7 @@ public class UserProfileService implements UserProfileServiceInterface {
     private final UserProfileRepository userProfileRepository;
     private final InBodyRecordRepository inBodyRecordRepository;
     private final UserProfileMapper userProfileMapper;
-    private final InBodyStaticsCalculator inBodyStaticsCalculator;
+    private final InBodyStatisticsCalculator inBodyStatisticsCalculator;
 
     @Override
     @Transactional
@@ -96,7 +96,7 @@ public class UserProfileService implements UserProfileServiceInterface {
 
         List<InBodyRecord> records = inBodyRecordRepository.findByUserProfileIdOrderByCreatedAtDesc(profileId);
 
-        InBodySummary summary = inBodyStaticsCalculator.calculateSummary(records);
+        InBodySummary summary = inBodyStatisticsCalculator.calculateSummary(records);
 
         List<InBodyTrendElement> trends = records.stream()
                 .map(userProfileMapper::toDto)

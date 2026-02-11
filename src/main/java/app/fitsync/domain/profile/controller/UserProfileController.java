@@ -51,7 +51,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/user/profile/inbody/statics/{profileId}")
+    @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
     public ResponseEntity<InBodyStatisticsResponse> viewInBodyStatics(@PathVariable long profileId) {
 
         InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
