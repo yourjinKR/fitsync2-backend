@@ -6,29 +6,13 @@ import app.fitsync.domain.user.entity.Gender;
 import java.time.LocalDate;
 import java.util.Set;
 
-
-public record UserProfileRequest(
-
+public record UserProfileUpdateRequest(
+        long id,
         Gender gender,
-
-        LocalDate birth,
-
+        LocalDate localDateBirth,
         Set<WorkoutGoal> workoutGoals,
-
         Set<ExerciseCategory> exerciseCategories,
-
         String disease,
-
-        Double height,
-
-        Double weight,
-
-        Double skeletalMuscleMass,
-
-        Double bodyFatMass,
-
-        Double bodyFatPercentage,
-
-        Double bmi
+        Double height
 ) {
 }
