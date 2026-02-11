@@ -3,6 +3,7 @@ package app.fitsync.domain.profile.mapper;
 import app.fitsync.domain.ai.dto.AIRoutineRequest;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.profile.dto.InBodyRecordRequest;
+import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodyTrendElement;
 import app.fitsync.domain.profile.dto.UserProfileDetailResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -144,6 +145,18 @@ public class UserProfileMapper {
                 inBodyRecord.getBodyFatPercentage(),
                 inBodyRecord.getBmi(),
                 request.splitCount()
+        );
+    }
+
+    public InBodyTrendElement toDto(InBodyRecord inBodyRecord) {
+
+        return new InBodyTrendElement(
+                inBodyRecord.getCreatedAt(),
+                inBodyRecord.getWeight(),
+                inBodyRecord.getSkeletalMuscleMass(),
+                inBodyRecord.getBodyFatMass(),
+                inBodyRecord.getBodyFatPercentage(),
+                inBodyRecord.getBmi()
         );
     }
 }

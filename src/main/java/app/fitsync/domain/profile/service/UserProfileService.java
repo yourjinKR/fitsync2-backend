@@ -2,6 +2,9 @@ package app.fitsync.domain.profile.service;
 
 import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
+import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
+import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodySummary;
+import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodyTrendElement;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.exception.InBodyException;
@@ -15,6 +18,7 @@ import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.exception.RestApiException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,7 @@ public class UserProfileService implements UserProfileServiceInterface {
     private final UserProfileRepository userProfileRepository;
     private final InBodyRecordRepository inBodyRecordRepository;
     private final UserProfileMapper userProfileMapper;
+    private final InBodyStaticsCalculator inBodyStaticsCalculator;
 
     @Override
     @Transactional
@@ -84,5 +89,19 @@ public class UserProfileService implements UserProfileServiceInterface {
                 .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
 
         return userProfileMapper.toDto(profile, inBodyRecord);
+    }
+
+    @Override
+    public InBodyStatisticsResponse viewInBodyStatics(long profileId) {
+
+        List<InBodyRecord> records = inBodyRecordRepository.findByUserProfileIdOrderByCreatedAtDesc(profileId);
+
+        InBodySummary summary = inBodyStaticsCalculator.calculateSummary(records);
+
+        List<InBodyTrendElement> trends = records.stream()
+                .map(userProfileMapper::toDto)
+                .toList();
+
+        return new InBodyStatisticsResponse(summary, trends);
     }
 }

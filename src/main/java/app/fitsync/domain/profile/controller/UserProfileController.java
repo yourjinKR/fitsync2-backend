@@ -2,6 +2,7 @@ package app.fitsync.domain.profile.controller;
 
 import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
+import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -47,6 +48,13 @@ public class UserProfileController {
     public ResponseEntity<UserWithProfileResponse> viewMe() {
 
         UserWithProfileResponse response = userProfileService.viewMe();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/user/profile/inbody/statics/{profileId}")
+    public ResponseEntity<InBodyStatisticsResponse> viewInBodyStatics(@PathVariable long profileId) {
+
+        InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
         return ResponseEntity.ok(response);
     }
 }
