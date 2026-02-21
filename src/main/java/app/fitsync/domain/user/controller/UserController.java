@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,12 +33,17 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "409",
                     description = "로그인 ID 중복 (UserException.DUPLICATE_LOGINID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
         UserResponse response = userService.createUser(request);
         return ResponseEntity.ok(response);
     }
@@ -94,7 +100,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<UserResponse> deleteUser(@RequestBody UserDeleteRequest request) {
+    public ResponseEntity<UserResponse> deleteUser(@Valid @RequestBody UserDeleteRequest request) {
         UserResponse response = userService.deleteUser(request);
         return ResponseEntity.ok(response);
     }

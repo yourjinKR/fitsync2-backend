@@ -5,10 +5,10 @@ import app.fitsync.domain.ai.dto.AIRoutineResponse;
 import app.fitsync.domain.ai.dto.RoutineRecommendUserMessage;
 import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
-import app.fitsync.domain.exercise.mapper.ExerciseMapper;
-import app.fitsync.domain.exercise.repository.ExerciseRepository;
+import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
+import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.global.exception.RestApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +39,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OpenAIServiceTest {
 
-    @Mock ExerciseRepository exerciseRepository;
     @Mock UserProfileRepository userProfileRepository;
-    @Mock ExerciseMapper exerciseMapper;
+    @Mock InBodyRecordRepository inBodyRecordRepository;
     @Mock UserProfileMapper userProfileMapper;
     @Mock AILogWriter aiLogWriter;
     @Mock ChatClient chatClient;
@@ -53,6 +52,7 @@ class OpenAIServiceTest {
     void setUp() {
         openAIService = new OpenAIService(
                 userProfileRepository,
+                inBodyRecordRepository,
                 userProfileMapper,
                 aiLogWriter,
                 chatClient,
@@ -73,10 +73,13 @@ class OpenAIServiceTest {
         when(request.userId()).thenReturn(userId);
 
         UserProfile profile = mock(UserProfile.class);
+        InBodyRecord inBodyRecord = mock(InBodyRecord.class);
+        when(profile.getId()).thenReturn(10L);
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
+        when(inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(10L)).thenReturn(Optional.of(inBodyRecord));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, inBodyRecord, request)).thenReturn(userMessageDto);
 
         OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));
@@ -150,8 +153,8 @@ class OpenAIServiceTest {
             // then: JSON 파싱 성공 검증
             assertThat(actual).isNotNull();
             assertThat(actual.result()).hasSize(1);
-            assertThat(actual.result().get(0).name()).isEqualTo("DAY 1");
-            assertThat(actual.result().get(0).routineExercises().get(0).exerciseName())
+            assertThat(actual.result().getFirst().name()).isEqualTo("DAY 1");
+            assertThat(actual.result().getFirst().routineExercises().getFirst().exerciseName())
                     .isEqualTo("Squat");
 
             // then: 로그 검증
@@ -205,10 +208,13 @@ class OpenAIServiceTest {
         when(request.userId()).thenReturn(userId);
 
         UserProfile profile = mock(UserProfile.class);
+        InBodyRecord inBodyRecord = mock(InBodyRecord.class);
+        when(profile.getId()).thenReturn(10L);
         when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
+        when(inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(10L)).thenReturn(Optional.of(inBodyRecord));
 
         RoutineRecommendUserMessage userMessageDto = mock(RoutineRecommendUserMessage.class);
-        when(userProfileMapper.toDto(profile, request)).thenReturn(userMessageDto);
+        when(userProfileMapper.toDto(profile, inBodyRecord, request)).thenReturn(userMessageDto);
 
         OpenAiMessageConverter generator = mock(OpenAiMessageConverter.class);
         when(generator.getInputJsonOf()).thenReturn(Map.of("dummy", "input"));

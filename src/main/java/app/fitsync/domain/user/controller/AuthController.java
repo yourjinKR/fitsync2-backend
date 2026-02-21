@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,11 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "401",
                     description = "비밀번호 불일치 (UserException.INVALID_PASSWORD)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
@@ -37,7 +43,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<JWTResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<JWTResponse> login(@Valid @RequestBody LoginRequest request) {
         JWTResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
