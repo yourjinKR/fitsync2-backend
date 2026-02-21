@@ -199,6 +199,27 @@ class OpenAIServiceTest {
     }
 
     @Test
+    @DisplayName("TS-AI-003: 인바디 없음 시 InBodyException.NOT_FOUND_PROFILE_ID 예외")
+    void generateRoutine_inBodyNotFound_throwsAndDoesNotCallInit() {
+        long userId = 1L;
+
+        AIRoutineRequest request = mock(AIRoutineRequest.class);
+        when(request.userId()).thenReturn(userId);
+
+        UserProfile profile = mock(UserProfile.class);
+        when(profile.getId()).thenReturn(10L);
+        when(userProfileRepository.findByUserId(userId)).thenReturn(Optional.of(profile));
+        when(inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> openAIService.generateRoutine(request))
+                .isInstanceOf(RestApiException.class);
+
+        verify(aiLogWriter, never()).init(anyString(), anyLong(), any(), anyString(), anyString(), any());
+        verify(aiLogWriter, never()).success(anyString(), anyMap(), anyLong(), anyLong());
+        verify(aiLogWriter, never()).failure(anyString(), any(), anyString());
+    }
+
+    @Test
     @DisplayName("외부(OpenAI) 호출 중 예외 발생 시: aiLogWriter.failure를 남기고, 예외를 그대로 다시 던진다")
     void generateRoutine_chatClientThrows_logsFailureAndRethrows() throws Exception {
         // given

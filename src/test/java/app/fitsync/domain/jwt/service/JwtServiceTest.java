@@ -25,7 +25,7 @@ class JwtServiceTest {
     private RefreshRepository refreshRepository;
 
     @Test
-    @DisplayName("무효화되어 저장소에 없는 refresh 토큰으로 재발급 요청 시 실패한다")
+    @DisplayName("TS-JWT-002: 무효 refresh(화이트리스트 미존재)로 재발급 요청 시 실패한다")
     void refreshRotate_failsWhenRefreshTokenNotWhitelisted() {
         JwtService jwtService = new JwtService(refreshRepository);
 
@@ -43,7 +43,7 @@ class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("유효하고 저장된 refresh 토큰이면 rotate를 수행하고 기존 토큰을 제거한다")
+    @DisplayName("TS-JWT-001: 유효 refresh로 재발급(rotate) 성공")
     void refreshRotate_rotatesRefreshTokenWhenTokenIsValid() {
         JwtService jwtService = new JwtService(refreshRepository);
 
@@ -65,3 +65,4 @@ class JwtServiceTest {
         assertThat(captor.getValue().getLoginId()).isEqualTo("tester");
     }
 }
+
