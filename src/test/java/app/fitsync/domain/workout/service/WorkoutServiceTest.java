@@ -89,10 +89,10 @@ class WorkoutServiceTest {
         verify(workoutRepository).save(captor.capture());
         Workout captured = captor.getValue();
         assertThat(captured.getWorkoutExercises()).hasSize(1);
-        WorkoutExercise capturedExercise = captured.getWorkoutExercises().get(0);
+        WorkoutExercise capturedExercise = captured.getWorkoutExercises().getFirst();
         assertThat(capturedExercise.getExercise()).isEqualTo(exercise);
         assertThat(capturedExercise.getWorkoutSets()).hasSize(1);
-        assertThat(capturedExercise.getWorkoutSets().get(0).getMemo()).isEqualTo("set");
+        assertThat(capturedExercise.getWorkoutSets().getFirst().getMemo()).isEqualTo("set");
     }
 
     @Test
@@ -201,9 +201,9 @@ class WorkoutServiceTest {
         WorkoutDetailResponse response = workoutService.viewDetail(workoutId);
 
         assertThat(response.workoutExercises()).hasSize(1);
-        assertThat(response.workoutExercises().get(0).exercise().name()).isEqualTo("squat");
-        assertThat(response.workoutExercises().get(0).workoutSets()).hasSize(1);
-        assertThat(response.workoutExercises().get(0).workoutSets().get(0).reps()).isEqualTo(10);
+        assertThat(response.workoutExercises().getFirst().exercise().name()).isEqualTo("squat");
+        assertThat(response.workoutExercises().getFirst().workoutSets()).hasSize(1);
+        assertThat(response.workoutExercises().getFirst().workoutSets().getFirst().reps()).isEqualTo(10);
         verify(workoutMapper).toDetailDto(workout);
     }
 }
