@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "JWT", description = "JWT support API")
+@Tag(name = "토큰", description = "JWT 토큰 보조 API")
 public class JwtController {
 
     private final JwtService jwtService;
@@ -29,12 +29,12 @@ public class JwtController {
     }
 
     @PostMapping(value = "/jwt/exchange")
-    @Operation(summary = "Exchange cookie refresh token")
+    @Operation(summary = "쿠키 refresh 토큰 교환")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Exchange success"),
+            @ApiResponse(responseCode = "200", description = "교환 성공"),
             @ApiResponse(
                     responseCode = "500",
-                    description = "Invalid cookie or refresh token",
+                    description = "유효하지 않은 쿠키 또는 refresh 토큰",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -46,12 +46,12 @@ public class JwtController {
     }
 
     @PostMapping(value = "/jwt/refresh", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Rotate refresh token")
+    @Operation(summary = "refresh 토큰 재발급(rotate)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Rotate success"),
+            @ApiResponse(responseCode = "200", description = "재발급 성공"),
             @ApiResponse(
                     responseCode = "500",
-                    description = "Invalid refresh token",
+                    description = "유효하지 않은 refresh 토큰",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

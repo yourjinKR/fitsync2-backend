@@ -29,18 +29,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Workout", description = "Workout record API")
+@Tag(name = "운동기록", description = "실제 운동 기록 API")
 public class WorkoutController {
 
     private final WorkoutServiceInterface workoutService;
 
     @PostMapping("/api/workout")
-    @Operation(summary = "Create workout record")
+    @Operation(summary = "운동 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Referenced user or exercise not found",
+                    description = "참조된 사용자 또는 운동이 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -50,9 +50,9 @@ public class WorkoutController {
     }
 
     @GetMapping("/api/workouts")
-    @Operation(summary = "Get workout records")
+    @Operation(summary = "운동 기록 목록 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<Page<WorkoutListResponse>> getWorkoutList(
             @RequestParam(required = false) Long writerId,
@@ -65,17 +65,17 @@ public class WorkoutController {
     }
 
     @GetMapping("/api/workout/{id}")
-    @Operation(summary = "Get workout detail")
+    @Operation(summary = "운동 기록 상세 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid id",
+                    description = "잘못된 ID",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<WorkoutDetailResponse> getWorkoutDetail(
-            @Parameter(description = "Workout ID", required = true)
+            @Parameter(description = "운동 기록 ID", required = true)
             @PathVariable long id) {
         WorkoutDetailResponse response = workoutService.viewDetail(id);
         return ResponseEntity.ok(response);

@@ -27,18 +27,18 @@ import org.springframework.web.bind.annotation.RestController;
 @NullMarked
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Profile", description = "User profile and inbody API")
+@Tag(name = "프로필", description = "사용자 프로필/인바디 API")
 public class UserProfileController {
 
     private final UserProfileServiceInterface userProfileService;
 
     @PostMapping("/api/user/profile")
-    @Operation(summary = "Create profile")
+    @Operation(summary = "프로필 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Profile already exists",
+                    description = "프로필이 이미 존재함",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -48,12 +48,12 @@ public class UserProfileController {
     }
 
     @PostMapping("/api/user/profile/inbody")
-    @Operation(summary = "Create inbody record")
+    @Operation(summary = "인바디 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Profile not found",
+                    description = "프로필을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -63,29 +63,29 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/{userId}")
-    @Operation(summary = "Get user profile")
+    @Operation(summary = "사용자 프로필 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Profile or inbody record not found",
+                    description = "프로필 또는 인바디 기록을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<UserWithProfileResponse> getProfile(
-            @Parameter(description = "User ID", required = true)
+            @Parameter(description = "사용자 ID", required = true)
             @PathVariable long userId) {
         UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/me")
-    @Operation(summary = "Get my profile")
+    @Operation(summary = "내 프로필 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "Unauthenticated",
+                    description = "인증되지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -95,12 +95,12 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
-    @Operation(summary = "Get inbody statistics")
+    @Operation(summary = "인바디 통계 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<InBodyStatisticsResponse> getInBodyStatics(
-            @Parameter(description = "Profile ID", required = true)
+            @Parameter(description = "프로필 ID", required = true)
             @PathVariable long profileId) {
         InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
         return ResponseEntity.ok(response);

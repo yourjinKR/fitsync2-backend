@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Schema(description = "Exercise detail response")
+@Schema(description = "운동 상세 응답")
 public record ExerciseDetailResponse(
         Long id,
         String name,

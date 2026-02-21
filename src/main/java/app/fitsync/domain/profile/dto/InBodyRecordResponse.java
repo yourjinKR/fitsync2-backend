@@ -2,9 +2,9 @@ package app.fitsync.domain.profile.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Created inbody record response")
+@Schema(description = "인바디 기록 생성 응답")
 public record InBodyRecordResponse(
-        @Schema(description = "Inbody record ID", example = "100")
+        @Schema(description = "인바디 기록 ID", example = "100")
         long id
 ) {
 }

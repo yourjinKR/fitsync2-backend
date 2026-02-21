@@ -19,18 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "AI", description = "AI recommendation API")
+@Tag(name = "인공지능", description = "AI 추천 API")
 public class AIController {
 
     private final AIServiceInterface aiService;
 
     @PostMapping("/api/ai/routine")
-    @Operation(summary = "Generate AI routine recommendation")
+    @Operation(summary = "AI 루틴 추천 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Generation success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Profile or inbody record not found",
+                    description = "프로필 또는 인바디 기록을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

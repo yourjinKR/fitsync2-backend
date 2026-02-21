@@ -11,17 +11,17 @@ import java.util.List;
  *     <li>그래프용 시계열 데이터 (Trends))</li>
  * </ul>
  */
-@Schema(description = "Inbody statistics response")
+@Schema(description = "인바디 통계 응답")
 public record InBodyStatisticsResponse(
-        @Schema(description = "Month-over-month summary")
+        @Schema(description = "전월 대비 요약")
         InBodySummary summary,
-        @Schema(description = "Trend data points ordered by createdAt desc")
+        @Schema(description = "createdAt 내림차순 추세 데이터")
         List<InBodyTrendElement> trends
 ) {
     /**
      * 전월 대비 증감 수치 요약
      */
-    @Schema(description = "Summary values")
+    @Schema(description = "요약 수치")
     public record InBodySummary(
             Double weightChange,
             Double weightChangeRate,
@@ -45,7 +45,7 @@ public record InBodyStatisticsResponse(
     /**
      * 차트 렌더링을 위한 개별 기록 요소
      */
-    @Schema(description = "Single trend point")
+    @Schema(description = "단일 추세 지점")
     public record InBodyTrendElement(
             LocalDateTime date,
             Double weight,

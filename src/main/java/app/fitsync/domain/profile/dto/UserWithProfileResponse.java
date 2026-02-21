@@ -3,15 +3,15 @@ package app.fitsync.domain.profile.dto;
 import app.fitsync.domain.user.dto.UserHeaderInfoResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "User and profile combined response")
+@Schema(description = "사용자+프로필 통합 응답")
 public record UserWithProfileResponse(
-        @Schema(description = "User ID", example = "1")
+        @Schema(description = "사용자 ID", example = "1")
         long userId,
-        @Schema(description = "User header info")
+        @Schema(description = "사용자 헤더 정보")
         UserHeaderInfoResponse user,
-        @Schema(description = "Profile ID", example = "10")
+        @Schema(description = "프로필 ID", example = "10")
         long profileId,
-        @Schema(description = "Profile detail")
+        @Schema(description = "프로필 상세")
         UserProfileDetailResponse userProfile
 ) {
 }

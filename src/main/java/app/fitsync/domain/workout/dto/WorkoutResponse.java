@@ -2,9 +2,9 @@ package app.fitsync.domain.workout.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Workout create response")
+@Schema(description = "운동 기록 생성 응답")
 public record WorkoutResponse(
-        @Schema(description = "Workout ID", example = "1")
+        @Schema(description = "운동 기록 ID", example = "1")
         long id
 ) {
 }

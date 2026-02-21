@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Schema(description = "AI log detail response")
+@Schema(description = "AI 로그 상세 응답")
 public record AILogResponse(
         Long id,
         String requestId,

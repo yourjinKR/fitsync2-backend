@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Health", description = "Health check API")
+@Tag(name = "헬스체크", description = "헬스체크 API")
 public class HealthCheckController {
 
     @GetMapping("/api/check")
-    @Operation(summary = "Check server status")
+    @Operation(summary = "서버 상태 확인")
     public ResponseEntity<Map<String, Object>> check() {
         return ResponseEntity.ok(Map.of("connected", "true"));
     }

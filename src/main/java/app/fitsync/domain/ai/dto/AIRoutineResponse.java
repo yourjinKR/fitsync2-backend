@@ -6,26 +6,26 @@ import java.util.List;
 /**
  * 루틴 추천 결과
  */
-@Schema(description = "AI routine recommendation response")
+@Schema(description = "AI 루틴 추천 응답")
 public record AIRoutineResponse(
-        @Schema(description = "Recommended routines")
+        @Schema(description = "추천 루틴 목록")
         List<Routine> result
 
 ) {
-    @Schema(description = "Routine item")
+    @Schema(description = "루틴 항목")
     public record Routine(
             String name,
             List<RoutineExercise> routineExercises
     ) { }
 
-    @Schema(description = "Routine exercise item")
+    @Schema(description = "루틴 운동 항목")
     public record RoutineExercise(
             long exerciseId,
             String exerciseName,
             List<RoutineSet> routineSets
     ) { }
 
-    @Schema(description = "Routine set item")
+    @Schema(description = "루틴 세트 항목")
     public record RoutineSet(
             Integer weightKg,
             Integer reps,

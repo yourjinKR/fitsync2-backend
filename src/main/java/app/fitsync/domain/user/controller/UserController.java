@@ -23,17 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "User", description = "User API")
+@Tag(name = "사용자", description = "사용자 API")
 public class UserController {
     private final UserServiceInterface userService;
 
     @PostMapping("/api/user")
-    @Operation(summary = "Create user")
+    @Operation(summary = "회원 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Duplicate loginId",
+                    description = "중복된 로그인 ID",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -43,29 +43,29 @@ public class UserController {
     }
 
     @GetMapping("/api/user/exist/{loginId}")
-    @Operation(summary = "Check loginId duplication")
+    @Operation(summary = "로그인 ID 중복 확인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<Boolean> existUser(
-            @Parameter(description = "Login ID", required = true)
+            @Parameter(description = "로그인 ID", required = true)
             @PathVariable String loginId) {
         Boolean result = userService.existUser(loginId);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/api/user/me")
-    @Operation(summary = "Get my user id")
+    @Operation(summary = "내 사용자 정보 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "Unauthenticated",
+                    description = "인증되지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "Forbidden",
+                    description = "권한 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -75,12 +75,12 @@ public class UserController {
     }
 
     @DeleteMapping("/api/user")
-    @Operation(summary = "Delete user")
+    @Operation(summary = "회원 삭제")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delete success"),
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(
                     responseCode = "403",
-                    description = "Forbidden",
+                    description = "권한 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

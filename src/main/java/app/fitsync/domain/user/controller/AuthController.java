@@ -18,22 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "Auth", description = "Authentication API")
+@Tag(name = "인증", description = "인증 API")
 public class AuthController {
     private final AuthServiceInterface authService;
 
     @PostMapping("/api/auth/login")
-    @Operation(summary = "Login")
+    @Operation(summary = "로그인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login success"),
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "Invalid password",
+                    description = "비밀번호 불일치",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "User not found",
+                    description = "사용자를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -43,9 +43,9 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/logout")
-    @Operation(summary = "Logout")
+    @Operation(summary = "로그아웃")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Logout success")
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
     })
     public ResponseEntity<Void> logout() {
         authService.logout();

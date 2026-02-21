@@ -5,7 +5,7 @@ import app.fitsync.domain.routine.dto.exercise.RoutineExerciseListResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(description = "Routine list item")
+@Schema(description = "루틴 목록 항목")
 public record RoutineListResponse(
         long id,
         String name,

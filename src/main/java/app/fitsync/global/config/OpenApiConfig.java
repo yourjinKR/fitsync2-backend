@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "FitSync2 Backend API",
+                title = "핏싱크2 백엔드 API",
                 version = "v1",
-                description = "Auto-generated OpenAPI spec from Spring annotations and endpoint signatures."
+                description = "Spring 애노테이션과 엔드포인트 시그니처 기반 자동 생성 OpenAPI 문서입니다."
         ),
         security = @SecurityRequirement(name = "bearerAuth")
 )

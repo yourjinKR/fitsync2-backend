@@ -18,23 +18,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "AI", description = "AI log API")
+@Tag(name = "인공지능", description = "AI 로그 API")
 public class AILogController {
 
     private final AILogService aiLogService;
 
     @GetMapping("/api/ai/log/routine/{id}")
-    @Operation(summary = "Get AI routine log detail")
+    @Operation(summary = "AI 루틴 로그 상세 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "AI log not found",
+                    description = "AI 로그를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<AILogResponse> generateRoutine(
-            @Parameter(description = "AI log ID", required = true)
+            @Parameter(description = "AI 로그 ID", required = true)
             @PathVariable long id) {
         AILogResponse response = aiLogService.viewDetail(id);
         return ResponseEntity.ok(response);

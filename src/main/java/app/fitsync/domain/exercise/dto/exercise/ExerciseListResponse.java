@@ -5,7 +5,7 @@ import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(description = "Exercise list item")
+@Schema(description = "운동 목록 항목")
 public record ExerciseListResponse(
         Long id,
         String name,

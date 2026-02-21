@@ -34,18 +34,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @NullMarked
-@Tag(name = "Routine", description = "Routine API")
+@Tag(name = "루틴", description = "루틴 관리 API")
 public class RoutineController {
 
     private final RoutineServiceInterface routineService;
 
     @PostMapping("/api/routine")
-    @Operation(summary = "Create routine")
+    @Operation(summary = "루틴 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Validation error",
+                    description = "요청 검증 실패",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -55,9 +55,9 @@ public class RoutineController {
     }
 
     @GetMapping("/api/routines")
-    @Operation(summary = "Get routine list")
+    @Operation(summary = "루틴 목록 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success")
+            @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<Page<RoutineListResponse>> getRoutineList(
             @RequestParam(required = false) Long writerId,
@@ -69,34 +69,34 @@ public class RoutineController {
     }
 
     @GetMapping("/api/routine/{routineId}")
-    @Operation(summary = "Get routine detail")
+    @Operation(summary = "루틴 상세 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Routine not found",
+                    description = "루틴을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<RoutineDetailResponse> getRoutineDetail(
-            @Parameter(description = "Routine ID", required = true)
+            @Parameter(description = "루틴 ID", required = true)
             @PathVariable long routineId) {
         RoutineDetailResponse response = routineService.findRoutine(routineId);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/api/routine/{routineId}")
-    @Operation(summary = "Update routine")
+    @Operation(summary = "루틴 수정")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Update success"),
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Routine not found",
+                    description = "루틴을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<RoutineResponse> updateRoutine(
-            @Parameter(description = "Routine ID", required = true)
+            @Parameter(description = "루틴 ID", required = true)
             @PathVariable long routineId,
             @RequestBody RoutineUpdateRequest request) {
         RoutineResponse response = routineService.updateRoutine(routineId, request);
@@ -104,17 +104,17 @@ public class RoutineController {
     }
 
     @DeleteMapping("/api/routine/{routineId}")
-    @Operation(summary = "Delete routine")
+    @Operation(summary = "루틴 삭제")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delete success"),
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Routine not found",
+                    description = "루틴을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     public ResponseEntity<RoutineResponse> deleteRoutine(
-            @Parameter(description = "Routine ID", required = true)
+            @Parameter(description = "루틴 ID", required = true)
             @PathVariable long routineId) {
         RoutineResponse response = routineService.deleteRoutine(routineId);
         return ResponseEntity.ok(response);
