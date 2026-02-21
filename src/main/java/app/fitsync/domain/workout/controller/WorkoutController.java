@@ -40,7 +40,7 @@ public class WorkoutController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "참조된 사용자 또는 운동이 없음",
+                    description = "참조 사용자/운동 없음 (UserException.NOT_FOUND, ExerciseErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -70,7 +70,7 @@ public class WorkoutController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "잘못된 ID",
+                    description = "잘못된 ID (CommonErrorCode.INVALID_PARAMETER)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

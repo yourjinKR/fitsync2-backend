@@ -33,7 +33,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "409",
-                    description = "중복된 로그인 ID",
+                    description = "로그인 ID 중복 (UserException.DUPLICATE_LOGINID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -60,12 +60,17 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "인증되지 않음",
+                    description = "인증되지 않음 (CommonErrorCode.UNAUTHORIZED)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "권한 없음",
+                    description = "권한 없음 (CommonErrorCode.ACCESS_DENIED)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "사용자 없음 (UserException.NOT_FOUND_LOGIN_ID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -79,8 +84,13 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 파라미터 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "403",
-                    description = "권한 없음",
+                    description = "권한 없음 (CommonErrorCode.ACCESS_DENIED)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

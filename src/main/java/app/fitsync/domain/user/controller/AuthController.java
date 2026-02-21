@@ -28,12 +28,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "비밀번호 불일치",
+                    description = "비밀번호 불일치 (UserException.INVALID_PASSWORD)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "사용자를 찾을 수 없음",
+                    description = "사용자 없음 (UserException.NOT_FOUND_LOGIN_ID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

@@ -45,7 +45,7 @@ public class RoutineController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "요청 검증 실패",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -74,7 +74,7 @@ public class RoutineController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "루틴을 찾을 수 없음",
+                    description = "루틴 없음 (RoutineErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -91,7 +91,7 @@ public class RoutineController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "루틴을 찾을 수 없음",
+                    description = "루틴/운동/세트 없음 (RoutineErrorCode.NOT_FOUND, RoutineErrorCode.EXERCISE_NOT_FOUND, RoutineErrorCode.SET_NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -109,7 +109,7 @@ public class RoutineController {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "루틴을 찾을 수 없음",
+                    description = "루틴 없음 (RoutineErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

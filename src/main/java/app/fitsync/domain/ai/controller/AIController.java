@@ -30,7 +30,12 @@ public class AIController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "프로필 또는 인바디 기록을 찾을 수 없음",
+                    description = "프로필/인바디 없음 (UserProfileException.NOT_FOUND, InBodyException.NOT_FOUND_PROFILE_ID)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "AI 처리 실패 (CommonErrorCode.INTERNAL_SERVER_ERROR)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

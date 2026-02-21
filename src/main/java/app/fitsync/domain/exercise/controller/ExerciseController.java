@@ -46,7 +46,7 @@ public class ExerciseController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "요청 검증 실패",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -75,7 +75,7 @@ public class ExerciseController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "운동을 찾을 수 없음",
+                    description = "운동 없음 (ExerciseErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -92,12 +92,12 @@ public class ExerciseController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "요청 검증 실패",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "운동을 찾을 수 없음",
+                    description = "운동/타겟 없음 (ExerciseErrorCode.NOT_FOUND, ExerciseErrorCode.TARGET_NOT_FOUNT)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -115,7 +115,7 @@ public class ExerciseController {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "운동을 찾을 수 없음",
+                    description = "운동 없음 (ExerciseErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

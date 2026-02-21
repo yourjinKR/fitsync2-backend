@@ -38,7 +38,7 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "409",
-                    description = "프로필이 이미 존재함",
+                    description = "프로필 중복 (UserProfileException.DUPLICATE)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -53,7 +53,7 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "프로필을 찾을 수 없음",
+                    description = "프로필 없음 (UserProfileException.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -68,7 +68,7 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "프로필 또는 인바디 기록을 찾을 수 없음",
+                    description = "프로필/인바디 없음 (UserProfileException.NOT_FOUND, InBodyException.NOT_FOUND_PROFILE_ID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
@@ -85,7 +85,12 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "401",
-                    description = "인증되지 않음",
+                    description = "인증되지 않음 (CommonErrorCode.UNAUTHORIZED)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "사용자/프로필/인바디 없음 (UserException.NOT_FOUND_LOGIN_ID, UserProfileException.NOT_FOUND, InBodyException.NOT_FOUND_PROFILE_ID)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

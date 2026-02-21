@@ -29,7 +29,7 @@ public class AILogController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "AI 로그를 찾을 수 없음",
+                    description = "AI 로그 없음 (AILogErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
