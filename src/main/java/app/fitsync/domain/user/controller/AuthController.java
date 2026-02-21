@@ -3,6 +3,8 @@ package app.fitsync.domain.user.controller;
 import app.fitsync.domain.jwt.dto.JWTResponse;
 import app.fitsync.domain.user.dto.LoginRequest;
 import app.fitsync.domain.user.service.AuthServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Auth", description = "인증 API")
 public class AuthController {
     private final AuthServiceInterface authService;
 
     @PostMapping("/api/auth/login")
+    @Operation(summary = "로그인")
     public ResponseEntity<JWTResponse> login(@RequestBody LoginRequest request) {
         JWTResponse response = authService.login(request);
         return ResponseEntity.ok(response);
@@ -28,6 +32,7 @@ public class AuthController {
      * @return 로그아웃 성공 응답
      */
     @PostMapping("/api/auth/logout")
+    @Operation(summary = "로그아웃")
     public ResponseEntity<Void> logout() {
         authService.logout();
         return ResponseEntity.ok().build();

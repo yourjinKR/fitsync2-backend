@@ -6,6 +6,9 @@ import app.fitsync.domain.routine.dto.routine.RoutineRequest;
 import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -26,11 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @NullMarked
+@Tag(name = "Routine", description = "루틴 관리 API")
 public class RoutineController {
 
     private final RoutineServiceInterface routineService;
 
     @PostMapping("/api/routine")
+    @Operation(summary = "루틴 생성")
     public ResponseEntity<RoutineResponse> createRoutine(@Valid @RequestBody RoutineRequest request) {
 
         RoutineResponse response = routineService.createRoutine(request);
@@ -38,6 +43,7 @@ public class RoutineController {
     }
 
     @GetMapping("/api/routines")
+    @Operation(summary = "루틴 목록 조회")
     public ResponseEntity<Page<RoutineListResponse>> getRoutineList(
             @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) Long ownerId,
@@ -49,14 +55,19 @@ public class RoutineController {
     }
 
     @GetMapping("/api/routine/{routineId}")
-    public ResponseEntity<RoutineDetailResponse> getRoutineDetail(@PathVariable long routineId) {
+    @Operation(summary = "루틴 상세 조회")
+    public ResponseEntity<RoutineDetailResponse> getRoutineDetail(
+            @Parameter(description = "루틴 ID", required = true)
+            @PathVariable long routineId) {
 
         RoutineDetailResponse response = routineService.findRoutine(routineId);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/api/routine/{routineId}")
+    @Operation(summary = "루틴 수정")
     public ResponseEntity<RoutineResponse> updateRoutine(
+            @Parameter(description = "루틴 ID", required = true)
             @PathVariable long routineId,
             @RequestBody RoutineUpdateRequest request) {
 
@@ -65,7 +76,10 @@ public class RoutineController {
     }
 
     @DeleteMapping("/api/routine/{routineId}")
-    public ResponseEntity<RoutineResponse> deleteRoutine(@PathVariable long routineId) {
+    @Operation(summary = "루틴 삭제")
+    public ResponseEntity<RoutineResponse> deleteRoutine(
+            @Parameter(description = "루틴 ID", required = true)
+            @PathVariable long routineId) {
         RoutineResponse response = routineService.deleteRoutine(routineId);
         return ResponseEntity.ok(response);
     }

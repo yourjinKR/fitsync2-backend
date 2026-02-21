@@ -4,6 +4,9 @@ import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
 import app.fitsync.domain.user.service.UserServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,28 +18,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "User", description = "사용자 API")
 public class UserController {
     private final UserServiceInterface userService;
 
     @PostMapping("/api/user")
+    @Operation(summary = "회원 생성")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
         UserResponse response = userService.createUser(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/exist/{loginId}")
-    public ResponseEntity<Boolean> existUser(@PathVariable String loginId) {
+    @Operation(summary = "로그인 ID 중복 확인")
+    public ResponseEntity<Boolean> existUser(
+            @Parameter(description = "로그인 ID", required = true)
+            @PathVariable String loginId) {
         Boolean result = userService.existUser(loginId);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/api/user/me")
+    @Operation(summary = "내 사용자 정보 조회")
     public ResponseEntity<UserResponse> findMe() {
         UserResponse me = userService.findMe();
         return ResponseEntity.ok(me);
     }
 
     @DeleteMapping("/api/user")
+    @Operation(summary = "회원 삭제")
     public ResponseEntity<UserResponse> deleteUser(@RequestBody UserDeleteRequest request) {
         UserResponse response = userService.deleteUser(request);
         return ResponseEntity.ok(response);

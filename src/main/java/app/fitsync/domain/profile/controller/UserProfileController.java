@@ -7,6 +7,9 @@ import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.service.UserProfileServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @NullMarked
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Profile", description = "사용자 프로필/인바디 API")
 public class UserProfileController {
 
     private final UserProfileServiceInterface userProfileService;
 
     @PostMapping("/api/user/profile")
+    @Operation(summary = "프로필 생성")
     public ResponseEntity<UserProfileResponse> createProfile(@RequestBody UserProfileRequest request) {
 
         UserProfileResponse response = userProfileService.create(request);
@@ -31,6 +36,7 @@ public class UserProfileController {
     }
 
     @PostMapping("/api/user/profile/inbody")
+    @Operation(summary = "인바디 기록 생성")
     public ResponseEntity<InBodyRecordResponse> createInBody(@RequestBody InBodyRecordRequest request) {
 
         InBodyRecordResponse response = userProfileService.createInBody(request);
@@ -38,13 +44,17 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/{userId}")
-    public ResponseEntity<UserWithProfileResponse> getProfile(@PathVariable long userId) {
+    @Operation(summary = "사용자 프로필 조회")
+    public ResponseEntity<UserWithProfileResponse> getProfile(
+            @Parameter(description = "사용자 ID", required = true)
+            @PathVariable long userId) {
 
         UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/me")
+    @Operation(summary = "내 프로필 조회")
     public ResponseEntity<UserWithProfileResponse> getMyProfile() {
 
         UserWithProfileResponse response = userProfileService.viewMe();
@@ -52,7 +62,10 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
-    public ResponseEntity<InBodyStatisticsResponse> getInBodyStatics(@PathVariable long profileId) {
+    @Operation(summary = "인바디 통계 조회")
+    public ResponseEntity<InBodyStatisticsResponse> getInBodyStatics(
+            @Parameter(description = "프로필 ID", required = true)
+            @PathVariable long profileId) {
 
         InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
         return ResponseEntity.ok(response);
