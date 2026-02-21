@@ -153,8 +153,8 @@ class OpenAIServiceTest {
             // then: JSON 파싱 성공 검증
             assertThat(actual).isNotNull();
             assertThat(actual.result()).hasSize(1);
-            assertThat(actual.result().get(0).name()).isEqualTo("DAY 1");
-            assertThat(actual.result().get(0).routineExercises().get(0).exerciseName())
+            assertThat(actual.result().getFirst().name()).isEqualTo("DAY 1");
+            assertThat(actual.result().getFirst().routineExercises().getFirst().exerciseName())
                     .isEqualTo("Squat");
 
             // then: 로그 검증
