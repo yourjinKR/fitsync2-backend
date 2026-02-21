@@ -79,3 +79,14 @@ logging:
   level:
     org.springframework.http.converter.json: DEBUG
     com.fasterxml.jackson.databind: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui
+    operations-sorter: method
+    tags-sorter: alpha

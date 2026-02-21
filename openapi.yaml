@@ -1,0 +1,1712 @@
+﻿openapi: 3.0.3
+info:
+  title: FitSync2 Backend API
+  version: 0.1.0
+  description: Initial contract generated from current backend controllers and DTOs.
+servers:
+  - url: http://localhost:8080
+    description: Local
+security:
+  - bearerAuth: []
+tags:
+  - name: Health
+  - name: User
+  - name: Auth
+  - name: JWT
+  - name: Profile
+  - name: Exercise
+  - name: Routine
+  - name: Workout
+  - name: AI
+paths:
+  /api/check:
+    get:
+      tags: [Health]
+      security: []
+      summary: Health check
+      responses:
+        '200':
+          description: Connected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  connected:
+                    type: string
+                    example: "true"
+                required: [connected]
+
+  /api/user:
+    post:
+      tags: [User]
+      security: []
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      tags: [User]
+      summary: Delete user (soft/hard)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDeleteRequest'
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /api/user/exist/{loginId}:
+    get:
+      tags: [User]
+      security: []
+      summary: Check loginId existence
+      parameters:
+        - name: loginId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Exists or not
+          content:
+            application/json:
+              schema:
+                type: boolean
+
+  /api/user/me:
+    get:
+      tags: [User]
+      summary: Get my user id
+      responses:
+        '200':
+          description: My user id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Login with loginId/password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Access and refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Logout and remove refresh token(s)
+      responses:
+        '200':
+          description: Logged out
+
+  /jwt/exchange:
+    post:
+      tags: [JWT]
+      security: []
+      summary: Exchange cookie refresh token to header token pair
+      responses:
+        '200':
+          description: Access and refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+
+  /jwt/refresh:
+    post:
+      tags: [JWT]
+      security: []
+      summary: Rotate refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Access and refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+
+  /api/user/profile:
+    post:
+      tags: [Profile]
+      summary: Create profile for current user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+
+  /api/user/profile/inbody:
+    post:
+      tags: [Profile]
+      summary: Create inbody record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InBodyRecordRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InBodyRecordResponse'
+
+  /api/user/profile/{userId}:
+    get:
+      tags: [Profile]
+      summary: Get profile by userId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User profile with latest inbody
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithProfileResponse'
+
+  /api/user/profile/me:
+    get:
+      tags: [Profile]
+      summary: Get my profile
+      responses:
+        '200':
+          description: User profile with latest inbody
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithProfileResponse'
+
+  /api/user/profile/inbody/statistics/{profileId}:
+    get:
+      tags: [Profile]
+      summary: Get inbody statistics
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Inbody statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InBodyStatisticsResponse'
+
+  /api/exercise:
+    post:
+      tags: [Exercise]
+      summary: Create exercise
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExerciseRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseResponse'
+
+  /api/exercises:
+    get:
+      tags: [Exercise]
+      summary: Get exercise list
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ExerciseCategory'
+        - name: hidden
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Paged list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageExerciseListResponse'
+
+  /api/exercise/{exerciseId}:
+    get:
+      tags: [Exercise]
+      summary: Get exercise detail
+      parameters:
+        - name: exerciseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Exercise detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseDetailResponse'
+    patch:
+      tags: [Exercise]
+      summary: Update exercise
+      parameters:
+        - name: exerciseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExerciseUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseResponse'
+    delete:
+      tags: [Exercise]
+      summary: Delete exercise
+      parameters:
+        - name: exerciseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: deleteType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DeleteType'
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseResponse'
+
+  /api/routine:
+    post:
+      tags: [Routine]
+      summary: Create routine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutineRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineResponse'
+
+  /api/routines:
+    get:
+      tags: [Routine]
+      summary: Get routine list
+      parameters:
+        - name: writerId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: ownerId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Paged list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageRoutineListResponse'
+
+  /api/routine/{routineId}:
+    get:
+      tags: [Routine]
+      summary: Get routine detail
+      parameters:
+        - name: routineId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Routine detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineDetailResponse'
+    patch:
+      tags: [Routine]
+      summary: Update routine
+      parameters:
+        - name: routineId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutineUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineResponse'
+    delete:
+      tags: [Routine]
+      summary: Delete routine
+      parameters:
+        - name: routineId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineResponse'
+
+  /api/workout:
+    post:
+      tags: [Workout]
+      summary: Create workout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkoutRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutResponse'
+
+  /api/workouts:
+    get:
+      tags: [Workout]
+      summary: Get workout list
+      parameters:
+        - name: writerId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: ownerId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Paged list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageWorkoutListResponse'
+
+  /api/workout/{id}:
+    get:
+      tags: [Workout]
+      summary: Get workout detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Workout detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutDetailResponse'
+
+  /api/ai/routine:
+    post:
+      tags: [AI]
+      summary: Generate routine using AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIRoutineRequest'
+      responses:
+        '200':
+          description: Generated routine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIRoutineResponse'
+
+  /api/ai/log/routine/{id}:
+    get:
+      tags: [AI]
+      summary: Get AI log detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: AI log
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AILogResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 5
+    sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        example: id,desc
+
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      required: [code, message]
+
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+      required: [field, message]
+
+    UserRequest:
+      type: object
+      properties:
+        loginId:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        roleType:
+          $ref: '#/components/schemas/UserRoleType'
+        email:
+          type: string
+        isSocial:
+          type: boolean
+        socialProviderType:
+          $ref: '#/components/schemas/SocialProviderType'
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    UserDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        deleteType:
+          $ref: '#/components/schemas/DeleteType'
+      required: [id, deleteType]
+
+    LoginRequest:
+      type: object
+      properties:
+        loginId:
+          type: string
+        password:
+          type: string
+      required: [loginId, password]
+
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required: [refreshToken]
+
+    JWTResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required: [accessToken, refreshToken]
+
+    UserProfileRequest:
+      type: object
+      properties:
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birth:
+          type: string
+          format: date
+        workoutGoals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutGoal'
+        exerciseCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseCategory'
+        disease:
+          type: string
+        height:
+          type: number
+          format: double
+        weight:
+          type: number
+          format: double
+        skeletalMuscleMass:
+          type: number
+          format: double
+        bodyFatMass:
+          type: number
+          format: double
+        bodyFatPercentage:
+          type: number
+          format: double
+        bmi:
+          type: number
+          format: double
+
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    InBodyRecordRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        weight:
+          type: number
+          format: double
+        skeletalMuscleMass:
+          type: number
+          format: double
+        bodyFatMass:
+          type: number
+          format: double
+        bodyFatPercentage:
+          type: number
+          format: double
+        bmi:
+          type: number
+          format: double
+      required: [userId]
+
+    InBodyRecordResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    UserWithProfileResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        user:
+          $ref: '#/components/schemas/UserHeaderInfoResponse'
+        profileId:
+          type: integer
+          format: int64
+        userProfile:
+          $ref: '#/components/schemas/UserProfileDetailResponse'
+      required: [userId, user, profileId, userProfile]
+
+    UserHeaderInfoResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        hidden:
+          type: boolean
+      required: [name, hidden]
+
+    UserProfileDetailResponse:
+      type: object
+      properties:
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birth:
+          type: string
+          format: date
+        workoutGoals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutGoal'
+        exerciseCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseCategory'
+        disease:
+          type: string
+        height:
+          type: number
+          format: double
+        weight:
+          type: number
+          format: double
+        skeletalMuscleMass:
+          type: number
+          format: double
+        bodyFatMass:
+          type: number
+          format: double
+        bodyFatPercentage:
+          type: number
+          format: double
+        bmi:
+          type: number
+          format: double
+
+    InBodyStatisticsResponse:
+      type: object
+      properties:
+        summary:
+          $ref: '#/components/schemas/InBodySummary'
+        trends:
+          type: array
+          items:
+            $ref: '#/components/schemas/InBodyTrendElement'
+      required: [summary, trends]
+
+    InBodySummary:
+      type: object
+      properties:
+        weightChange:
+          type: number
+          format: double
+        weightChangeRate:
+          type: number
+          format: double
+        muscleMassChange:
+          type: number
+          format: double
+        muscleMassChangeRate:
+          type: number
+          format: double
+        bodyFatMassChange:
+          type: number
+          format: double
+        bodyFatMassChangeRate:
+          type: number
+          format: double
+      required: [weightChange, weightChangeRate, muscleMassChange, muscleMassChangeRate, bodyFatMassChange, bodyFatMassChangeRate]
+
+    InBodyTrendElement:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        weight:
+          type: number
+          format: double
+        skeletalMuscleMass:
+          type: number
+          format: double
+        bodyFatMass:
+          type: number
+          format: double
+        bodyFatPercentage:
+          type: number
+          format: double
+        bmi:
+          type: number
+          format: double
+      required: [date]
+
+    ExerciseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        category:
+          $ref: '#/components/schemas/ExerciseCategory'
+        description:
+          type: string
+          maxLength: 1000
+        details:
+          type: object
+          additionalProperties: true
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseTargetRequest'
+        effects:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EffectType'
+        equipments:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Equipment'
+        requiredMetrics:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/MetricType'
+      required: [name, category, description, details, targets, effects, equipments, requiredMetrics]
+
+    ExerciseUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        category:
+          $ref: '#/components/schemas/ExerciseCategory'
+        description:
+          type: string
+          maxLength: 1000
+        details:
+          type: object
+          additionalProperties: true
+        hidden:
+          type: boolean
+        newTargets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseTargetRequest'
+        updateTargets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseTargetUpdateRequest'
+        deleteTargets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseTargetDeleteRequest'
+        effects:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EffectType'
+        requiredMetrics:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/MetricType'
+      required: [name, category, description, details, hidden, newTargets, updateTargets, deleteTargets, effects, requiredMetrics]
+
+    ExerciseTargetRequest:
+      type: object
+      properties:
+        bodyDetailPartId:
+          type: integer
+          format: int64
+        targetRole:
+          $ref: '#/components/schemas/TargetRole'
+      required: [bodyDetailPartId, targetRole]
+
+    ExerciseTargetUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        targetRole:
+          $ref: '#/components/schemas/TargetRole'
+      required: [id, targetRole]
+
+    ExerciseTargetDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    ExerciseResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    ExerciseListResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        category:
+          $ref: '#/components/schemas/ExerciseCategory'
+        hidden:
+          type: boolean
+        detailParts:
+          type: array
+          items:
+            $ref: '#/components/schemas/BodyDetailPartListResponse'
+      required: [id, name, category, hidden, detailParts]
+
+    BodyDetailPartListResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        detailPartName:
+          type: string
+        partName:
+          type: string
+      required: [id, detailPartName, partName]
+
+    ExerciseDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        category:
+          $ref: '#/components/schemas/ExerciseCategory'
+        description:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+        hidden:
+          type: boolean
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseTargetDetailResponse'
+        effects:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EffectType'
+        equipments:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Equipment'
+        requiredMetric:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/MetricType'
+      required: [id, name, category, description, details, hidden, targets, effects, equipments, requiredMetric]
+
+    ExerciseTargetDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        bodyDetailPart:
+          $ref: '#/components/schemas/BodyDetailPartResponse'
+        targetRole:
+          $ref: '#/components/schemas/TargetRole'
+      required: [id, bodyDetailPart, targetRole]
+
+    BodyDetailPartResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        detailPartName:
+          type: string
+        partName:
+          type: string
+      required: [id, detailPartName, partName]
+
+    RoutineRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        writerId:
+          type: integer
+          format: int64
+        ownerId:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        description:
+          type: string
+          maxLength: 1000
+        routineExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseRequest'
+      required: [name, writerId, ownerId, displayOrder, description, routineExercises]
+
+    RoutineUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        displayOrder:
+          type: integer
+        description:
+          type: string
+        newExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseRequest'
+        updateExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseUpdateRequest'
+        deleteExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseDeleteRequest'
+      required: [name, displayOrder, description]
+
+    RoutineExerciseRequest:
+      type: object
+      properties:
+        exerciseId:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        description:
+          type: string
+          maxLength: 1000
+        routineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineSetRequest'
+      required: [exerciseId, displayOrder, description, routineSets]
+
+    RoutineExerciseUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        description:
+          type: string
+          maxLength: 1000
+        newRoutineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineSetRequest'
+        updateRoutineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineSetUpdateRequest'
+        deleteRoutineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineSetDeleteRequest'
+      required: [id, displayOrder, description]
+
+    RoutineExerciseDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    RoutineSetRequest:
+      type: object
+      properties:
+        displayOrder:
+          type: integer
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+      required: [displayOrder]
+
+    RoutineSetUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+      required: [id, displayOrder]
+
+    RoutineSetDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    RoutineResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    RoutineListResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        writerId:
+          type: integer
+          format: int64
+        ownerId:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        routineExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseListResponse'
+      required: [id, name, writerId, ownerId, displayOrder, routineExercises]
+
+    RoutineExerciseListResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        displayOrder:
+          type: integer
+      required: [name, displayOrder]
+
+    RoutineDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        displayOrder:
+          type: integer
+        description:
+          type: string
+        routineExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineExerciseDetailResponse'
+      required: [id, name, displayOrder, description, routineExercises]
+
+    RoutineExerciseDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        exerciseId:
+          type: integer
+          format: int64
+        exerciseName:
+          type: string
+        displayOrder:
+          type: integer
+        description:
+          type: string
+        routineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutineSetDetailResponse'
+      required: [id, exerciseId, exerciseName, displayOrder, description, routineSets]
+
+    RoutineSetDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        displayOrder:
+          type: integer
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+      required: [id, displayOrder]
+
+    WorkoutRequest:
+      type: object
+      properties:
+        writerId:
+          type: integer
+          format: int64
+        ownerId:
+          type: integer
+          format: int64
+        memo:
+          type: string
+        workoutExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutExerciseRequest'
+      required: [writerId, ownerId, workoutExercises]
+
+    WorkoutExerciseRequest:
+      type: object
+      properties:
+        exerciseId:
+          type: integer
+          format: int64
+        memo:
+          type: string
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutSetRequest'
+      required: [exerciseId, sets]
+
+    WorkoutSetRequest:
+      type: object
+      properties:
+        memo:
+          type: string
+        displayOrder:
+          type: integer
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+
+    WorkoutResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    WorkoutListResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, createdAt]
+
+    WorkoutDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        writerId:
+          type: integer
+          format: int64
+        ownerId:
+          type: integer
+          format: int64
+        memo:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        workoutExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutExerciseDetailResponse'
+      required: [id, writerId, ownerId, createdAt, workoutExercises]
+
+    WorkoutExerciseDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        exercise:
+          $ref: '#/components/schemas/ExerciseSummaryResponse'
+        memo:
+          type: string
+        workoutSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutSetDetailResponse'
+      required: [id, exercise, workoutSets]
+
+    WorkoutSetDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        memo:
+          type: string
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+      required: [id]
+
+    ExerciseSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      required: [id, name]
+
+    AIRoutineRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        splitCount:
+          type: integer
+      required: [userId]
+
+    AIRoutineResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIRoutineItem'
+      required: [result]
+
+    AIRoutineItem:
+      type: object
+      properties:
+        name:
+          type: string
+        routineExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIRoutineExercise'
+      required: [name, routineExercises]
+
+    AIRoutineExercise:
+      type: object
+      properties:
+        exerciseId:
+          type: integer
+          format: int64
+        exerciseName:
+          type: string
+        routineSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIRoutineSet'
+      required: [exerciseId, exerciseName, routineSets]
+
+    AIRoutineSet:
+      type: object
+      properties:
+        weightKg:
+          type: integer
+        reps:
+          type: integer
+        distanceM:
+          type: integer
+        durationSec:
+          type: integer
+        speedKmh:
+          type: integer
+        rpe:
+          type: integer
+        restTimeSec:
+          type: integer
+
+    AILogResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        requestId:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        model:
+          $ref: '#/components/schemas/AIModel'
+        feature:
+          type: string
+        version:
+          type: string
+        inputContent:
+          type: object
+          additionalProperties: true
+        outputContent:
+          type: object
+          additionalProperties: true
+        inputTokens:
+          type: integer
+          format: int64
+        outputTokens:
+          type: integer
+          format: int64
+        requestTime:
+          type: string
+          format: date-time
+        responseTime:
+          type: string
+          format: date-time
+        elapsedMs:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/CallStatus'
+        statusMessage:
+          type: string
+        userFeedBack:
+          $ref: '#/components/schemas/FeedBackStatus'
+        userFeedBackReason:
+          type: string
+        userAction:
+          $ref: '#/components/schemas/UserAction'
+      required: [id, requestId, model, feature, inputContent, outputContent]
+
+    PageExerciseListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageBase'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ExerciseListResponse'
+
+    PageRoutineListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageBase'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoutineListResponse'
+
+    PageWorkoutListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageBase'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/WorkoutListResponse'
+
+    PageBase:
+      type: object
+      properties:
+        content:
+          type: array
+          items: {}
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+      required: [content, totalElements, totalPages, size, number, numberOfElements, first, last, empty]
+
+    DeleteType:
+      type: string
+      enum: [SOFT, HARD]
+
+    UserRoleType:
+      type: string
+      enum: [MEMBER, TRAINER, ADMIN]
+
+    SocialProviderType:
+      type: string
+      enum: [NAVER, GOOGLE, KAKAO]
+
+    Gender:
+      type: string
+      enum: [MALE, FEMALE]
+
+    WorkoutGoal:
+      type: string
+      enum: [WEIGHT_LOSS, MUSCLE_GAIN, BODY_BALANCE, STRENGTH, ENDURANCE, REHABILITATION, HEALTH_MAINTENANCE]
+
+    ExerciseCategory:
+      type: string
+      enum: [FITNESS, CROSSFIT, YOGA, PILATES, REHAB]
+
+    TargetRole:
+      type: string
+      enum: [MAIN, SUB]
+
+    EffectType:
+      type: string
+      enum: [STRENGTH, ENDURANCE, CARDIO, FLEXIBILITY, MOBILITY]
+
+    Equipment:
+      type: string
+      enum: [NO_EQUIPMENT, DUMBBELLS, BARBELL, BENCH, CABLE, BOSU_TRAINER, TRX, BOX, STABILITY_BALL, MEDICINE_BALL, CONES, WEIGHT_MACHINES, PULL_UP_BAR, LADDER, HURDLES, KETTLE_BELLS, ROPE]
+
+    MetricType:
+      type: string
+      enum: [WEIGHT, REPS, DISTANCE, TIME, SPEED, RPE, REST_TIME]
+
+    AIModel:
+      type: string
+      enum: [GPT_4_1_MINI]
+
+    CallStatus:
+      type: string
+      enum: [SUCCESS, EXCEPTION, FAILURE]
+
+    FeedBackStatus:
+      type: string
+      enum: [LIKE, DISLIKE, NONE]
+
+    UserAction:
+      type: string
+      enum: [SAVE_IMMEDIATE, SAVE_LATER, SKIP_SAVE]
