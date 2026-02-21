@@ -45,7 +45,12 @@ public class AuthController {
     @PostMapping("/api/auth/logout")
     @Operation(summary = "로그아웃")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요 (CommonErrorCode.UNAUTHORIZED)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     public ResponseEntity<Void> logout() {
         authService.logout();

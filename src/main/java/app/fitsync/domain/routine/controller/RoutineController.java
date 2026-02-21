@@ -60,11 +60,11 @@ public class RoutineController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<Page<RoutineListResponse>> getRoutineList(
-            @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) Long ownerId,
+            @RequestParam(required = false) Long writerId,
             @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {
-        Page<RoutineListResponse> responsePage = routineService.getRoutineList(pageable, writerId, ownerId);
+        Page<RoutineListResponse> responsePage = routineService.getRoutineList(pageable, ownerId, writerId);
         return ResponseEntity.ok(responsePage);
     }
 

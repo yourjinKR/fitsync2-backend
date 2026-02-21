@@ -55,7 +55,6 @@ public class WorkoutController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     public ResponseEntity<Page<WorkoutListResponse>> getWorkoutList(
-            @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) Long ownerId,
             @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {

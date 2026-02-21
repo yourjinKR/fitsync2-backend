@@ -86,7 +86,10 @@ public class WorkoutService implements WorkoutServiceInterface {
 
     @Override
     public Page<WorkoutListResponse> viewList(WorkoutListRequest request, Pageable pageable) {
-        long ownerId = request.ownerId();
+        Long ownerId = request.ownerId();
+        if (ownerId == null) {
+            return workoutRepository.findAll(pageable).map(workoutMapper::toDto);
+        }
         return workoutRepository.findByOwnerId(ownerId, pageable).map(workoutMapper::toDto);
     }
 
