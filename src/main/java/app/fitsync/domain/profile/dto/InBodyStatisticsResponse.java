@@ -1,5 +1,6 @@
 package app.fitsync.domain.profile.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,13 +11,17 @@ import java.util.List;
  *     <li>그래프용 시계열 데이터 (Trends))</li>
  * </ul>
  */
+@Schema(description = "Inbody statistics response")
 public record InBodyStatisticsResponse(
+        @Schema(description = "Month-over-month summary")
         InBodySummary summary,
+        @Schema(description = "Trend data points ordered by createdAt desc")
         List<InBodyTrendElement> trends
 ) {
     /**
      * 전월 대비 증감 수치 요약
      */
+    @Schema(description = "Summary values")
     public record InBodySummary(
             Double weightChange,
             Double weightChangeRate,
@@ -40,6 +45,7 @@ public record InBodyStatisticsResponse(
     /**
      * 차트 렌더링을 위한 개별 기록 요소
      */
+    @Schema(description = "Single trend point")
     public record InBodyTrendElement(
             LocalDateTime date,
             Double weight,

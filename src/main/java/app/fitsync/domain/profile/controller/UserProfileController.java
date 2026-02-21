@@ -7,8 +7,13 @@ import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.service.UserProfileServiceInterface;
+import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -22,51 +27,81 @@ import org.springframework.web.bind.annotation.RestController;
 @NullMarked
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Profile", description = "사용자 프로필/인바디 API")
+@Tag(name = "Profile", description = "User profile and inbody API")
 public class UserProfileController {
 
     private final UserProfileServiceInterface userProfileService;
 
     @PostMapping("/api/user/profile")
-    @Operation(summary = "프로필 생성")
+    @Operation(summary = "Create profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Profile already exists",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<UserProfileResponse> createProfile(@RequestBody UserProfileRequest request) {
-
         UserProfileResponse response = userProfileService.create(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/user/profile/inbody")
-    @Operation(summary = "인바디 기록 생성")
+    @Operation(summary = "Create inbody record")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Profile not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<InBodyRecordResponse> createInBody(@RequestBody InBodyRecordRequest request) {
-
         InBodyRecordResponse response = userProfileService.createInBody(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/{userId}")
-    @Operation(summary = "사용자 프로필 조회")
+    @Operation(summary = "Get user profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Profile or inbody record not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<UserWithProfileResponse> getProfile(
-            @Parameter(description = "사용자 ID", required = true)
+            @Parameter(description = "User ID", required = true)
             @PathVariable long userId) {
-
         UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/me")
-    @Operation(summary = "내 프로필 조회")
+    @Operation(summary = "Get my profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthenticated",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<UserWithProfileResponse> getMyProfile() {
-
         UserWithProfileResponse response = userProfileService.viewMe();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
-    @Operation(summary = "인바디 통계 조회")
+    @Operation(summary = "Get inbody statistics")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Query success")
+    })
     public ResponseEntity<InBodyStatisticsResponse> getInBodyStatics(
-            @Parameter(description = "프로필 ID", required = true)
+            @Parameter(description = "Profile ID", required = true)
             @PathVariable long profileId) {
-
         InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
         return ResponseEntity.ok(response);
     }

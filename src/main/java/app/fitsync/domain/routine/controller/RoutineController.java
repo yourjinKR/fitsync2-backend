@@ -6,8 +6,13 @@ import app.fitsync.domain.routine.dto.routine.RoutineRequest;
 import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
+import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,56 +34,87 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @NullMarked
-@Tag(name = "Routine", description = "루틴 관리 API")
+@Tag(name = "Routine", description = "Routine API")
 public class RoutineController {
 
     private final RoutineServiceInterface routineService;
 
     @PostMapping("/api/routine")
-    @Operation(summary = "루틴 생성")
+    @Operation(summary = "Create routine")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Create success"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<RoutineResponse> createRoutine(@Valid @RequestBody RoutineRequest request) {
-
         RoutineResponse response = routineService.createRoutine(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/routines")
-    @Operation(summary = "루틴 목록 조회")
+    @Operation(summary = "Get routine list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Query success")
+    })
     public ResponseEntity<Page<RoutineListResponse>> getRoutineList(
             @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) Long ownerId,
             @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable
     ) {
-
         Page<RoutineListResponse> responsePage = routineService.getRoutineList(pageable, writerId, ownerId);
         return ResponseEntity.ok(responsePage);
     }
 
     @GetMapping("/api/routine/{routineId}")
-    @Operation(summary = "루틴 상세 조회")
+    @Operation(summary = "Get routine detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Query success"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Routine not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<RoutineDetailResponse> getRoutineDetail(
-            @Parameter(description = "루틴 ID", required = true)
+            @Parameter(description = "Routine ID", required = true)
             @PathVariable long routineId) {
-
         RoutineDetailResponse response = routineService.findRoutine(routineId);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/api/routine/{routineId}")
-    @Operation(summary = "루틴 수정")
+    @Operation(summary = "Update routine")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Update success"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Routine not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<RoutineResponse> updateRoutine(
-            @Parameter(description = "루틴 ID", required = true)
+            @Parameter(description = "Routine ID", required = true)
             @PathVariable long routineId,
             @RequestBody RoutineUpdateRequest request) {
-
         RoutineResponse response = routineService.updateRoutine(routineId, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/api/routine/{routineId}")
-    @Operation(summary = "루틴 삭제")
+    @Operation(summary = "Delete routine")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete success"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Routine not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     public ResponseEntity<RoutineResponse> deleteRoutine(
-            @Parameter(description = "루틴 ID", required = true)
+            @Parameter(description = "Routine ID", required = true)
             @PathVariable long routineId) {
         RoutineResponse response = routineService.deleteRoutine(routineId);
         return ResponseEntity.ok(response);
