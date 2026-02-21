@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,12 +40,17 @@ public class WorkoutController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "참조 사용자/운동 없음 (UserException.NOT_FOUND, ExerciseErrorCode.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<WorkoutResponse> createWorkout(@RequestBody WorkoutRequest request) {
+    public ResponseEntity<WorkoutResponse> createWorkout(@Valid @RequestBody WorkoutRequest request) {
         WorkoutResponse workoutResponse = workoutService.create(request);
         return ResponseEntity.ok(workoutResponse);
     }

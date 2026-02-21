@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,17 @@ public class UserProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "409",
                     description = "프로필 중복 (UserProfileException.DUPLICATE)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<UserProfileResponse> createProfile(@RequestBody UserProfileRequest request) {
+    public ResponseEntity<UserProfileResponse> createProfile(@Valid @RequestBody UserProfileRequest request) {
         UserProfileResponse response = userProfileService.create(request);
         return ResponseEntity.ok(response);
     }
@@ -52,12 +58,17 @@ public class UserProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "프로필 없음 (UserProfileException.NOT_FOUND)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<InBodyRecordResponse> createInBody(@RequestBody InBodyRecordRequest request) {
+    public ResponseEntity<InBodyRecordResponse> createInBody(@Valid @RequestBody InBodyRecordRequest request) {
         InBodyRecordResponse response = userProfileService.createInBody(request);
         return ResponseEntity.ok(response);
     }
