@@ -24,7 +24,7 @@ public class UserProfileController {
     private final UserProfileServiceInterface userProfileService;
 
     @PostMapping("/api/user/profile")
-    public ResponseEntity<UserProfileResponse> create(@RequestBody UserProfileRequest request) {
+    public ResponseEntity<UserProfileResponse> createProfile(@RequestBody UserProfileRequest request) {
 
         UserProfileResponse response = userProfileService.create(request);
         return ResponseEntity.ok(response);
@@ -38,21 +38,21 @@ public class UserProfileController {
     }
 
     @GetMapping("/api/user/profile/{userId}")
-    public ResponseEntity<UserWithProfileResponse> view(@PathVariable long userId) {
+    public ResponseEntity<UserWithProfileResponse> getProfile(@PathVariable long userId) {
 
         UserWithProfileResponse response = userProfileService.view(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/me")
-    public ResponseEntity<UserWithProfileResponse> viewMe() {
+    public ResponseEntity<UserWithProfileResponse> getMyProfile() {
 
         UserWithProfileResponse response = userProfileService.viewMe();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
-    public ResponseEntity<InBodyStatisticsResponse> viewInBodyStatics(@PathVariable long profileId) {
+    public ResponseEntity<InBodyStatisticsResponse> getInBodyStatics(@PathVariable long profileId) {
 
         InBodyStatisticsResponse response = userProfileService.viewInBodyStatics(profileId);
         return ResponseEntity.ok(response);

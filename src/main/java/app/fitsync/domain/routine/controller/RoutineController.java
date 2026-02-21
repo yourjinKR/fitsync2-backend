@@ -6,7 +6,6 @@ import app.fitsync.domain.routine.dto.routine.RoutineRequest;
 import app.fitsync.domain.routine.dto.routine.RoutineResponse;
 import app.fitsync.domain.routine.dto.routine.RoutineUpdateRequest;
 import app.fitsync.domain.routine.service.RoutineServiceInterface;
-import app.fitsync.global.DeleteType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -32,7 +31,7 @@ public class RoutineController {
     private final RoutineServiceInterface routineService;
 
     @PostMapping("/api/routine")
-    public ResponseEntity<RoutineResponse> create(@Valid @RequestBody RoutineRequest request) {
+    public ResponseEntity<RoutineResponse> createRoutine(@Valid @RequestBody RoutineRequest request) {
 
         RoutineResponse response = routineService.createRoutine(request);
         return ResponseEntity.ok(response);
@@ -50,7 +49,7 @@ public class RoutineController {
     }
 
     @GetMapping("/api/routine/{routineId}")
-    public ResponseEntity<RoutineDetailResponse> getRoutineList(@PathVariable long routineId) {
+    public ResponseEntity<RoutineDetailResponse> getRoutineDetail(@PathVariable long routineId) {
 
         RoutineDetailResponse response = routineService.findRoutine(routineId);
         return ResponseEntity.ok(response);

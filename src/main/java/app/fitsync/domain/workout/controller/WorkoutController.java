@@ -27,7 +27,7 @@ public class WorkoutController {
 
 
     @PostMapping("/api/workout")
-    public ResponseEntity<WorkoutResponse> create(@RequestBody WorkoutRequest request) {
+    public ResponseEntity<WorkoutResponse> createWorkout(@RequestBody WorkoutRequest request) {
 
         WorkoutResponse workoutResponse = workoutService.create(request);
         return ResponseEntity.ok(workoutResponse);
@@ -35,7 +35,7 @@ public class WorkoutController {
 
 
     @GetMapping("/api/workouts")
-    public ResponseEntity<Page<WorkoutListResponse>> viewList(
+    public ResponseEntity<Page<WorkoutListResponse>> getWorkoutList(
             @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) Long ownerId,
             @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable
@@ -48,7 +48,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/api/workout/{id}")
-    public ResponseEntity<WorkoutDetailResponse> viewDetail(@PathVariable long id) {
+    public ResponseEntity<WorkoutDetailResponse> getWorkoutDetail(@PathVariable long id) {
 
         WorkoutDetailResponse response = workoutService.viewDetail(id);
 

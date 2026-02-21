@@ -50,7 +50,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/api/exercise/{exerciseId}")
-    public ResponseEntity<ExerciseDetailResponse> findExercise(@PathVariable Long exerciseId) {
+    public ResponseEntity<ExerciseDetailResponse> getExerciseDetail(@PathVariable Long exerciseId) {
 
         ExerciseDetailResponse response = exerciseService.findExercise(exerciseId);
         return ResponseEntity.ok(response);
