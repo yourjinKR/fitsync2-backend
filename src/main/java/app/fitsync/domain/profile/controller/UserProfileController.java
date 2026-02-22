@@ -1,6 +1,7 @@
 package app.fitsync.domain.profile.controller;
 
 import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordDetailResponse;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
@@ -89,6 +90,29 @@ public class UserProfileController {
                 .buildAndExpand(response.id())
                 .toUri();
         return ResponseEntity.created(location).body(response);
+    }
+
+    @GetMapping("/api/users/me/inbody-records/{id}")
+    @Operation(summary = "내 인바디 기록 단건 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "권한 없음 (CommonErrorCode.ACCESS_DENIED)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "인바디 기록 없음 (InBodyException.NOT_FOUND)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public ResponseEntity<InBodyRecordDetailResponse> getMyInBodyRecord(
+            @Parameter(description = "인바디 기록 ID", required = true)
+            @PathVariable long id
+    ) {
+        InBodyRecordDetailResponse response = userProfileService.viewMyInBodyRecord(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/users/{userId}/profile")

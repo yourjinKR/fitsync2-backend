@@ -2,6 +2,7 @@ package app.fitsync.domain.profile.service;
 
 import app.fitsync.domain.exercise.entity.ExerciseCategory;
 import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordDetailResponse;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
@@ -193,6 +194,51 @@ class UserProfileServiceTest {
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
                 .isEqualTo(UserProfileException.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("내 인바디 단건 조회 성공")
+    void viewMyInBodyRecord_success() {
+        UserProfileService userProfileService = service();
+
+        User user = User.builder().id(1L).loginId("tester").roleType(app.fitsync.domain.user.entity.UserRoleType.MEMBER).isSocial(false).build();
+        UserProfile profile = UserProfile.builder().id(10L).user(user).build();
+        InBodyRecord record = InBodyRecord.builder()
+                .id(55L)
+                .userProfile(profile)
+                .weight(70.0)
+                .skeletalMuscleMass(35.0)
+                .bodyFatMass(15.0)
+                .bodyFatPercentage(20.0)
+                .bmi(22.0)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        when(currentUserProvider.getUserId()).thenReturn(1L);
+        when(inBodyRecordRepository.findById(55L)).thenReturn(Optional.of(record));
+
+        InBodyRecordDetailResponse response = userProfileService.viewMyInBodyRecord(55L);
+
+        assertThat(response.id()).isEqualTo(55L);
+        assertThat(response.profileId()).isEqualTo(10L);
+    }
+
+    @Test
+    @DisplayName("내 인바디 단건 조회 시 타 사용자 데이터면 ACCESS_DENIED")
+    void viewMyInBodyRecord_otherUsersRecord_throwsAccessDenied() {
+        UserProfileService userProfileService = service();
+
+        User owner = User.builder().id(2L).loginId("other").roleType(app.fitsync.domain.user.entity.UserRoleType.MEMBER).isSocial(false).build();
+        UserProfile profile = UserProfile.builder().id(10L).user(owner).build();
+        InBodyRecord record = InBodyRecord.builder().id(55L).userProfile(profile).build();
+
+        when(currentUserProvider.getUserId()).thenReturn(1L);
+        when(inBodyRecordRepository.findById(55L)).thenReturn(Optional.of(record));
+
+        assertThatThrownBy(() -> userProfileService.viewMyInBodyRecord(55L))
+                .isInstanceOf(RestApiException.class)
+                .extracting("errorCode")
+                .isEqualTo(app.fitsync.global.exception.CommonErrorCode.ACCESS_DENIED);
     }
 
     @Test
