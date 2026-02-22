@@ -10,6 +10,7 @@ import app.fitsync.domain.profile.service.UserProfileServiceInterface;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,7 +39,11 @@ public class UserProfileController {
     @PostMapping("/api/users/me/profile")
     @Operation(summary = "프로필 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 프로필 조회 기준 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -59,7 +64,11 @@ public class UserProfileController {
     @PostMapping("/api/users/me/inbody-records")
     @Operation(summary = "내 인바디 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 인바디 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",

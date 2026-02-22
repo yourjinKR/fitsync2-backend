@@ -11,6 +11,7 @@ import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +46,11 @@ public class ExerciseController {
     @PostMapping("/api/exercises")
     @Operation(summary = "운동 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 운동 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
