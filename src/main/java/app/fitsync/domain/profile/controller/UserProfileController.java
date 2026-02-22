@@ -1,6 +1,5 @@
 package app.fitsync.domain.profile.controller;
 
-import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
@@ -34,7 +33,7 @@ public class UserProfileController {
 
     private final UserProfileServiceInterface userProfileService;
 
-    @PostMapping({"/api/users/me/profile", "/api/user/profile"})
+    @PostMapping("/api/users/me/profile")
     @Operation(summary = "프로필 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -51,26 +50,6 @@ public class UserProfileController {
     })
     public ResponseEntity<UserProfileResponse> createProfile(@Valid @RequestBody UserProfileRequest request) {
         UserProfileResponse response = userProfileService.create(request);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/api/user/profile/inbody")
-    @Operation(summary = "인바디 기록 생성")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "프로필 없음 (UserProfileException.NOT_FOUND)",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            )
-    })
-    public ResponseEntity<InBodyRecordResponse> createInBody(@Valid @RequestBody InBodyRecordRequest request) {
-        InBodyRecordResponse response = userProfileService.createInBody(request);
         return ResponseEntity.ok(response);
     }
 
@@ -96,7 +75,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping({"/api/users/{userId}/profile", "/api/user/profile/{userId}"})
+    @GetMapping("/api/users/{userId}/profile")
     @Operation(summary = "사용자 프로필 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -113,7 +92,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping({"/api/users/me/profile", "/api/user/profile/me"})
+    @GetMapping("/api/users/me/profile")
     @Operation(summary = "내 프로필 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -133,7 +112,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping({"/api/users/profiles/{profileId}/inbody-statistics", "/api/user/profile/inbody/statistics/{profileId}"})
+    @GetMapping("/api/users/profiles/{profileId}/inbody-statistics")
     @Operation(summary = "인바디 통계 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공")

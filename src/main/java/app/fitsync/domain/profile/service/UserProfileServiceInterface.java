@@ -1,6 +1,5 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
@@ -23,7 +22,6 @@ search
 public interface UserProfileServiceInterface {
 
     UserProfileResponse create(UserProfileRequest request);
-    InBodyRecordResponse createInBody(InBodyRecordRequest request);
     InBodyRecordResponse createMyInBody(InBodyRecordMeRequest request);
     UserWithProfileResponse view(long id);
     UserWithProfileResponse viewMe();

@@ -1,6 +1,5 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
@@ -56,13 +55,6 @@ public class UserProfileService implements UserProfileServiceInterface {
 
     @Override
     @Transactional
-    public InBodyRecordResponse createInBody(InBodyRecordRequest request) {
-        return createInBodyByUserId(request.userId(), request.weight(), request.skeletalMuscleMass(), request.bodyFatMass(),
-                request.bodyFatPercentage(), request.bmi());
-    }
-
-    @Override
-    @Transactional
     public InBodyRecordResponse createMyInBody(InBodyRecordMeRequest request) {
         long userId = currentUserProvider.getUserId();
         return createInBodyByUserId(userId, request.weight(), request.skeletalMuscleMass(), request.bodyFatMass(),
@@ -104,10 +96,9 @@ public class UserProfileService implements UserProfileServiceInterface {
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
 
-        InBodyRecordRequest request = new InBodyRecordRequest(
-                userId, weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi
+        InBodyRecordMeRequest request = new InBodyRecordMeRequest(
+                weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi
         );
-
         InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
         InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
 
