@@ -3,6 +3,7 @@ package app.fitsync.domain.profile.service;
 import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
+import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodySummary;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodyTrendElement;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -56,15 +57,16 @@ public class UserProfileService implements UserProfileServiceInterface {
     @Override
     @Transactional
     public InBodyRecordResponse createInBody(InBodyRecordRequest request) {
+        return createInBodyByUserId(request.userId(), request.weight(), request.skeletalMuscleMass(), request.bodyFatMass(),
+                request.bodyFatPercentage(), request.bmi());
+    }
 
-        long userId = request.userId();
-        UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
-
-        InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
-        InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
-
-        return new InBodyRecordResponse(save.getId());
+    @Override
+    @Transactional
+    public InBodyRecordResponse createMyInBody(InBodyRecordMeRequest request) {
+        long userId = currentUserProvider.getUserId();
+        return createInBodyByUserId(userId, request.weight(), request.skeletalMuscleMass(), request.bodyFatMass(),
+                request.bodyFatPercentage(), request.bmi());
     }
 
     @Override
@@ -89,6 +91,27 @@ public class UserProfileService implements UserProfileServiceInterface {
                 .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
 
         return userProfileMapper.toDto(profile, inBodyRecord);
+    }
+
+    private InBodyRecordResponse createInBodyByUserId(
+            long userId,
+            Double weight,
+            Double skeletalMuscleMass,
+            Double bodyFatMass,
+            Double bodyFatPercentage,
+            Double bmi
+    ) {
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+
+        InBodyRecordRequest request = new InBodyRecordRequest(
+                userId, weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi
+        );
+
+        InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
+        InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
+
+        return new InBodyRecordResponse(save.getId());
     }
 
     @Override

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserServiceInterface userService;
 
-    @PostMapping("/api/user")
+    @PostMapping({"/api/users", "/api/user"})
     @Operation(summary = "회원 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/user/exist/{loginId}")
+    @GetMapping({"/api/users/exists/{loginId}", "/api/user/exist/{loginId}"})
     @Operation(summary = "로그인 ID 중복 확인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공")
@@ -60,7 +60,7 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = "/api/user/me")
+    @GetMapping(value = {"/api/users/me", "/api/user/me"})
     @Operation(summary = "내 사용자 정보 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -85,7 +85,7 @@ public class UserController {
         return ResponseEntity.ok(me);
     }
 
-    @DeleteMapping("/api/user")
+    @DeleteMapping({"/api/users/me", "/api/users", "/api/user"})
     @Operation(summary = "회원 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),

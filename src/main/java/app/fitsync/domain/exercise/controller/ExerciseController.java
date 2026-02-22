@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExerciseController {
     private final ExerciseServiceInterface exerciseService;
 
-    @PostMapping("/api/exercise")
+    @PostMapping({"/api/exercises", "/api/exercise"})
     @Operation(summary = "운동 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -69,7 +69,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responsePage);
     }
 
-    @GetMapping("/api/exercise/{exerciseId}")
+    @GetMapping({"/api/exercises/{exerciseId}", "/api/exercise/{exerciseId}"})
     @Operation(summary = "운동 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -86,7 +86,7 @@ public class ExerciseController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/api/exercise/{exerciseId}")
+    @PatchMapping({"/api/exercises/{exerciseId}", "/api/exercise/{exerciseId}"})
     @Operation(summary = "운동 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
@@ -109,7 +109,7 @@ public class ExerciseController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/api/exercise/{exerciseId}")
+    @DeleteMapping({"/api/exercises/{exerciseId}", "/api/exercise/{exerciseId}"})
     @Operation(summary = "운동 삭제", description = "SOFT/HARD 삭제 유형으로 운동을 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),

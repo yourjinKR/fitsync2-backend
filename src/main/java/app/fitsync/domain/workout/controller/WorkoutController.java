@@ -35,7 +35,7 @@ public class WorkoutController {
 
     private final WorkoutServiceInterface workoutService;
 
-    @PostMapping("/api/workout")
+    @PostMapping({"/api/workouts", "/api/workout"})
     @Operation(summary = "운동 기록 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -69,7 +69,7 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutListResponses);
     }
 
-    @GetMapping("/api/workout/{id}")
+    @GetMapping({"/api/workouts/{id}", "/api/workout/{id}"})
     @Operation(summary = "운동 기록 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),

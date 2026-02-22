@@ -39,7 +39,7 @@ public class RoutineController {
 
     private final RoutineServiceInterface routineService;
 
-    @PostMapping("/api/routine")
+    @PostMapping({"/api/routines", "/api/routine"})
     @Operation(summary = "루틴 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공"),
@@ -68,7 +68,7 @@ public class RoutineController {
         return ResponseEntity.ok(responsePage);
     }
 
-    @GetMapping("/api/routine/{routineId}")
+    @GetMapping({"/api/routines/{routineId}", "/api/routine/{routineId}"})
     @Operation(summary = "루틴 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -85,7 +85,7 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/api/routine/{routineId}")
+    @PatchMapping({"/api/routines/{routineId}", "/api/routine/{routineId}"})
     @Operation(summary = "루틴 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
@@ -108,7 +108,7 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/api/routine/{routineId}")
+    @DeleteMapping({"/api/routines/{routineId}", "/api/routine/{routineId}"})
     @Operation(summary = "루틴 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
