@@ -62,20 +62,26 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         return userRepository.existsByLoginId(logiId);
     }
 
+    @Override
+    public UserResponse findById(long id) {
+        User user = findUserById(id);
+        return new UserResponse(user.getId());
+    }
+
     // User Soft Delete - 기본값
     @Override
     @Transactional
     public void deleteMe() {
         Long userId = currentUserProvider.getUserId();
-        User user = findById(userId);
+        User user = findUserById(userId);
         user.hide();
         userRepository.save(user);
         jwtService.removeRefreshUser(user.getLoginId());
     }
 
-    public User findById(Long id) {
+    public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND, id));
     }
 
     @Override

@@ -65,6 +65,24 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/api/users/{id}")
+    @Operation(summary = "사용자 정보 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "사용자 없음 (UserException.NOT_FOUND)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public ResponseEntity<UserResponse> findById(
+            @Parameter(description = "사용자 ID", required = true)
+            @PathVariable long id
+    ) {
+        UserResponse response = userService.findById(id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping(value = "/api/users/me")
     @Operation(summary = "내 사용자 정보 조회")
     @ApiResponses(value = {

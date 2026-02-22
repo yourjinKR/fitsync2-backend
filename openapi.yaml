@@ -102,6 +102,27 @@ paths:
         '403':
           $ref: '#/components/responses/ErrorResponse'
 
+  /api/users/{id}:
+    get:
+      tags: [User]
+      summary: Get user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
   /api/auth/login:
     post:
       tags: [Auth]

@@ -60,6 +60,9 @@ class CommonSecurityRegressionTest {
     void protectedApiWithoutAuthentication_returns401() throws Exception {
         mockMvc.perform(get("/api/workouts"))
                 .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
