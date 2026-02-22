@@ -1,6 +1,7 @@
 package app.fitsync.domain.profile.controller;
 
-import app.fitsync.domain.profile.dto.InBodyRecordRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
+import app.fitsync.domain.profile.dto.InBodyRecordDetailResponse;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
@@ -10,12 +11,14 @@ import app.fitsync.domain.profile.service.UserProfileServiceInterface;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @NullMarked
 @RestController
@@ -33,10 +37,14 @@ public class UserProfileController {
 
     private final UserProfileServiceInterface userProfileService;
 
-    @PostMapping("/api/user/profile")
+    @PostMapping("/api/users/me/profile")
     @Operation(summary = "프로필 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 프로필 조회 기준 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -50,13 +58,18 @@ public class UserProfileController {
     })
     public ResponseEntity<UserProfileResponse> createProfile(@Valid @RequestBody UserProfileRequest request) {
         UserProfileResponse response = userProfileService.create(request);
-        return ResponseEntity.ok(response);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
-    @PostMapping("/api/user/profile/inbody")
-    @Operation(summary = "인바디 기록 생성")
+    @PostMapping("/api/users/me/inbody-records")
+    @Operation(summary = "내 인바디 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 인바디 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -68,12 +81,41 @@ public class UserProfileController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<InBodyRecordResponse> createInBody(@Valid @RequestBody InBodyRecordRequest request) {
-        InBodyRecordResponse response = userProfileService.createInBody(request);
+    public ResponseEntity<InBodyRecordResponse> createMyInBody(
+            @Valid @RequestBody InBodyRecordMeRequest request
+    ) {
+        InBodyRecordResponse response = userProfileService.createMyInBody(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
+    }
+
+    @GetMapping("/api/users/me/inbody-records/{id}")
+    @Operation(summary = "내 인바디 기록 단건 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "권한 없음 (CommonErrorCode.ACCESS_DENIED)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "인바디 기록 없음 (InBodyException.NOT_FOUND)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public ResponseEntity<InBodyRecordDetailResponse> getMyInBodyRecord(
+            @Parameter(description = "인바디 기록 ID", required = true)
+            @PathVariable long id
+    ) {
+        InBodyRecordDetailResponse response = userProfileService.viewMyInBodyRecord(id);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/user/profile/{userId}")
+    @GetMapping("/api/users/{userId}/profile")
     @Operation(summary = "사용자 프로필 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -90,7 +132,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/user/profile/me")
+    @GetMapping("/api/users/me/profile")
     @Operation(summary = "내 프로필 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -110,7 +152,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/user/profile/inbody/statistics/{profileId}")
+    @GetMapping("/api/users/profiles/{profileId}/inbody-statistics")
     @Operation(summary = "인바디 통계 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공")

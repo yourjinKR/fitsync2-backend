@@ -3,10 +3,7 @@ package app.fitsync.domain.profile.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record InBodyRecordRequest(
-        @Positive
-        long userId,
-
+public record InBodyRecordMeRequest(
         @NotNull
         @Positive
         Double weight,

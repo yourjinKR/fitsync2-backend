@@ -37,7 +37,7 @@ paths:
                     example: "true"
                 required: [connected]
 
-  /api/user:
+  /api/users:
     post:
       tags: [User]
       security: []
@@ -49,34 +49,21 @@ paths:
             schema:
               $ref: '#/components/schemas/UserRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
         '409':
           $ref: '#/components/responses/ErrorResponse'
-    delete:
-      tags: [User]
-      summary: Delete user (soft/hard)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDeleteRequest'
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
-        '403':
-          $ref: '#/components/responses/ErrorResponse'
 
-  /api/user/exist/{loginId}:
+  /api/users/exists/{loginId}:
     get:
       tags: [User]
       security: []
@@ -95,7 +82,7 @@ paths:
               schema:
                 type: boolean
 
-  /api/user/me:
+  /api/users/me:
     get:
       tags: [User]
       summary: Get my user id
@@ -106,6 +93,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+    delete:
+      tags: [User]
+      summary: Delete current user (soft delete)
+      responses:
+        '204':
+          description: Deleted
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /api/users/{id}:
+    get:
+      tags: [User]
+      summary: Get user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
 
   /api/auth/login:
     post:
@@ -169,7 +185,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/JWTResponse'
 
-  /api/user/profile:
+  /api/users/me/profile:
     post:
       tags: [Profile]
       summary: Create profile for current user
@@ -180,32 +196,75 @@ paths:
             schema:
               $ref: '#/components/schemas/UserProfileRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfileResponse'
+    get:
+      tags: [Profile]
+      summary: Get my profile
+      responses:
+        '200':
+          description: User profile with latest inbody
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithProfileResponse'
 
-  /api/user/profile/inbody:
+  /api/users/me/inbody-records:
     post:
       tags: [Profile]
-      summary: Create inbody record
+      summary: Create my inbody record
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InBodyRecordRequest'
+              $ref: '#/components/schemas/InBodyRecordMeRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InBodyRecordResponse'
 
-  /api/user/profile/{userId}:
+  /api/users/me/inbody-records/{id}:
+    get:
+      tags: [Profile]
+      summary: Get my inbody record detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Inbody record detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InBodyRecordDetailResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /api/users/{userId}/profile:
     get:
       tags: [Profile]
       summary: Get profile by userId
@@ -224,19 +283,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWithProfileResponse'
 
-  /api/user/profile/me:
-    get:
-      tags: [Profile]
-      summary: Get my profile
-      responses:
-        '200':
-          description: User profile with latest inbody
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserWithProfileResponse'
-
-  /api/user/profile/inbody/statistics/{profileId}:
+  /api/users/profiles/{profileId}/inbody-statistics:
     get:
       tags: [Profile]
       summary: Get inbody statistics
@@ -255,7 +302,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InBodyStatisticsResponse'
 
-  /api/exercise:
+  /api/exercises:
     post:
       tags: [Exercise]
       summary: Create exercise
@@ -266,14 +313,17 @@ paths:
             schema:
               $ref: '#/components/schemas/ExerciseRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExerciseResponse'
-
-  /api/exercises:
     get:
       tags: [Exercise]
       summary: Get exercise list
@@ -300,7 +350,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageExerciseListResponse'
 
-  /api/exercise/{exerciseId}:
+  /api/exercises/{exerciseId}:
     get:
       tags: [Exercise]
       summary: Get exercise detail
@@ -364,7 +414,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExerciseResponse'
 
-  /api/routine:
+  /api/routines:
     post:
       tags: [Routine]
       summary: Create routine
@@ -375,14 +425,17 @@ paths:
             schema:
               $ref: '#/components/schemas/RoutineRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoutineResponse'
-
-  /api/routines:
     get:
       tags: [Routine]
       summary: Get routine list
@@ -410,7 +463,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageRoutineListResponse'
 
-  /api/routine/{routineId}:
+  /api/routines/{routineId}:
     get:
       tags: [Routine]
       summary: Get routine detail
@@ -469,7 +522,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RoutineResponse'
 
-  /api/workout:
+  /api/workouts:
     post:
       tags: [Workout]
       summary: Create workout
@@ -480,24 +533,21 @@ paths:
             schema:
               $ref: '#/components/schemas/WorkoutRequest'
       responses:
-        '200':
+        '201':
           description: Created
+          headers:
+            Location:
+              description: URI of created resource
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkoutResponse'
-
-  /api/workouts:
     get:
       tags: [Workout]
       summary: Get workout list
       parameters:
-        - name: writerId
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
         - name: ownerId
           in: query
           required: false
@@ -515,7 +565,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageWorkoutListResponse'
 
-  /api/workout/{id}:
+  /api/workouts/{id}:
     get:
       tags: [Workout]
       summary: Get workout detail
@@ -660,16 +710,6 @@ components:
           format: int64
       required: [id]
 
-    UserDeleteRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        deleteType:
-          $ref: '#/components/schemas/DeleteType'
-      required: [id, deleteType]
-
     LoginRequest:
       type: object
       properties:
@@ -740,10 +780,41 @@ components:
           format: int64
       required: [id]
 
-    InBodyRecordRequest:
+    InBodyRecordMeRequest:
       type: object
       properties:
-        userId:
+        weight:
+          type: number
+          format: double
+        skeletalMuscleMass:
+          type: number
+          format: double
+        bodyFatMass:
+          type: number
+          format: double
+        bodyFatPercentage:
+          type: number
+          format: double
+        bmi:
+          type: number
+          format: double
+      required: [weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi]
+
+    InBodyRecordResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required: [id]
+
+    InBodyRecordDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        profileId:
           type: integer
           format: int64
         weight:
@@ -761,15 +832,10 @@ components:
         bmi:
           type: number
           format: double
-      required: [userId]
-
-    InBodyRecordResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-      required: [id]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, profileId, weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi, createdAt]
 
     UserWithProfileResponse:
       type: object
@@ -1710,3 +1776,4 @@ components:
     UserAction:
       type: string
       enum: [SAVE_IMMEDIATE, SAVE_LATER, SKIP_SAVE]
+

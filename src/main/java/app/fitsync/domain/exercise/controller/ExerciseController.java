@@ -11,12 +11,14 @@ import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @NullMarked
 @RestController
@@ -40,10 +43,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExerciseController {
     private final ExerciseServiceInterface exerciseService;
 
-    @PostMapping("/api/exercise")
+    @PostMapping("/api/exercises")
     @Operation(summary = "운동 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 운동 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -52,7 +59,11 @@ public class ExerciseController {
     })
     public ResponseEntity<ExerciseResponse> createExercise(@Valid @RequestBody ExerciseRequest request) {
         ExerciseResponse response = exerciseService.createExercise(request);
-        return ResponseEntity.ok(response);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/api/exercises")
@@ -69,7 +80,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responsePage);
     }
 
-    @GetMapping("/api/exercise/{exerciseId}")
+    @GetMapping("/api/exercises/{exerciseId}")
     @Operation(summary = "운동 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -86,7 +97,7 @@ public class ExerciseController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/api/exercise/{exerciseId}")
+    @PatchMapping("/api/exercises/{exerciseId}")
     @Operation(summary = "운동 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
@@ -109,7 +120,7 @@ public class ExerciseController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/api/exercise/{exerciseId}")
+    @DeleteMapping("/api/exercises/{exerciseId}")
     @Operation(summary = "운동 삭제", description = "SOFT/HARD 삭제 유형으로 운동을 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),

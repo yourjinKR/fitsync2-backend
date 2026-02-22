@@ -9,12 +9,14 @@ import app.fitsync.domain.workout.service.WorkoutServiceInterface;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,10 +38,14 @@ public class WorkoutController {
 
     private final WorkoutServiceInterface workoutService;
 
-    @PostMapping("/api/workout")
+    @PostMapping("/api/workouts")
     @Operation(summary = "운동 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 운동기록 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -52,7 +59,11 @@ public class WorkoutController {
     })
     public ResponseEntity<WorkoutResponse> createWorkout(@Valid @RequestBody WorkoutRequest request) {
         WorkoutResponse workoutResponse = workoutService.create(request);
-        return ResponseEntity.ok(workoutResponse);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(workoutResponse.id())
+                .toUri();
+        return ResponseEntity.created(location).body(workoutResponse);
     }
 
     @GetMapping("/api/workouts")
@@ -69,7 +80,7 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutListResponses);
     }
 
-    @GetMapping("/api/workout/{id}")
+    @GetMapping("/api/workouts/{id}")
     @Operation(summary = "운동 기록 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),

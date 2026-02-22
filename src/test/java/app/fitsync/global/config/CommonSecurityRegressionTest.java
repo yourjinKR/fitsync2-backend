@@ -60,12 +60,15 @@ class CommonSecurityRegressionTest {
     void protectedApiWithoutAuthentication_returns401() throws Exception {
         mockMvc.perform(get("/api/workouts"))
                 .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("TS-COMMON-002: 권한 없는 자원 접근 시 403")
     void resourceWithoutRequiredAuthority_returns403() throws Exception {
-        mockMvc.perform(get("/api/user/me").with(user("tester").roles("USER")))
+        mockMvc.perform(get("/api/users/me").with(user("tester").roles("USER")))
                 .andExpect(status().isForbidden());
 
         verify(userService, never()).findMe();

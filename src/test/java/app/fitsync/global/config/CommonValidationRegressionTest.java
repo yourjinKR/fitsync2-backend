@@ -75,7 +75,7 @@ class CommonValidationRegressionTest {
     @Test
     @DisplayName("TS-COMMON-003: 운동 생성 요청 검증 실패 시 INVALID_PARAMETER와 field errors를 반환한다")
     void workoutCreateValidationFailure_returnsInvalidParameterWithFieldErrors() throws Exception {
-        mockMvc.perform(post("/api/workout")
+        mockMvc.perform(post("/api/workouts")
                         .with(user("tester"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""

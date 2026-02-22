@@ -1,8 +1,9 @@
 package app.fitsync.domain.profile.service;
 
-import app.fitsync.domain.profile.dto.InBodyRecordRequest;
 import app.fitsync.domain.profile.dto.InBodyRecordResponse;
+import app.fitsync.domain.profile.dto.InBodyRecordDetailResponse;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse;
+import app.fitsync.domain.profile.dto.InBodyRecordMeRequest;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodySummary;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodyTrendElement;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
@@ -17,6 +18,7 @@ import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
 import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.entity.User;
+import app.fitsync.global.exception.CommonErrorCode;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,16 +57,35 @@ public class UserProfileService implements UserProfileServiceInterface {
 
     @Override
     @Transactional
-    public InBodyRecordResponse createInBody(InBodyRecordRequest request) {
+    public InBodyRecordResponse createMyInBody(InBodyRecordMeRequest request) {
+        long userId = currentUserProvider.getUserId();
+        return createInBodyByUserId(userId, request.weight(), request.skeletalMuscleMass(), request.bodyFatMass(),
+                request.bodyFatPercentage(), request.bmi());
+    }
 
-        long userId = request.userId();
-        UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+    @Override
+    @Transactional(readOnly = true)
+    public InBodyRecordDetailResponse viewMyInBodyRecord(long inBodyRecordId) {
+        Long userId = currentUserProvider.getUserId();
 
-        InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
-        InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
+        InBodyRecord inBodyRecord = inBodyRecordRepository.findById(inBodyRecordId)
+                .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND, inBodyRecordId));
 
-        return new InBodyRecordResponse(save.getId());
+        Long ownerId = inBodyRecord.getUserProfile().getUser().getId();
+        if (!ownerId.equals(userId)) {
+            throw new RestApiException(CommonErrorCode.ACCESS_DENIED);
+        }
+
+        return new InBodyRecordDetailResponse(
+                inBodyRecord.getId(),
+                inBodyRecord.getUserProfile().getId(),
+                inBodyRecord.getWeight(),
+                inBodyRecord.getSkeletalMuscleMass(),
+                inBodyRecord.getBodyFatMass(),
+                inBodyRecord.getBodyFatPercentage(),
+                inBodyRecord.getBmi(),
+                inBodyRecord.getCreatedAt()
+        );
     }
 
     @Override
@@ -89,6 +110,26 @@ public class UserProfileService implements UserProfileServiceInterface {
                 .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
 
         return userProfileMapper.toDto(profile, inBodyRecord);
+    }
+
+    private InBodyRecordResponse createInBodyByUserId(
+            long userId,
+            Double weight,
+            Double skeletalMuscleMass,
+            Double bodyFatMass,
+            Double bodyFatPercentage,
+            Double bmi
+    ) {
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+
+        InBodyRecordMeRequest request = new InBodyRecordMeRequest(
+                weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi
+        );
+        InBodyRecord inBodyRecord = userProfileMapper.toEntity(request, profile);
+        InBodyRecord save = inBodyRecordRepository.save(inBodyRecord);
+
+        return new InBodyRecordResponse(save.getId());
     }
 
     @Override

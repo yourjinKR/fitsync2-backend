@@ -9,12 +9,14 @@ import app.fitsync.domain.routine.service.RoutineServiceInterface;
 import app.fitsync.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,10 +42,14 @@ public class RoutineController {
 
     private final RoutineServiceInterface routineService;
 
-    @PostMapping("/api/routine")
+    @PostMapping("/api/routines")
     @Operation(summary = "루틴 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "생성 성공",
+                    headers = @Header(name = "Location", description = "생성된 루틴 리소스 URI")
+            ),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -51,7 +58,11 @@ public class RoutineController {
     })
     public ResponseEntity<RoutineResponse> createRoutine(@Valid @RequestBody RoutineRequest request) {
         RoutineResponse response = routineService.createRoutine(request);
-        return ResponseEntity.ok(response);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/api/routines")
@@ -68,7 +79,7 @@ public class RoutineController {
         return ResponseEntity.ok(responsePage);
     }
 
-    @GetMapping("/api/routine/{routineId}")
+    @GetMapping("/api/routines/{routineId}")
     @Operation(summary = "루틴 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -85,7 +96,7 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/api/routine/{routineId}")
+    @PatchMapping("/api/routines/{routineId}")
     @Operation(summary = "루틴 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
@@ -108,7 +119,7 @@ public class RoutineController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/api/routine/{routineId}")
+    @DeleteMapping("/api/routines/{routineId}")
     @Operation(summary = "루틴 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),

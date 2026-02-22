@@ -4,7 +4,6 @@ import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.dto.CustomOAuth2User;
 import app.fitsync.domain.user.oauth.SocialUserInfo;
-import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
 import app.fitsync.domain.user.entity.SocialProviderType;
@@ -15,16 +14,12 @@ import app.fitsync.domain.user.mapper.UserMapper;
 import app.fitsync.domain.user.oauth.SocialUserInfoExtractor;
 import app.fitsync.domain.user.oauth.SocialUserInfoExtractorRegistry;
 import app.fitsync.domain.user.repository.UserRepository;
-import app.fitsync.global.DeleteType;
 import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -67,49 +62,26 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         return userRepository.existsByLoginId(logiId);
     }
 
+    @Override
+    public UserResponse findById(long id) {
+        User user = findUserById(id);
+        return new UserResponse(user.getId());
+    }
+
     // User Soft Delete - 기본값
     @Override
     @Transactional
-    public UserResponse deleteUser(UserDeleteRequest request) {
-        Long userId = request.id();
-        User user = findById(userId);
-        DeleteType deleteType = request.deleteType();
-
-        if (deleteType == DeleteType.SOFT) {
-            user.hide();
-            userRepository.save(user);
-        }
-
-        if (deleteType == DeleteType.HARD) {
-            removeUser(user);
-        }
-
-        return new UserResponse(userId);
+    public void deleteMe() {
+        Long userId = currentUserProvider.getUserId();
+        User user = findUserById(userId);
+        user.hide();
+        userRepository.save(user);
+        jwtService.removeRefreshUser(user.getLoginId());
     }
 
-    public User findById(Long id) {
+    public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    // User Hard Delete
-    public void removeUser(User user) throws AccessDeniedException {
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        String sessionUsername = context.getAuthentication().getName();
-        String sessionRole = context.getAuthentication().getAuthorities().iterator().next().getAuthority();
-
-        String loginId = user.getLoginId();
-
-        boolean isOwner = sessionUsername.equals(loginId);
-        boolean isAdmin = sessionRole.equals("ROLE_"+ UserRoleType.ADMIN.name());
-
-        if (!isOwner && !isAdmin) {
-            throw new AccessDeniedException("본인 혹은 관리자만 삭제할 수 있습니다.");
-        }
-
-        userRepository.delete(user);
-        jwtService.removeRefreshUser(loginId);
+                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND, id));
     }
 
     @Override

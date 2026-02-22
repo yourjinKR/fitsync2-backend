@@ -72,7 +72,7 @@ public class SecurityConfig {
                 // https://fitsync2-frontend
         ));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         configuration.setAllowedHeaders(List.of(
                 "Authorization",
@@ -124,9 +124,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/jwt/exchange", "/jwt/refresh", "/error").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user", "/api/auth/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/check", "/api/user/exist/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/user/me").hasAnyAuthority("MEMBER", "TRAINER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/users", "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/check", "/api/users/exists/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority("MEMBER", "TRAINER", "ADMIN")
                 .anyRequest().authenticated()
         );
 
