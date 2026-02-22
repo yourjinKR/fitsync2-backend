@@ -90,20 +90,10 @@ paths:
                 $ref: '#/components/schemas/UserResponse'
     delete:
       tags: [User]
-      summary: Delete current user (soft/hard)
-      parameters:
-        - name: deleteType
-          in: query
-          required: false
-          schema:
-            $ref: '#/components/schemas/DeleteType'
+      summary: Delete current user (soft delete)
       responses:
-        '200':
+        '204':
           description: Deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
         '403':
           $ref: '#/components/responses/ErrorResponse'
 
