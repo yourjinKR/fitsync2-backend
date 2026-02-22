@@ -91,12 +91,12 @@ paths:
     delete:
       tags: [User]
       summary: Delete current user (soft/hard)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDeleteRequest'
+      parameters:
+        - name: deleteType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DeleteType'
       responses:
         '200':
           description: Deleted
@@ -645,16 +645,6 @@ components:
           type: integer
           format: int64
       required: [id]
-
-    UserDeleteRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        deleteType:
-          $ref: '#/components/schemas/DeleteType'
-      required: [id, deleteType]
 
     LoginRequest:
       type: object

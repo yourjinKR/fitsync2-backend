@@ -2,7 +2,6 @@ package app.fitsync.domain.user.service;
 
 import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.CurrentUserProvider;
-import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
@@ -113,9 +112,10 @@ class UserServiceTest {
                 .hidden(false)
                 .build();
 
+        when(currentUserProvider.getUserId()).thenReturn(10L);
         when(userRepository.findById(10L)).thenReturn(Optional.of(user));
 
-        userService.deleteUser(new UserDeleteRequest(10L, DeleteType.SOFT));
+        userService.deleteMe(DeleteType.SOFT);
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
@@ -137,6 +137,7 @@ class UserServiceTest {
         );
 
         User user = org.mockito.Mockito.mock(User.class);
+        when(currentUserProvider.getUserId()).thenReturn(1L);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(user.getLoginId()).thenReturn("owner");
 
@@ -148,7 +149,7 @@ class UserServiceTest {
                 )
         );
 
-        userService.deleteUser(new UserDeleteRequest(1L, DeleteType.HARD));
+        userService.deleteMe(DeleteType.HARD);
 
         verify(userRepository).delete(user);
         verify(jwtService).removeRefreshUser("owner");
@@ -167,6 +168,7 @@ class UserServiceTest {
         );
 
         User user = org.mockito.Mockito.mock(User.class);
+        when(currentUserProvider.getUserId()).thenReturn(2L);
         when(userRepository.findById(2L)).thenReturn(Optional.of(user));
         when(user.getLoginId()).thenReturn("target-user");
 
@@ -178,7 +180,7 @@ class UserServiceTest {
                 )
         );
 
-        userService.deleteUser(new UserDeleteRequest(2L, DeleteType.HARD));
+        userService.deleteMe(DeleteType.HARD);
 
         verify(userRepository).delete(user);
         verify(jwtService).removeRefreshUser("target-user");
@@ -197,6 +199,7 @@ class UserServiceTest {
         );
 
         User user = org.mockito.Mockito.mock(User.class);
+        when(currentUserProvider.getUserId()).thenReturn(3L);
         when(userRepository.findById(3L)).thenReturn(Optional.of(user));
         when(user.getLoginId()).thenReturn("target-user");
 
@@ -208,7 +211,7 @@ class UserServiceTest {
                 )
         );
 
-        assertThatThrownBy(() -> userService.deleteUser(new UserDeleteRequest(3L, DeleteType.HARD)))
+        assertThatThrownBy(() -> userService.deleteMe(DeleteType.HARD))
                 .isInstanceOf(AccessDeniedException.class);
 
         verify(userRepository, never()).delete(user);

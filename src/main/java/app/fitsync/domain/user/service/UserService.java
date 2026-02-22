@@ -4,7 +4,6 @@ import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.dto.CustomOAuth2User;
 import app.fitsync.domain.user.oauth.SocialUserInfo;
-import app.fitsync.domain.user.dto.UserDeleteRequest;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.dto.UserResponse;
 import app.fitsync.domain.user.entity.SocialProviderType;
@@ -70,10 +69,9 @@ public class UserService extends DefaultOAuth2UserService implements UserService
     // User Soft Delete - 기본값
     @Override
     @Transactional
-    public UserResponse deleteUser(UserDeleteRequest request) {
-        Long userId = request.id();
+    public UserResponse deleteMe(DeleteType deleteType) {
+        Long userId = currentUserProvider.getUserId();
         User user = findById(userId);
-        DeleteType deleteType = request.deleteType();
 
         if (deleteType == DeleteType.SOFT) {
             user.hide();
