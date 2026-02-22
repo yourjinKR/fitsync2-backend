@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +37,7 @@ public class UserProfileController {
     @PostMapping("/api/users/me/profile")
     @Operation(summary = "프로필 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "201", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -50,13 +51,13 @@ public class UserProfileController {
     })
     public ResponseEntity<UserProfileResponse> createProfile(@Valid @RequestBody UserProfileRequest request) {
         UserProfileResponse response = userProfileService.create(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/api/users/me/inbody-records")
     @Operation(summary = "내 인바디 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "201", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -72,7 +73,7 @@ public class UserProfileController {
             @Valid @RequestBody InBodyRecordMeRequest request
     ) {
         InBodyRecordResponse response = userProfileService.createMyInBody(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/api/users/{userId}/profile")

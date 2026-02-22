@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,7 @@ public class RoutineController {
     @PostMapping("/api/routines")
     @Operation(summary = "루틴 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "201", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -51,7 +52,7 @@ public class RoutineController {
     })
     public ResponseEntity<RoutineResponse> createRoutine(@Valid @RequestBody RoutineRequest request) {
         RoutineResponse response = routineService.createRoutine(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/api/routines")

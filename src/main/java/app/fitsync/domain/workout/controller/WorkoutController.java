@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +39,7 @@ public class WorkoutController {
     @PostMapping("/api/workouts")
     @Operation(summary = "운동 기록 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "201", description = "생성 성공"),
             @ApiResponse(
                     responseCode = "400",
                     description = "요청 검증 실패 (CommonErrorCode.INVALID_PARAMETER)",
@@ -52,7 +53,7 @@ public class WorkoutController {
     })
     public ResponseEntity<WorkoutResponse> createWorkout(@Valid @RequestBody WorkoutRequest request) {
         WorkoutResponse workoutResponse = workoutService.create(request);
-        return ResponseEntity.ok(workoutResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(workoutResponse);
     }
 
     @GetMapping("/api/workouts")
