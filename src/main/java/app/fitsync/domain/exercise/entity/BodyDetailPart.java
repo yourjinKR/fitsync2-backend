@@ -59,7 +59,6 @@ public class BodyDetailPart {
         return "BodyDetailPart{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", bodyPart=" + bodyPart +
                 '}';
     }
 }
