@@ -70,9 +70,7 @@ public class ExerciseService implements ExerciseServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<BodyDetailPartListResponse> getBodyDetailPartList() {
-        return bodyDetailPartRepository.findAllByOrderByIdAsc().stream()
-                .map(exerciseMapper::toListDto)
-                .toList();
+        return bodyDetailPartRepository.findAllListResponses();
     }
 
     @Override
