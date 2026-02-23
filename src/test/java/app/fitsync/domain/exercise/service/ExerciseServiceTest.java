@@ -4,6 +4,7 @@ import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseUpdateRequest;
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartListResponse;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetDeleteRequest;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetDetailResponse;
 import app.fitsync.domain.exercise.dto.target.ExerciseTargetRequest;
@@ -168,6 +169,25 @@ class ExerciseServiceTest {
         verify(updatedTarget).updateFrom(new ExerciseTargetUpdateRequest(11L, TargetRole.MAIN));
         verify(exerciseTargetRepository).delete(deletedTarget);
         verify(exercise).updateFrom(updateRequest());
+    }
+
+    @Test
+    @DisplayName("TS-EX-006: 운동 세부 부위 목록 조회 성공")
+    void getBodyDetailPartList_success() {
+        ExerciseService exerciseService = service();
+
+        BodyDetailPart part1 = org.mockito.Mockito.mock(BodyDetailPart.class);
+        BodyDetailPart part2 = org.mockito.Mockito.mock(BodyDetailPart.class);
+        BodyDetailPartListResponse dto1 = new BodyDetailPartListResponse(1L, "가슴", "상체");
+        BodyDetailPartListResponse dto2 = new BodyDetailPartListResponse(2L, "등", "상체");
+
+        when(bodyDetailPartRepository.findAllByOrderByIdAsc()).thenReturn(List.of(part1, part2));
+        when(exerciseMapper.toListDto(part1)).thenReturn(dto1);
+        when(exerciseMapper.toListDto(part2)).thenReturn(dto2);
+
+        List<BodyDetailPartListResponse> response = exerciseService.getBodyDetailPartList();
+
+        assertThat(response).containsExactly(dto1, dto2);
     }
 
     @Test
