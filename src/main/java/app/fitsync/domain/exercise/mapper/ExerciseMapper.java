@@ -168,6 +168,15 @@ public class ExerciseMapper {
         );
     }
 
+    public BodyDetailPartListResponse toListDto(BodyDetailPart detailPart) {
+        BodyPart part = detailPart.getBodyPart();
+        return new BodyDetailPartListResponse(
+                detailPart.getId(),
+                detailPart.getName(),
+                part.getName()
+        );
+    }
+
     public ExerciseSummaryRequest toSummaryDto(Exercise exercise) {
 
         ExerciseTarget mainTarget = exercise.getMainTarget();
