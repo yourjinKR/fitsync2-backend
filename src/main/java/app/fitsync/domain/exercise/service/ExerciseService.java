@@ -1,5 +1,6 @@
 package app.fitsync.domain.exercise.service;
 
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
@@ -64,6 +65,14 @@ public class ExerciseService implements ExerciseServiceInterface {
         Page<Exercise> exercises = exerciseRepository.search(pageable, category, hidden);
 
         return exercises.map(exerciseMapper::toListDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BodyDetailPartListResponse> getBodyDetailPartList() {
+        return bodyDetailPartRepository.findAllByOrderByIdAsc().stream()
+                .map(exerciseMapper::toListDto)
+                .toList();
     }
 
     @Override
