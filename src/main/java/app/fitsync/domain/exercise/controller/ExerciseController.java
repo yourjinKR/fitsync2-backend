@@ -1,5 +1,6 @@
 package app.fitsync.domain.exercise.controller;
 
+import app.fitsync.domain.exercise.dto.body.BodyDetailPartListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseDetailResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseListResponse;
 import app.fitsync.domain.exercise.dto.exercise.ExerciseRequest;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
@@ -78,6 +80,16 @@ public class ExerciseController {
     ) {
         Page<ExerciseListResponse> responsePage = exerciseService.getExerciseList(pageable, category, hidden);
         return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/api/exercises/body-detail-parts")
+    @Operation(summary = "운동 세부 부위 목록 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    public ResponseEntity<List<BodyDetailPartListResponse>> getBodyDetailPartList() {
+        List<BodyDetailPartListResponse> response = exerciseService.getBodyDetailPartList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/exercises/{exerciseId}")
