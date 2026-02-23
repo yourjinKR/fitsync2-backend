@@ -21,6 +21,6 @@ public record ExerciseDetailResponse(
         List<ExerciseTargetDetailResponse> targets,
         Set<EffectType> effects,
         Set<Equipment> equipments,
-        Set<MetricType> requiredMetric
+        Set<MetricType> requiredMetrics
 ) {
 }
