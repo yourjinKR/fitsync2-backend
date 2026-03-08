@@ -4,7 +4,7 @@ import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.domain.workout.dto.WorkoutDetailResponse;
 import app.fitsync.domain.workout.dto.WorkoutExerciseRequest;
@@ -42,10 +42,10 @@ public class WorkoutService implements WorkoutServiceInterface {
         long writerId = request.writerId();
 
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND, ownerId));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.NOT_FOUND, ownerId));
 
         User writer = userRepository.findById(writerId)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND, writerId));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.NOT_FOUND, writerId));
 
         List<WorkoutExercise> workoutExercises = request.workoutExercises().stream()
                 .map(this::createWorkoutExercise)

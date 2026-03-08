@@ -4,7 +4,7 @@ import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.dto.LoginRequest;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import org.junit.jupiter.api.AfterEach;
@@ -96,7 +96,7 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserException.INVALID_PASSWORD);
+                .isEqualTo(UserErrorCode.INVALID_PASSWORD);
     }
 
     @Test
@@ -110,7 +110,7 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserException.NOT_FOUND_LOGIN_ID);
+                .isEqualTo(UserErrorCode.NOT_FOUND_LOGIN_ID);
     }
 }
 

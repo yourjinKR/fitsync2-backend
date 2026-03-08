@@ -5,7 +5,7 @@ import app.fitsync.domain.exercise.entity.Exercise;
 import app.fitsync.domain.exercise.exception.ExerciseErrorCode;
 import app.fitsync.domain.exercise.repository.ExerciseRepository;
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.domain.workout.dto.WorkoutDetailResponse;
 import app.fitsync.domain.workout.dto.WorkoutExerciseDetailResponse;
@@ -108,7 +108,7 @@ class WorkoutServiceTest {
         assertThatThrownBy(() -> workoutService.create(missingOwner))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserException.NOT_FOUND);
+                .isEqualTo(UserErrorCode.NOT_FOUND);
 
         WorkoutRequest missingWriter = new WorkoutRequest(1L, 2L, "memo", List.of(exerciseRequest));
         User owner = org.mockito.Mockito.mock(User.class);
@@ -117,7 +117,7 @@ class WorkoutServiceTest {
         assertThatThrownBy(() -> workoutService.create(missingWriter))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserException.NOT_FOUND);
+                .isEqualTo(UserErrorCode.NOT_FOUND);
 
         WorkoutRequest missingExercise = new WorkoutRequest(1L, 2L, "memo", List.of(exerciseRequest));
         User writer = org.mockito.Mockito.mock(User.class);

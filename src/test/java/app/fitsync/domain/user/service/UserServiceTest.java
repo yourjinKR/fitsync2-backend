@@ -5,7 +5,7 @@ import app.fitsync.domain.user.CurrentUserProvider;
 import app.fitsync.domain.user.dto.UserRequest;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.mapper.UserMapper;
 import app.fitsync.domain.user.oauth.SocialUserInfoExtractorRegistry;
 import app.fitsync.domain.user.repository.UserRepository;
@@ -80,7 +80,7 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.createUser(request))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserException.DUPLICATE_LOGINID);
+                .isEqualTo(UserErrorCode.DUPLICATE_LOGINID);
 
         verify(userRepository, never()).save(org.mockito.ArgumentMatchers.any(User.class));
     }
