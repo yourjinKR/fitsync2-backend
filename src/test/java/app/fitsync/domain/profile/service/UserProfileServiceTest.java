@@ -11,8 +11,8 @@ import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.entity.UserProfile;
 import app.fitsync.domain.profile.entity.WorkoutGoal;
-import app.fitsync.domain.profile.exception.InBodyException;
-import app.fitsync.domain.profile.exception.UserProfileException;
+import app.fitsync.domain.profile.exception.InBodyErrorCode;
+import app.fitsync.domain.profile.exception.UserProfileErrorCode;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
@@ -94,7 +94,7 @@ class UserProfileServiceTest {
         assertThatThrownBy(() -> userProfileService.create(profileRequest()))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserProfileException.DUPLICATE);
+                .isEqualTo(UserProfileErrorCode.DUPLICATE);
     }
 
     @Test
@@ -135,7 +135,7 @@ class UserProfileServiceTest {
         assertThatThrownBy(() -> userProfileService.view(1L))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(InBodyException.NOT_FOUND_PROFILE_ID);
+                .isEqualTo(InBodyErrorCode.NOT_FOUND_PROFILE_ID);
     }
 
     @Test
@@ -193,7 +193,7 @@ class UserProfileServiceTest {
         assertThatThrownBy(() -> userProfileService.createMyInBody(request))
                 .isInstanceOf(RestApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(UserProfileException.NOT_FOUND);
+                .isEqualTo(UserProfileErrorCode.NOT_FOUND);
     }
 
     @Test

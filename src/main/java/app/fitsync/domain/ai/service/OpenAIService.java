@@ -7,8 +7,8 @@ import app.fitsync.domain.ai.entity.AIModel;
 import app.fitsync.domain.ai.entity.OpenAiMessageConverter;
 import app.fitsync.domain.profile.entity.InBodyRecord;
 import app.fitsync.domain.profile.entity.UserProfile;
-import app.fitsync.domain.profile.exception.InBodyException;
-import app.fitsync.domain.profile.exception.UserProfileException;
+import app.fitsync.domain.profile.exception.InBodyErrorCode;
+import app.fitsync.domain.profile.exception.UserProfileErrorCode;
 import app.fitsync.domain.profile.mapper.UserProfileMapper;
 import app.fitsync.domain.profile.repository.InBodyRecordRepository;
 import app.fitsync.domain.profile.repository.UserProfileRepository;
@@ -60,12 +60,12 @@ public class OpenAIService implements AIServiceInterface {
         long userId = request.userId();
 
         UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+                .orElseThrow(() -> new RestApiException(UserProfileErrorCode.NOT_FOUND, userId));
 
         Long userProfileId = profile.getId();
 
         InBodyRecord inBodyRecord = inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(userProfileId)
-                .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
+                .orElseThrow(() -> new RestApiException(InBodyErrorCode.NOT_FOUND_PROFILE_ID, userProfileId));
 
         RoutineRecommendUserMessage userMessageRequest = userProfileMapper.toDto(profile, inBodyRecord, request);
         OpenAiMessageConverter openAiMessageConverter = OpenAiMessageConverter.routineRecommendOf(userMessageRequest);

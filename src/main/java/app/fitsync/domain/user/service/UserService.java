@@ -9,7 +9,7 @@ import app.fitsync.domain.user.dto.UserResponse;
 import app.fitsync.domain.user.entity.SocialProviderType;
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.domain.user.entity.UserRoleType;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.mapper.UserMapper;
 import app.fitsync.domain.user.oauth.SocialUserInfoExtractor;
 import app.fitsync.domain.user.oauth.SocialUserInfoExtractorRegistry;
@@ -46,7 +46,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         Boolean existed = existUser(loginId);
 
         if (existed)
-            throw new RestApiException(UserException.DUPLICATE_LOGINID, loginId);
+            throw new RestApiException(UserErrorCode.DUPLICATE_LOGINID, loginId);
 
         String encodedPassword = passwordEncoder.encode(request.password());
 
@@ -81,7 +81,7 @@ public class UserService extends DefaultOAuth2UserService implements UserService
 
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND, id));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.NOT_FOUND, id));
     }
 
     @Override

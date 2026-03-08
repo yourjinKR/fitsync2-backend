@@ -4,7 +4,7 @@ import app.fitsync.domain.jwt.dto.JWTResponse;
 import app.fitsync.domain.jwt.service.JwtService;
 import app.fitsync.domain.user.dto.LoginRequest;
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import app.fitsync.global.util.JwtUtil;
@@ -37,11 +37,11 @@ public class AuthService implements AuthServiceInterface {
         String password = request.password();
 
         User user = userRepository.findByLoginIdAndIsSocial(loginId, false)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND_LOGIN_ID, loginId));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.NOT_FOUND_LOGIN_ID, loginId));
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RestApiException(UserException.INVALID_PASSWORD);
+            throw new RestApiException(UserErrorCode.INVALID_PASSWORD);
         }
 
         // JWT 토큰 생성

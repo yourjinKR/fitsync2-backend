@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum InBodyException implements ErrorCode {
-    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 인바디 기록을 찾지 못했습니다. inBodyRecordId : {0}"),
-    NOT_FOUND_PROFILE_ID(HttpStatus.NOT_FOUND, "해당 프로필 ID와 일치하는 인바디 기록을 찾지 못했습니다. profileId : {0}")
+public enum UserProfileErrorCode implements ErrorCode {
+    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID와 일치하는 유저 프로필을 찾지 못했습니다 USER_ID : {0}"),
+    DUPLICATE(HttpStatus.CONFLICT, "이미 해당 유저의 프로필이 존재합니다 ID : {0}")
     ;
 
     private final HttpStatus httpStatus;

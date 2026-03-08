@@ -8,8 +8,8 @@ import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodySummary;
 import app.fitsync.domain.profile.dto.InBodyStatisticsResponse.InBodyTrendElement;
 import app.fitsync.domain.profile.dto.UserWithProfileResponse;
 import app.fitsync.domain.profile.entity.InBodyRecord;
-import app.fitsync.domain.profile.exception.InBodyException;
-import app.fitsync.domain.profile.exception.UserProfileException;
+import app.fitsync.domain.profile.exception.InBodyErrorCode;
+import app.fitsync.domain.profile.exception.UserProfileErrorCode;
 import app.fitsync.domain.profile.dto.UserProfileRequest;
 import app.fitsync.domain.profile.dto.UserProfileResponse;
 import app.fitsync.domain.profile.entity.UserProfile;
@@ -47,7 +47,7 @@ public class UserProfileService implements UserProfileServiceInterface {
         boolean profilePresent = userProfileRepository.findByUserId(userId).isPresent();
 
         if (profilePresent)
-            throw new RestApiException(UserProfileException.DUPLICATE, userId);
+            throw new RestApiException(UserProfileErrorCode.DUPLICATE, userId);
 
         UserProfile profile = userProfileMapper.toEntity(request, user);
 
@@ -69,7 +69,7 @@ public class UserProfileService implements UserProfileServiceInterface {
         Long userId = currentUserProvider.getUserId();
 
         InBodyRecord inBodyRecord = inBodyRecordRepository.findById(inBodyRecordId)
-                .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND, inBodyRecordId));
+                .orElseThrow(() -> new RestApiException(InBodyErrorCode.NOT_FOUND, inBodyRecordId));
 
         Long ownerId = inBodyRecord.getUserProfile().getUser().getId();
         if (!ownerId.equals(userId)) {
@@ -102,12 +102,12 @@ public class UserProfileService implements UserProfileServiceInterface {
     public UserWithProfileResponse findByUserId(long userId) {
 
         UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+                .orElseThrow(() -> new RestApiException(UserProfileErrorCode.NOT_FOUND, userId));
 
         Long userProfileId = profile.getId();
 
         InBodyRecord inBodyRecord = inBodyRecordRepository.findTop1ByUserProfile_IdOrderByCreatedAtDesc(userProfileId)
-                .orElseThrow(() -> new RestApiException(InBodyException.NOT_FOUND_PROFILE_ID, userProfileId));
+                .orElseThrow(() -> new RestApiException(InBodyErrorCode.NOT_FOUND_PROFILE_ID, userProfileId));
 
         return userProfileMapper.toDto(profile, inBodyRecord);
     }
@@ -121,7 +121,7 @@ public class UserProfileService implements UserProfileServiceInterface {
             Double bmi
     ) {
         UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new RestApiException(UserProfileException.NOT_FOUND, userId));
+                .orElseThrow(() -> new RestApiException(UserProfileErrorCode.NOT_FOUND, userId));
 
         InBodyRecordMeRequest request = new InBodyRecordMeRequest(
                 weight, skeletalMuscleMass, bodyFatMass, bodyFatPercentage, bmi

@@ -1,7 +1,7 @@
 package app.fitsync.domain.user;
 
 import app.fitsync.domain.user.entity.User;
-import app.fitsync.domain.user.exception.UserException;
+import app.fitsync.domain.user.exception.UserErrorCode;
 import app.fitsync.domain.user.repository.UserRepository;
 import app.fitsync.global.exception.RestApiException;
 import app.fitsync.global.security.SecurityFacade;
@@ -22,7 +22,7 @@ public class CurrentUserProvider {
         String loginId = securityFacade.getLoginIdOrThrow();
 
         return userRepository.findByLoginIdAndHiddenIsFalse(loginId)
-                .orElseThrow(() -> new RestApiException(UserException.NOT_FOUND_LOGIN_ID, loginId));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.NOT_FOUND_LOGIN_ID, loginId));
 
     }
 
