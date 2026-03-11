@@ -83,6 +83,7 @@ logging:
     org.springframework.security.oauth2: INFO
     org.springframework.http.converter.json: INFO
     com.fasterxml.jackson.databind: INFO
+    app.fitsync.global.logging.RequestLoggingFilter: INFO
 
 springdoc:
   api-docs:
