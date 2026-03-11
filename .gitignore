@@ -40,3 +40,6 @@ out/
 .env
 
 .run
+
+### log ###
+spring-boot-app.log

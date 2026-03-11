@@ -1,14 +1,14 @@
 package app.fitsync.global.exception;
 
 import app.fitsync.global.exception.ErrorResponse.ValidationError;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,32 +34,46 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e) {
-        log.warn("handleIllegalArgument ", e);
+        log.warn("Invalid argument: {}", e.getMessage());
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
-        log.warn("handleAccessDeniedException", e);
+        log.warn("Access denied: {}", e.getMessage());
         ErrorCode errorCode = CommonErrorCode.ACCESS_DENIED;
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
     @Override
-    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
-        log.warn("handleMethodArgumentNotValid ", ex);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
+
+        log.warn("Validation failed: count={}, fields={}",
+                e.getBindingResult().getErrorCount(),
+                e.getBindingResult().getFieldErrors()
+                        .stream()
+                        .map(fe -> fe.getField() + ":" + fe.getDefaultMessage())
+                        .toList());
+
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(ex, errorCode);
+        return handleExceptionInternal(e, errorCode);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Object> handleBindException(BindException e) {
+        log.warn("Binding failed: {}", e.getBindingResult().getErrorCount());
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(e, errorCode);
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAllException(Exception e) {
-        log.warn("handleAllException", e);
+        log.error("Unhandled exception occurred", e);
         ErrorCode errorCode = CommonErrorCode.INTERNAL_SERVER_ERROR;
         return handleExceptionInternal(errorCode);
     }

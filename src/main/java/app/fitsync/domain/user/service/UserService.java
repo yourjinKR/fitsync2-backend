@@ -18,6 +18,7 @@ import app.fitsync.global.exception.RestApiException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService extends DefaultOAuth2UserService implements UserServiceInterface {
@@ -51,9 +53,10 @@ public class UserService extends DefaultOAuth2UserService implements UserService
         String encodedPassword = passwordEncoder.encode(request.password());
 
         User user = userMapper.toEntity(request, encodedPassword);
-        User createdUser = userRepository.save(user);
+        User saved = userRepository.save(user);
 
-        Long userId = createdUser.getId();
+        Long userId = saved.getId();
+        loggingRegisterUser(saved);
         return new UserResponse(userId);
     }
 
@@ -141,6 +144,12 @@ public class UserService extends DefaultOAuth2UserService implements UserService
                 .socialProviderType(info.provider())
                 .build();
 
-        return userRepository.save(newUser);
+        User saved = userRepository.save(newUser);
+        loggingRegisterUser(saved);
+        return saved;
+    }
+
+    public void loggingRegisterUser(User user) {
+        log.info("Register User : userId={}", user.getId());
     }
 }
