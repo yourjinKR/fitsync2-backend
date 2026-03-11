@@ -77,16 +77,12 @@ spring:
 
 logging:
   level:
+    root: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.http.converter.json: INFO
     com.fasterxml.jackson.databind: INFO
-  file:
-    name: logs/spring-boot-app.log
-  structured:
-    format:
-      file: logstash
 
 springdoc:
   api-docs:
