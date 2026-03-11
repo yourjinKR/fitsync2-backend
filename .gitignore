@@ -42,4 +42,4 @@ out/
 .run
 
 ### log ###
-spring-boot-app.log
+logs/*
