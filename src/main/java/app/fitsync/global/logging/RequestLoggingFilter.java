@@ -23,6 +23,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
     private static final String REQUEST_URI = "uri";
     private static final String RESPONSE_STATUS = "status";
     private static final String DURATION_MS = "durationMs";
+    private static final String HTTP_LOG_MESSAGE = "HTTP request completed";
 
     @Override
     protected void doFilterInternal(
@@ -50,7 +51,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             MDC.put(RESPONSE_STATUS, String.valueOf(status));
             MDC.put(DURATION_MS, String.valueOf(durationMs));
 
-            log.info("HTTP request completed");
+            log.info(HTTP_LOG_MESSAGE);
 
             MDC.remove(DURATION_MS);
             MDC.remove(RESPONSE_STATUS);
