@@ -82,6 +82,8 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.web: DEBUG
+  file:
+    name: logs/spring-boot-app.log
 
 springdoc:
   api-docs:
