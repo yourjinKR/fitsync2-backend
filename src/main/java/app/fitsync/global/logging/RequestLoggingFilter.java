@@ -57,6 +57,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             MDC.remove(RESPONSE_STATUS);
             MDC.remove(REQUEST_URI);
             MDC.remove(HTTP_METHOD);
+            MDC.remove(LOG_TYPE);
             MDC.remove(REQUEST_ID);
         }
     }
