@@ -63,6 +63,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, errorCode);
     }
 
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Object> handleBindException(BindException e) {
+        log.warn("Binding failed: {}", e.getBindingResult().getErrorCount());
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(e, errorCode);
+    }
+
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAllException(Exception e) {
         log.error("Unhandled exception occurred", e);
