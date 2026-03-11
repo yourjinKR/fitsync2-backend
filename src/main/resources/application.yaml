@@ -84,6 +84,9 @@ logging:
     org.springframework.web: DEBUG
   file:
     name: logs/spring-boot-app.log
+  structured:
+    format:
+      file: logstash
 
 springdoc:
   api-docs:
