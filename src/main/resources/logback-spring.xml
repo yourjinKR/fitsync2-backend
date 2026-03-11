@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
 
-    <!-- spring property -->
-    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="spring-app"/>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="fitsync"/>
 
-    <!-- 로그 저장 경로 -->
+    <!-- 로그 경로 -->
     <property name="LOG_PATH" value="logs"/>
-    <property name="LOG_FILE" value="${LOG_PATH}/app.log"/>
-    <property name="ERROR_LOG_FILE" value="${LOG_PATH}/error.log"/>
 
-    <!-- 공통 패턴 -->
+    <!-- 텍스트 로그 파일 -->
+    <property name="APP_LOG_FILE" value="${LOG_PATH}/app.log"/>
+    <property name="ERROR_LOG_FILE" value="${LOG_PATH}/error.log"/>
+    <property name="HTTP_LOG_FILE" value="${LOG_PATH}/http.log"/>
+
+    <!-- JSON 로그 파일 -->
+    <property name="APP_JSON_LOG_FILE" value="${LOG_PATH}/app-json.log"/>
+    <property name="HTTP_JSON_LOG_FILE" value="${LOG_PATH}/http-json.log"/>
+
+    <!-- 패턴 -->
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [requestId=%X{requestId:-}] - %msg%n"/>
 
     <property name="FILE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [requestId=%X{requestId:-}] - %msg%n"/>
 
-    <!-- 콘솔 출력 -->
+    <!-- =========================
+         CONSOLE
+    ========================== -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
-    <!-- 전체 로그 파일 -->
+    <!-- =========================
+         APP FILE (일반 텍스트 로그)
+    ========================== -->
     <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
+        <file>${APP_LOG_FILE}</file>
 
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
@@ -33,18 +44,16 @@
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- 날짜 + 인덱스 -->
             <fileNamePattern>${LOG_PATH}/archive/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- 파일 하나 최대 크기 -->
             <maxFileSize>10MB</maxFileSize>
-            <!-- 총 보관 기간 -->
             <maxHistory>30</maxHistory>
-            <!-- 전체 용량 제한 -->
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
-    <!-- ERROR 전용 파일 -->
+    <!-- =========================
+         ERROR FILE
+    ========================== -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${ERROR_LOG_FILE}</file>
 
@@ -65,11 +74,79 @@
         </rollingPolicy>
     </appender>
 
-    <!-- 루트 로거 -->
+    <!-- =========================
+         HTTP FILE (RequestLoggingFilter 전용 텍스트 로그)
+    ========================== -->
+    <appender name="HTTP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HTTP_LOG_FILE}</file>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/http.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- =========================
+         APP JSON FILE (전체 JSON 로그)
+    ========================== -->
+    <appender name="APP_JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${APP_JSON_LOG_FILE}</file>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"appName":"${APP_NAME}","logCategory":"application"}</customFields>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/app-json.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- =========================
+         HTTP JSON FILE (RequestLoggingFilter 전용 JSON 로그)
+    ========================== -->
+    <appender name="HTTP_JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HTTP_JSON_LOG_FILE}</file>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"appName":"${APP_NAME}","logCategory":"http"}</customFields>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/http-json.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- =========================
+         HTTP LOGGER
+         RequestLoggingFilter 로그만 별도 파일/JSON으로 관리
+    ========================== -->
+    <logger name="app.fitsync.global.logging.RequestLoggingFilter" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="HTTP_FILE"/>
+        <appender-ref ref="HTTP_JSON_FILE"/>
+    </logger>
+
+    <!-- =========================
+         ROOT LOGGER
+    ========================== -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="APP_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
+        <appender-ref ref="APP_JSON_FILE"/>
     </root>
 
 </configuration>
