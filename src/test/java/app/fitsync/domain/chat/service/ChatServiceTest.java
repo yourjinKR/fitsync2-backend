@@ -8,6 +8,7 @@ import app.fitsync.domain.chat.dto.GroupChatRoomCreateRequest;
 import app.fitsync.domain.chat.entity.ChatMessage;
 import app.fitsync.domain.chat.entity.ChatMessageType;
 import app.fitsync.domain.chat.entity.ChatRoom;
+import app.fitsync.domain.chat.entity.ChatRoomParticipant;
 import app.fitsync.domain.chat.entity.ChatRoomType;
 import app.fitsync.domain.chat.exception.ChatErrorCode;
 import app.fitsync.domain.chat.repository.ChatMessageRepository;
@@ -56,13 +57,17 @@ class ChatServiceTest {
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Mock
+    private ChatNotificationService chatNotificationService;
+
     private ChatService newService() {
         return new ChatService(
                 chatRoomRepository,
                 chatRoomParticipantRepository,
                 chatMessageRepository,
                 userRepository,
-                simpMessagingTemplate
+                simpMessagingTemplate,
+                chatNotificationService
         );
     }
 
@@ -129,6 +134,8 @@ class ChatServiceTest {
         assertThat(response.roomId()).isEqualTo(55L);
         verify(chatRoomRepository).save(any(ChatRoom.class));
         verify(chatRoomParticipantRepository, times(3)).save(any());
+        verify(chatNotificationService).notifyInvite("user2", savedRoom, "나");
+        verify(chatNotificationService).notifyInvite("user3", savedRoom, "나");
     }
 
     @Test
@@ -166,6 +173,10 @@ class ChatServiceTest {
         when(chatRoomParticipantRepository.existsByChatRoomIdAndUserId(20L, 1L)).thenReturn(true);
         when(chatRoomRepository.findById(20L)).thenReturn(Optional.of(room));
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(saved);
+        when(chatRoomParticipantRepository.findByChatRoomId(20L)).thenReturn(List.of(
+                ChatRoomParticipant.builder().chatRoom(room).user(me).build(),
+                ChatRoomParticipant.builder().chatRoom(room).user(user(2L, "user2", "상대")).build()
+        ));
 
         ChatMessageResponse response = chatService.sendMessage(
                 "me",
@@ -179,6 +190,7 @@ class ChatServiceTest {
         ArgumentCaptor<ChatMessageResponse> captor = ArgumentCaptor.forClass(ChatMessageResponse.class);
         verify(simpMessagingTemplate).convertAndSend(org.mockito.ArgumentMatchers.eq("/sub/chat.rooms.20"), captor.capture());
         assertThat(captor.getValue().content()).isEqualTo("hello");
+        verify(chatNotificationService).notifyNewMessage("user2", room, "나", "hello");
     }
 
     @Test

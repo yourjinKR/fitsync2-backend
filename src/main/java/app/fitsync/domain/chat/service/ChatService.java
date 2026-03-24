@@ -2,6 +2,7 @@ package app.fitsync.domain.chat.service;
 
 import app.fitsync.domain.chat.dto.ChatMessageResponse;
 import app.fitsync.domain.chat.dto.ChatRoomListResponse;
+import app.fitsync.domain.chat.dto.ChatRoomInviteRequest;
 import app.fitsync.domain.chat.dto.ChatRoomResponse;
 import app.fitsync.domain.chat.dto.ChatSendRequest;
 import app.fitsync.domain.chat.dto.DirectChatRoomCreateRequest;
@@ -42,6 +43,7 @@ public class ChatService implements ChatServiceInterface {
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatNotificationService chatNotificationService;
 
     @Override
     @Transactional
@@ -97,6 +99,10 @@ public class ChatService implements ChatServiceInterface {
                 ChatRoomParticipant.builder().chatRoom(room).user(user).build()
         ));
 
+        participants.stream()
+                .filter(user -> !user.getId().equals(me.getId()))
+                .forEach(user -> chatNotificationService.notifyInvite(user.getLoginId(), room, me.getName()));
+
         return new ChatRoomResponse(room.getId());
     }
 
@@ -108,9 +114,8 @@ public class ChatService implements ChatServiceInterface {
         List<ChatRoomParticipant> myParticipations = chatRoomParticipantRepository.findByUserId(me.getId());
 
         List<ChatRoomListResponse> rooms = myParticipations.stream()
-                .map(ChatRoomParticipant::getChatRoom)
-                .distinct()
-                .map(room -> {
+                .map(myParticipation -> {
+                    ChatRoom room = myParticipation.getChatRoom();
                     List<Long> participantUserIds = chatRoomParticipantRepository.findByChatRoomId(room.getId())
                             .stream()
                             .map(participant -> participant.getUser().getId())
@@ -121,6 +126,11 @@ public class ChatService implements ChatServiceInterface {
 
                     String lastContent = lastMessage != null ? lastMessage.getContent() : null;
                     LocalDateTime lastMessageAt = lastMessage != null ? lastMessage.getCreatedAt() : room.getCreatedAt();
+                    long unreadCount = chatMessageRepository.countUnreadByRoomAndUser(
+                            room.getId(),
+                            me.getId(),
+                            myParticipation.getLastReadAt()
+                    );
 
                     return new ChatRoomListResponse(
                             room.getId(),
@@ -128,7 +138,8 @@ public class ChatService implements ChatServiceInterface {
                             room.getName(),
                             participantUserIds,
                             lastContent,
-                            lastMessageAt
+                            lastMessageAt,
+                            unreadCount
                     );
                 })
                 .sorted(Comparator.comparing(ChatRoomListResponse::lastMessageAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
@@ -170,7 +181,61 @@ public class ChatService implements ChatServiceInterface {
 
         ChatMessageResponse response = toResponse(saved);
         simpMessagingTemplate.convertAndSend("/sub/chat.rooms." + request.roomId(), response);
+
+        chatRoomParticipantRepository.findByChatRoomId(request.roomId())
+                .stream()
+                .map(participant -> participant.getUser())
+                .filter(user -> !user.getId().equals(me.getId()))
+                .forEach(user -> chatNotificationService.notifyNewMessage(
+                        user.getLoginId(),
+                        room,
+                        me.getName(),
+                        request.content() != null ? request.content() : ""
+                ));
+
         return response;
+    }
+
+    @Override
+    @Transactional
+    public void markRoomAsRead(String loginId, Long roomId) {
+        User me = findActiveUserByLoginId(loginId);
+        ChatRoomParticipant participation = chatRoomParticipantRepository.findByChatRoomIdAndUserId(roomId, me.getId())
+                .orElseThrow(() -> new RestApiException(ChatErrorCode.ROOM_ACCESS_DENIED, roomId));
+
+        participation.markAsRead(LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public ChatRoomResponse inviteToGroupRoom(String loginId, Long roomId, ChatRoomInviteRequest request) {
+        User me = findActiveUserByLoginId(loginId);
+        validateRoomAccess(roomId, me.getId());
+
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RestApiException(ChatErrorCode.ROOM_NOT_FOUND, roomId));
+
+        if (room.getType() != ChatRoomType.GROUP) {
+            throw new RestApiException(CommonErrorCode.INVALID_PARAMETER, "roomId");
+        }
+
+        Set<Long> newParticipantIds = new LinkedHashSet<>(request.participantUserIds());
+        for (Long participantId : newParticipantIds) {
+            if (chatRoomParticipantRepository.existsByChatRoomIdAndUserId(roomId, participantId)) {
+                continue;
+            }
+
+            User invited = findActiveUserById(participantId);
+            chatRoomParticipantRepository.save(
+                    ChatRoomParticipant.builder()
+                            .chatRoom(room)
+                            .user(invited)
+                            .build()
+            );
+            chatNotificationService.notifyInvite(invited.getLoginId(), room, me.getName());
+        }
+
+        return new ChatRoomResponse(room.getId());
     }
 
     private ChatMessageResponse toResponse(ChatMessage message) {

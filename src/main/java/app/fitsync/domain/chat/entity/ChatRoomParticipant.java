@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,4 +38,12 @@ public class ChatRoomParticipant extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Builder.Default
+    @jakarta.persistence.Column(name = "last_read_at")
+    private LocalDateTime lastReadAt = null;
+
+    public void markAsRead(LocalDateTime now) {
+        this.lastReadAt = now;
+    }
 }

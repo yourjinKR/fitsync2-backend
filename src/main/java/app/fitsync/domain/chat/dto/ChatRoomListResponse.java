@@ -10,6 +10,7 @@ public record ChatRoomListResponse(
         String name,
         List<Long> participantUserIds,
         String lastMessage,
-        LocalDateTime lastMessageAt
+        LocalDateTime lastMessageAt,
+        long unreadCount
 ) {
 }

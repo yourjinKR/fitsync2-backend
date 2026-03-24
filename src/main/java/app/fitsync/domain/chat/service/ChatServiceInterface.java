@@ -2,6 +2,7 @@ package app.fitsync.domain.chat.service;
 
 import app.fitsync.domain.chat.dto.ChatMessageResponse;
 import app.fitsync.domain.chat.dto.ChatRoomListResponse;
+import app.fitsync.domain.chat.dto.ChatRoomInviteRequest;
 import app.fitsync.domain.chat.dto.ChatRoomResponse;
 import app.fitsync.domain.chat.dto.ChatSendRequest;
 import app.fitsync.domain.chat.dto.DirectChatRoomCreateRequest;
@@ -21,4 +22,8 @@ public interface ChatServiceInterface {
     Page<ChatMessageResponse> getRoomMessages(String loginId, Long roomId, Pageable pageable);
 
     ChatMessageResponse sendMessage(String loginId, ChatSendRequest request);
+
+    void markRoomAsRead(String loginId, Long roomId);
+
+    ChatRoomResponse inviteToGroupRoom(String loginId, Long roomId, ChatRoomInviteRequest request);
 }

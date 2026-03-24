@@ -2,6 +2,7 @@ package app.fitsync.domain.chat.controller;
 
 import app.fitsync.domain.chat.dto.ChatMessageResponse;
 import app.fitsync.domain.chat.dto.ChatRoomListResponse;
+import app.fitsync.domain.chat.dto.ChatRoomInviteRequest;
 import app.fitsync.domain.chat.dto.ChatRoomResponse;
 import app.fitsync.domain.chat.dto.DirectChatRoomCreateRequest;
 import app.fitsync.domain.chat.dto.GroupChatRoomCreateRequest;
@@ -67,5 +68,23 @@ public class ChatController {
             Principal principal
     ) {
         return ResponseEntity.ok(chatService.getRoomMessages(principal.getName(), roomId, pageable));
+    }
+
+    @PostMapping("/api/chat/rooms/{roomId}/read")
+    public ResponseEntity<Void> markRoomAsRead(
+            @PathVariable Long roomId,
+            Principal principal
+    ) {
+        chatService.markRoomAsRead(principal.getName(), roomId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/chat/rooms/{roomId}/invite")
+    public ResponseEntity<ChatRoomResponse> inviteToGroupRoom(
+            @PathVariable Long roomId,
+            @Valid @RequestBody ChatRoomInviteRequest request,
+            Principal principal
+    ) {
+        return ResponseEntity.ok(chatService.inviteToGroupRoom(principal.getName(), roomId, request));
     }
 }
