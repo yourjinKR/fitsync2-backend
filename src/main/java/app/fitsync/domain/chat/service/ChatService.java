@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class ChatService implements ChatServiceInterface {
         User me = findActiveUserByLoginId(loginId);
         User target = findActiveUserById(request.targetUserId());
 
-        if (me.getId().equals(target.getId())) {
+        if (me.isSameId(target)) {
             throw new RestApiException(CommonErrorCode.INVALID_PARAMETER, "targetUserId");
         }
 
@@ -100,7 +101,7 @@ public class ChatService implements ChatServiceInterface {
         ));
 
         participants.stream()
-                .filter(user -> !user.getId().equals(me.getId()))
+                .filter(Predicate.not(me::isSameId))
                 .forEach(user -> chatNotificationService.notifyInvite(user.getLoginId(), room, me.getName()));
 
         return new ChatRoomResponse(room.getId());
