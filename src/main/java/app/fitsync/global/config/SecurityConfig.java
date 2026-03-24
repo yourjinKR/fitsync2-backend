@@ -123,6 +123,7 @@ public class SecurityConfig {
         // 인가
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/jwt/exchange", "/jwt/refresh", "/error").permitAll()
+                .requestMatchers("/ws-chat/**", "/ws-chat").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/check", "/api/users/exists/**").permitAll()
