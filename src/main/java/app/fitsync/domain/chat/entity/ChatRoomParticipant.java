@@ -2,6 +2,7 @@ package app.fitsync.domain.chat.entity;
 
 import app.fitsync.domain.user.entity.User;
 import app.fitsync.global.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -40,7 +41,7 @@ public class ChatRoomParticipant extends BaseEntity {
     private User user;
 
     @Builder.Default
-    @jakarta.persistence.Column(name = "last_read_at")
+    @Column(name = "last_read_at")
     private LocalDateTime lastReadAt = null;
 
     public void markAsRead(LocalDateTime now) {
