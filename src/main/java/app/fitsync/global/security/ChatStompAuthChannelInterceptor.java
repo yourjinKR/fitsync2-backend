@@ -52,7 +52,7 @@ public class ChatStompAuthChannelInterceptor implements ChannelInterceptor {
 
     private void authenticate(StompHeaderAccessor accessor) {
         String authorization = accessor.getFirstNativeHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null || JwtUtil.isInvalidPrefix(authorization)) {
             throw new AccessDeniedException("Missing Authorization header");
         }
 

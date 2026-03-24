@@ -13,6 +13,7 @@ public class JwtUtil {
     private static final SecretKey secretKey;
     private static final Long accessTokenExpiresIn;
     private static final Long refreshTokenExpiresIn;
+    private static final String JwtStartWith;
 
     static  {
         String secretKeyString = "iwannabedeveloperbecauseiwannaberichguy";
@@ -20,6 +21,8 @@ public class JwtUtil {
 
         accessTokenExpiresIn = 3600L * 1000; // 1시간
         refreshTokenExpiresIn = 604800L * 1000; // 7일
+
+        JwtStartWith = "Bearer ";
     }
 
     // JWT 클레임 username 파싱
@@ -69,5 +72,9 @@ public class JwtUtil {
                 .expiration(new Date(now + expiry)) // 생명주기
                 .signWith(secretKey) // 시크릿 키 시그니처
                 .compact();
+    }
+
+    public static boolean isInvalidPrefix(String authorization) {
+        return !authorization.startsWith(JwtStartWith);
     }
 }
