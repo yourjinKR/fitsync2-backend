@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!authorization.startsWith("Bearer ")) {
+        if (JwtUtil.isInvalidPrefix(authorization)) {
             throw new ServletException("Invalid JWT token");
         }
 

@@ -66,4 +66,7 @@ public class User extends BaseEntity {
         hidden = true;
     }
 
+    public boolean isSameId(User user) {
+        return this.id.equals(user.id);
+    }
 }

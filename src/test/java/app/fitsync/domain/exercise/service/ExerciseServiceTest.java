@@ -176,14 +176,10 @@ class ExerciseServiceTest {
     void getBodyDetailPartList_success() {
         ExerciseService exerciseService = service();
 
-        BodyDetailPart part1 = org.mockito.Mockito.mock(BodyDetailPart.class);
-        BodyDetailPart part2 = org.mockito.Mockito.mock(BodyDetailPart.class);
         BodyDetailPartListResponse dto1 = new BodyDetailPartListResponse(1L, "가슴", "상체");
         BodyDetailPartListResponse dto2 = new BodyDetailPartListResponse(2L, "등", "상체");
 
-        when(bodyDetailPartRepository.findAllByOrderByIdAsc()).thenReturn(List.of(part1, part2));
-        when(exerciseMapper.toListDto(part1)).thenReturn(dto1);
-        when(exerciseMapper.toListDto(part2)).thenReturn(dto2);
+        when(bodyDetailPartRepository.findAllListResponses()).thenReturn(List.of(dto1, dto2));
 
         List<BodyDetailPartListResponse> response = exerciseService.getBodyDetailPartList();
 
